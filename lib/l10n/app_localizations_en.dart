@@ -115,6 +115,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String previewRunning(int done, int total) {
+    return 'Tidying… ($done/$total)';
+  }
+
+  @override
   String actionMoveTo(String folder) {
     return '→ $folder';
   }

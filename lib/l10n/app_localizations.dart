@@ -278,6 +278,12 @@ abstract class AppLocalizations {
   /// **'정리 실행 ({count})'**
   String previewRun(int count);
 
+  /// No description provided for @previewRunning.
+  ///
+  /// In ko, this message translates to:
+  /// **'정리하는 중… ({done}/{total})'**
+  String previewRunning(int done, int total);
+
   /// No description provided for @actionMoveTo.
   ///
   /// In ko, this message translates to:
