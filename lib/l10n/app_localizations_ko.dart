@@ -113,6 +113,11 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String previewRunning(int done, int total) {
+    return '정리하는 중… ($done/$total)';
+  }
+
+  @override
   String actionMoveTo(String folder) {
     return '→ $folder';
   }

@@ -58,6 +58,17 @@
       }
     }
   },
+  "previewRunning": "Tidying… ({done}/{total})",
+  "@previewRunning": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "actionMoveTo": "→ {folder}",
   "@actionMoveTo": {
     "placeholders": {

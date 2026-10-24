@@ -26,10 +26,16 @@ class _PreviewDialog extends StatefulWidget {
 class _PreviewDialogState extends State<_PreviewDialog> {
   late final Future<PlanResult> _plan = widget.service.preview();
   bool _running = false;
+  int _done = 0;
 
   Future<void> _run(PlanResult plan) async {
     setState(() => _running = true);
-    final results = await widget.service.run(plan);
+    final results = await widget.service.run(
+      plan,
+      onProgress: (done, total) {
+        if (mounted) setState(() => _done = done);
+      },
+    );
     if (mounted) Navigator.of(context).pop(results);
   }
 
@@ -49,7 +55,9 @@ class _PreviewDialogState extends State<_PreviewDialog> {
             height: 360,
             child: plan == null
                 ? const Center(child: CircularProgressIndicator())
-                : _body(context, plan, hasRules: hasRules),
+                : _running
+                    ? _runningBody(context, plan)
+                    : _body(context, plan, hasRules: hasRules),
           ),
           actions: [
             TextButton(
@@ -65,6 +73,19 @@ class _PreviewDialogState extends State<_PreviewDialog> {
           titleTextStyle: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         );
       },
+    );
+  }
+
+  Widget _runningBody(BuildContext context, PlanResult plan) {
+    final l10n = AppLocalizations.of(context);
+    final total = plan.actions.length;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        LinearProgressIndicator(value: total > 0 ? _done / total : null),
+        const SizedBox(height: AppSpacing.sm),
+        Text(l10n.previewRunning(_done, total), textAlign: TextAlign.center),
+      ],
     );
   }
 

@@ -187,37 +187,62 @@ class TidyEngine {
     return PlanResult(actions: actions, waiting: waiting);
   }
 
+  /// 한 번에 동시에 처리할 파일 수. 특히 Windows에서는 하나마다 프로세스를 띄워
+  /// 휴지통으로 보내므로, 순서대로 하나씩 하면 파일이 많을 때 오래 멈춰 있는 것처럼 보인다.
+  static const _applyConcurrency = 8;
+
   /// 계획을 실행한다. 계획한 뒤 파일이 바뀌었으면(받기가 다시 시작되는 등) 건너뛴다.
   /// 실행한 것의 결과만 돌려준다 — 건너뛴 것은 다음 훑기에서 다시 본다.
-  Future<List<ActionResult>> apply(List<PlannedAction> planned) async {
-    final out = <ActionResult>[];
-    for (final item in planned) {
-      final FileStat stat;
+  /// [onProgress]가 있으면 하나 끝낼 때마다 (끝낸 수, 전체 수)로 부른다.
+  Future<List<ActionResult>> apply(
+    List<PlannedAction> planned, {
+    void Function(int done, int total)? onProgress,
+  }) async {
+    final total = planned.length;
+    final out = List<ActionResult?>.filled(total, null);
+    var done = 0;
+
+    Future<void> run(int i) async {
+      final item = planned[i];
       try {
-        stat = await File(item.path).stat();
-      } on FileSystemException {
-        continue;
-      }
-      if (stat.type != FileSystemEntityType.file ||
-          stat.size != item.facts.sizeBytes ||
-          stat.modified != item.facts.modified) {
-        continue;
-      }
-      try {
-        final resultPath = switch (item.action) {
-          MoveAction(:final destination) => await _ops.move(item.path, destination),
-          TrashAction() => await _ops.trash(item.path),
-        };
-        _stability.forget(item.path);
-        out.add(ActionResult(planned: item, time: _clock(), resultPath: resultPath));
-      } on Object catch (e) {
-        _suppressed[item.path] = (size: stat.size, modified: stat.modified);
-        out.add(ActionResult(planned: item, time: _clock(), error: e));
+        final FileStat stat;
+        try {
+          stat = await File(item.path).stat();
+        } on FileSystemException {
+          return;
+        }
+        if (stat.type != FileSystemEntityType.file ||
+            stat.size != item.facts.sizeBytes ||
+            stat.modified != item.facts.modified) {
+          return;
+        }
+        try {
+          final resultPath = switch (item.action) {
+            MoveAction(:final destination) => await _ops.move(item.path, destination),
+            TrashAction() => await _ops.trash(item.path),
+          };
+          _stability.forget(item.path);
+          out[i] = ActionResult(planned: item, time: _clock(), resultPath: resultPath);
+        } on Object catch (e) {
+          _suppressed[item.path] = (size: stat.size, modified: stat.modified);
+          out[i] = ActionResult(planned: item, time: _clock(), error: e);
+        }
+      } finally {
+        done++;
+        onProgress?.call(done, total);
       }
     }
-    if (removeEmptyFolders) await _removeEmptiedFolders([for (final r in out) if (r.succeeded) r.planned]);
-    if (out.isNotEmpty) _results.add(out);
-    return out;
+
+    onProgress?.call(0, total);
+    for (var start = 0; start < total; start += _applyConcurrency) {
+      final end = (start + _applyConcurrency < total) ? start + _applyConcurrency : total;
+      await Future.wait([for (var i = start; i < end; i++) run(i)]);
+    }
+
+    final results = out.whereType<ActionResult>().toList();
+    if (removeEmptyFolders) await _removeEmptiedFolders([for (final r in results) if (r.succeeded) r.planned]);
+    if (results.isNotEmpty) _results.add(results);
+    return results;
   }
 
   /// 켜져 있는 이동 규칙의 목적지 폴더들. 정리된 파일이 쌓이는 곳이라 다시 훑지 않는다.

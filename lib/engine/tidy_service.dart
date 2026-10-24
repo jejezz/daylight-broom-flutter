@@ -91,8 +91,9 @@ class TidyService extends ChangeNotifier {
   /// "지금 정리"가 보여줄 미리보기. 파일을 건드리지 않는다.
   Future<PlanResult> preview() => engine.plan(requireStable: false);
 
-  /// 미리보기에서 확인한 계획을 실행한다.
-  Future<List<ActionResult>> run(PlanResult plan) => engine.apply(plan.actions);
+  /// 미리보기에서 확인한 계획을 실행한다. [onProgress]가 있으면 하나 끝낼 때마다 불린다.
+  Future<List<ActionResult>> run(PlanResult plan, {void Function(int done, int total)? onProgress}) =>
+      engine.apply(plan.actions, onProgress: onProgress);
 
   /// 기록한 동작을 되돌린다. 실패하면 예외를 던지고 기록은 그대로 둔다.
   Future<void> undo(HistoryEntry entry) async {
