@@ -1357,6 +1357,222 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'그룹 전체 선택'**
   String get junkSelectGroup;
+
+  /// No description provided for @navOverview.
+  ///
+  /// In ko, this message translates to:
+  /// **'개요'**
+  String get navOverview;
+
+  /// No description provided for @overviewTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'디스크'**
+  String get overviewTitle;
+
+  /// No description provided for @overviewRefresh.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로 고침'**
+  String get overviewRefresh;
+
+  /// No description provided for @overviewUsedPercent.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용 중'**
+  String get overviewUsedPercent;
+
+  /// No description provided for @overviewFree.
+  ///
+  /// In ko, this message translates to:
+  /// **'여유'**
+  String get overviewFree;
+
+  /// No description provided for @overviewUsed.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용'**
+  String get overviewUsed;
+
+  /// No description provided for @overviewTotal.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get overviewTotal;
+
+  /// No description provided for @overviewJunkFound.
+  ///
+  /// In ko, this message translates to:
+  /// **'찾은 정크'**
+  String get overviewJunkFound;
+
+  /// No description provided for @overviewJunkNotScanned.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 스캔 전'**
+  String get overviewJunkNotScanned;
+
+  /// No description provided for @overviewJunkScanning.
+  ///
+  /// In ko, this message translates to:
+  /// **'스캔하는 중…'**
+  String get overviewJunkScanning;
+
+  /// No description provided for @overviewFreeable.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 선택한 항목을 정리하면 약 {size}를 확보합니다'**
+  String overviewFreeable(String size);
+
+  /// No description provided for @overviewCardJunkTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'정크 정리'**
+  String get overviewCardJunkTitle;
+
+  /// No description provided for @overviewCardJunkSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'캐시, 임시 파일, 개발 찌꺼기'**
+  String get overviewCardJunkSubtitle;
+
+  /// No description provided for @overviewCardTidyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 정리'**
+  String get overviewCardTidyTitle;
+
+  /// No description provided for @overviewCardTidySubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'규칙 {count}개가 폴더를 감시합니다'**
+  String overviewCardTidySubtitle(int count);
+
+  /// No description provided for @overviewUnavailable.
+  ///
+  /// In ko, this message translates to:
+  /// **'디스크 용량을 읽지 못했습니다.'**
+  String get overviewUnavailable;
+
+  /// No description provided for @fdaBannerText.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 디스크 접근 권한이 꺼져 있어 일부 캐시(Safari, 메일 등)는 보이지 않습니다.'**
+  String get fdaBannerText;
+
+  /// No description provided for @fdaShowMe.
+  ///
+  /// In ko, this message translates to:
+  /// **'방법 보기'**
+  String get fdaShowMe;
+
+  /// No description provided for @fdaOpenSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 열기'**
+  String get fdaOpenSettings;
+
+  /// No description provided for @fdaGranted.
+  ///
+  /// In ko, this message translates to:
+  /// **'허용됨'**
+  String get fdaGranted;
+
+  /// No description provided for @fdaWaiting.
+  ///
+  /// In ko, this message translates to:
+  /// **'권한을 기다리는 중…'**
+  String get fdaWaiting;
+
+  /// No description provided for @fdaStep1Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 디스크 접근 설정 열기'**
+  String get fdaStep1Title;
+
+  /// No description provided for @fdaStep1Body.
+  ///
+  /// In ko, this message translates to:
+  /// **'macOS는 Safari, 메일, 메시지 같은 일부 폴더를 앱이 따로 허락받기 전에는 보여 주지 않습니다. 아래 단추를 누르면 시스템 설정 › 개인정보 보호 및 보안 › 전체 디스크 접근으로 바로 이동합니다.'**
+  String get fdaStep1Body;
+
+  /// No description provided for @fdaStep2Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'\"+\"를 누르고 잠금 풀기'**
+  String get fdaStep2Title;
+
+  /// No description provided for @fdaStep2Body.
+  ///
+  /// In ko, this message translates to:
+  /// **'목록 아래의 \"+\" 단추를 누르세요. 이 설정을 바꾸려면 Touch ID나 암호를 묻습니다.'**
+  String get fdaStep2Body;
+
+  /// No description provided for @fdaStep3Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'{appName} 고르기'**
+  String fdaStep3Title(String appName);
+
+  /// No description provided for @fdaStep3Body.
+  ///
+  /// In ko, this message translates to:
+  /// **'파일 선택 창에서 \"{appName}\"을 검색하거나 응용 프로그램 폴더에서 찾아 열기를 누르세요. Finder 창에서 목록으로 끌어다 놓아도 됩니다.'**
+  String fdaStep3Body(String appName);
+
+  /// No description provided for @fdaStep4Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료 후 다시 열기'**
+  String get fdaStep4Title;
+
+  /// No description provided for @fdaStep4Body.
+  ///
+  /// In ko, this message translates to:
+  /// **'{appName}은 다시 시작해야 권한이 적용된다고 macOS가 안내합니다. \"종료 후 다시 열기\"를 누르면 곧바로 다시 열리고 경고 배너가 사라집니다.'**
+  String fdaStep4Body(String appName);
+
+  /// No description provided for @fdaStep5Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'모두 끝났습니다'**
+  String get fdaStep5Title;
+
+  /// No description provided for @fdaStep5Body.
+  ///
+  /// In ko, this message translates to:
+  /// **'목록에서 {appName} 스위치가 켜져 있습니다. 다시 스캔하면 전에는 숨겨져 있던 캐시도 포함됩니다.'**
+  String fdaStep5Body(String appName);
+
+  /// No description provided for @fdaShowInFinder.
+  ///
+  /// In ko, this message translates to:
+  /// **'Finder에서 {appName} 보기'**
+  String fdaShowInFinder(String appName);
+
+  /// No description provided for @fdaBack.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전'**
+  String get fdaBack;
+
+  /// No description provided for @fdaNext.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음'**
+  String get fdaNext;
+
+  /// No description provided for @fdaDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료'**
+  String get fdaDone;
+
+  /// No description provided for @fdaClose.
+  ///
+  /// In ko, this message translates to:
+  /// **'닫기'**
+  String get fdaClose;
 }
 
 class _AppLocalizationsDelegate

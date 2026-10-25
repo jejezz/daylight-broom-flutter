@@ -6,12 +6,15 @@ import 'scanner.dart';
 
 /// 정크 화면의 상태: 스캔 결과, 선택, 정리 진행. 화면은 이것을 읽고 메서드를 부른다.
 class JunkController extends ChangeNotifier {
-  JunkController({required JunkScanner scanner, PermanentDeleter? deleter})
+  JunkController({required JunkScanner scanner, PermanentDeleter? deleter, this.onCleaned})
       : _scanner = scanner,
         _deleter = deleter ?? PermanentDeleter(allowedRoots: scanner.roots);
 
   final JunkScanner _scanner;
   final PermanentDeleter _deleter;
+
+  /// 정리가 끝날 때마다 부른다 (개요의 디스크 용량을 다시 읽는 데 쓴다).
+  final VoidCallback? onCleaned;
 
   bool scanning = false;
   bool scanned = false;
@@ -115,6 +118,7 @@ class JunkController extends ChangeNotifier {
     cleaning = false;
     lastFreed = cleanFreedBytes;
     notifyListeners();
+    onCleaned?.call();
     return cleanFreedBytes;
   }
 }

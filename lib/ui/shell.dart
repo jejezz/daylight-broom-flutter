@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_identity.dart';
+import '../cleaner/disk_info.dart';
 import '../cleaner/junk_controller.dart';
 import '../cleaner/scan_target.dart';
 import '../cleaner/scanner.dart';
@@ -16,11 +17,12 @@ import 'cleanup_options_button.dart';
 import 'home_screen.dart';
 import 'junk_page.dart';
 import 'login_item_button.dart';
+import 'overview_page.dart';
 
 /// 앱의 뼈대: 왼쪽 NavRail + 오른쪽 페이지. 페이지는 목록(`_pages`)에서 고르므로
 /// 정크·앱 제거 같은 새 기능은 항목 하나를 더하면 레일에 나타난다.
 class BroomShell extends StatefulWidget {
-  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk});
+  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk});
 
   final VoidCallback onAbout;
   final TidyService service;
@@ -32,18 +34,31 @@ class BroomShell extends StatefulWidget {
   /// 정크 정리 상태. null 이면 이 OS 용으로 만든다 (지원하지 않는 OS 면 정크 페이지가 없다).
   final JunkController? junk;
 
+  /// 디스크 상태. null 이면 만들어 쓴다.
+  final DiskController? disk;
+
   @override
   State<BroomShell> createState() => _BroomShellState();
 }
 
 class _BroomShellState extends State<BroomShell> {
   int _index = 0;
-  late final JunkController? _junk = widget.junk ?? (CleanerPlatform.current == null ? null : JunkController(scanner: JunkScanner()));
+  late final DiskController _disk = widget.disk ?? DiskController(DiskInfo());
+  late final bool _ownsDisk = widget.disk == null;
+  late final JunkController? _junk = widget.junk ??
+      (CleanerPlatform.current == null ? null : JunkController(scanner: JunkScanner(), onCleaned: _disk.refresh));
   late final bool _ownsJunk = widget.junk == null;
+
+  @override
+  void initState() {
+    super.initState();
+    _disk.refresh();
+  }
 
   @override
   void dispose() {
     if (_ownsJunk) _junk?.dispose();
+    if (_ownsDisk) _disk.dispose();
     super.dispose();
   }
 
@@ -52,10 +67,18 @@ class _BroomShellState extends State<BroomShell> {
     final l10n = AppLocalizations.of(context);
     final junk = _junk;
     final items = [
+      NavItem(icon: Icons.donut_large_rounded, label: l10n.navOverview),
       NavItem(icon: Icons.auto_awesome_rounded, label: l10n.navTidy),
       if (junk != null) NavItem(icon: Icons.cleaning_services_rounded, label: l10n.navJunk),
     ];
     final pages = [
+      OverviewPage(
+        disk: _disk,
+        junk: junk,
+        service: widget.service,
+        onGoToJunk: () => setState(() => _index = 2),
+        onGoToTidy: () => setState(() => _index = 1),
+      ),
       HomeScreen(key: widget.homeKey, service: widget.service),
       if (junk != null) JunkPage(controller: junk),
     ];
