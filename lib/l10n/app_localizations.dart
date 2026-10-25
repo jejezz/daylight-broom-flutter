@@ -185,13 +185,13 @@ abstract class AppLocalizations {
   /// No description provided for @aboutTagline.
   ///
   /// In ko, this message translates to:
-  /// **'다운로드 폴더를 규칙대로 알아서 정리합니다'**
+  /// **'정크를 치우고, 앱을 깔끔히 지우고, 폴더를 규칙대로 정리합니다'**
   String get aboutTagline;
 
   /// No description provided for @aboutDescription.
   ///
   /// In ko, this message translates to:
-  /// **'Daylight Broom은 다운로드 폴더 같은 곳에 생긴 파일을 확장자, 이름, 크기, 오래된 정도에 따라 자동으로 분류하고 정리합니다. 상주하며 바로 처리하거나, 원할 때 \"지금 정리\"로 직접 실행할 수 있습니다.'**
+  /// **'Daylight Broom은 캐시·임시 파일·개발 도구 찌꺼기를 찾아 용량을 되찾고, 앱을 남은 파일까지 함께 제거하며, 다운로드 폴더 같은 곳의 파일을 확장자·이름·크기·오래된 정도에 따라 자동으로 정리합니다. 트레이에 상주하며 바로 처리하거나, 원할 때 직접 실행할 수 있습니다.'**
   String get aboutDescription;
 
   /// No description provided for @homeEmptyTitle.
@@ -1705,6 +1705,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'Finder에서 보기'**
   String get appsReveal;
+
+  /// No description provided for @historyJunkTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'정크 {count}개 항목 정리'**
+  String historyJunkTitle(int count);
+
+  /// No description provided for @historyJunkWhere.
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제 · {size}'**
+  String historyJunkWhere(String size);
+
+  /// No description provided for @historyJunkIrreversible.
+  ///
+  /// In ko, this message translates to:
+  /// **'정크 정리는 휴지통을 거치지 않고 바로 삭제해서 되돌릴 수 없습니다.'**
+  String get historyJunkIrreversible;
+
+  /// No description provided for @historyUninstallTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name} 제거'**
+  String historyUninstallTitle(String name);
+
+  /// No description provided for @historyUninstallWhere.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 이동 · {count}개 항목 · {size}'**
+  String historyUninstallWhere(int count, String size);
+
+  /// No description provided for @historyUninstallUndoHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 제거는 휴지통으로 옮겼습니다. 되돌리려면 휴지통에서 직접 복원하세요.'**
+  String get historyUninstallUndoHint;
 }
 
 class _AppLocalizationsDelegate

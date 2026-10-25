@@ -1,18 +1,23 @@
 import 'package:flutter/foundation.dart';
 
+import '../engine/history.dart';
+
 import 'app_scanner.dart';
 import 'app_trasher.dart';
 import 'installed_app.dart';
 
 /// 앱 제거 화면의 상태: 앱 목록, 선택한 앱과 남은 파일, 제거 진행.
 class AppsController extends ChangeNotifier {
-  AppsController({required this.scanner, required this.trasher, this.onChanged});
+  AppsController({required this.scanner, required this.trasher, this.onChanged, this.onRecord});
 
   final AppScanner scanner;
   final AppTrasher trasher;
 
   /// 앱을 제거해 디스크 상태가 바뀔 때 부른다.
   final VoidCallback? onChanged;
+
+  /// 제거한 결과를 이력에 남기는 쪽. 옮긴 것이 하나도 없으면 부르지 않는다.
+  final void Function(HistoryEntry entry)? onRecord;
 
   bool loading = false;
   bool loaded = false;
@@ -122,6 +127,21 @@ class AppsController extends ChangeNotifier {
     failedCount = failed.length;
     failedReason = failed.values.isEmpty ? null : failed.values.first;
     lastMoved = moved > 0 ? moved : null;
+    final movedCount = paths.length - failed.length;
+    if (movedCount > 0) {
+      final now = DateTime.now();
+      onRecord?.call(HistoryEntry(
+        id: '${now.microsecondsSinceEpoch}-uninstall',
+        time: now,
+        ruleId: 'uninstall',
+        ruleName: app.name,
+        kind: HistoryKind.uninstall,
+        fileName: app.name,
+        sourcePath: app.path,
+        bytes: moved,
+        count: movedCount,
+      ));
+    }
 
     if (removeBundle && !failed.containsKey(app.path)) {
       apps = [for (final a in apps) if (a.path != app.path) a];

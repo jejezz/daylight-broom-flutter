@@ -132,11 +132,12 @@ class _RailButtonState extends State<_RailButton> {
                 ]),
               ),
               const SizedBox(height: 4),
+              // 글자는 알약 밖에 있으므로, 활성일 때도 흰색이 아니라 본문색이어야 라이트 테마에서 보인다.
               Text(widget.item.label,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: fg)),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: active ? scheme.onSurface : fg)),
             ]),
           ),
         ),

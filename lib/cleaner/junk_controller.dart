@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 
+import '../engine/history.dart';
+
 import 'deleter.dart';
 import 'scan_target.dart';
 import 'scanner.dart';
 
 /// 정크 화면의 상태: 스캔 결과, 선택, 정리 진행. 화면은 이것을 읽고 메서드를 부른다.
 class JunkController extends ChangeNotifier {
-  JunkController({required JunkScanner scanner, PermanentDeleter? deleter, this.onCleaned})
+  JunkController({required JunkScanner scanner, PermanentDeleter? deleter, this.onCleaned, this.onRecord})
       : _scanner = scanner,
         _deleter = deleter ?? PermanentDeleter(allowedRoots: scanner.roots);
 
@@ -15,6 +17,9 @@ class JunkController extends ChangeNotifier {
 
   /// 정리가 끝날 때마다 부른다 (개요의 디스크 용량을 다시 읽는 데 쓴다).
   final VoidCallback? onCleaned;
+
+  /// 정리한 결과를 이력에 남기는 쪽. 지운 것이 하나도 없으면 부르지 않는다.
+  final void Function(HistoryEntry entry)? onRecord;
 
   bool scanning = false;
   bool scanned = false;
@@ -117,6 +122,22 @@ class JunkController extends ChangeNotifier {
     failedReason = failed.values.isEmpty ? null : failed.values.first;
     cleaning = false;
     lastFreed = cleanFreedBytes;
+    final removed = chosen.where((i) => !failed.containsKey(i.path)).toList();
+    if (removed.isNotEmpty) {
+      final now = DateTime.now();
+      // 항목마다 하나씩 남기면 캐시 폴더 하나에 수백 줄이 생겨 규칙 정리 기록을 밀어낸다. 한 번 정리에 한 줄.
+      onRecord?.call(HistoryEntry(
+        id: '${now.microsecondsSinceEpoch}-junk',
+        time: now,
+        ruleId: 'junk',
+        ruleName: 'junk',
+        kind: HistoryKind.junk,
+        fileName: removed.first.name,
+        sourcePath: removed.first.path,
+        bytes: cleanFreedBytes,
+        count: removed.length,
+      ));
+    }
     notifyListeners();
     onCleaned?.call();
     return cleanFreedBytes;

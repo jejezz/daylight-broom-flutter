@@ -9,7 +9,7 @@
 <h1 align="center">Daylight Broom</h1>
 
 <p align="center">
-  A free, open-source <b>Hazel alternative for macOS and Windows</b> — a tray app that sorts your Downloads folder by rules, automatically or on demand.
+  A free, open-source <b>disk cleaner and file organizer for macOS and Windows</b> — a tray app that clears caches and developer junk, uninstalls apps together with their leftovers, and sorts your Downloads folder by rules.
 </p>
 
 <p align="center">
@@ -25,22 +25,21 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/demo.gif" width="720" alt="Daylight Broom demo: four files dropped into Downloads are sorted into Documents, Images, Installers and Archives and show up in Recent activity">
+  <img src="docs/screenshots/overview.png" width="720" alt="Overview: disk usage ring that previews how much the selected junk would free, shown in light and dark">
 </p>
 
 ## Features
 
-- **Rules by extension, name, size and age** — conditions are ANDed (e.g. `dmg, pkg` older than 30 days); the action is *move to a folder* or *move to Trash*. Rules higher in the list win, and a rule with no condition never matches anything.
-- **Sorts Downloads as files arrive** — watches the folder in the background and waits until a file's size and modified time have been stable for 5 seconds, so `.crdownload`, `.download`, `.part` and other in-progress files are never touched.
-- **Preview first, undo later** — *Tidy now* shows exactly what would move where before anything happens. Every move is logged under Recent activity with an **Undo** that puts the file back with its original name.
-- **Never overwrites, never deletes** — a name clash becomes `report (1).pdf`; "delete" means the Trash (Finder's *Put Back* works on macOS).
-- **Suggested rules** — start with ready-made Documents, Images, Installers and Archives rules (with a live count of the files each would catch), then edit them in the rule editor.
-- **Lives in the tray / menu bar** — closing the window keeps it running; optional launch at login starts it hidden.
-- **Light & dark, English & 한국어** — follows the system, or pick one in the toolbar
+- **Junk cleanup with safety ratings** — finds caches, logs, temp files and developer leftovers (Xcode DerivedData, Gradle, npm/Yarn/pnpm, pip, pub, Homebrew, NuGet, browser caches…), each rated *Safe*, *Rebuilds* or *Review*. Only the ones that regenerate on their own are pre-selected, and every cleanup asks first.
+- **Disk overview** — a usage ring that matches what Finder shows on macOS (purgeable space counts as free), with a live preview of how much the current selection would free.
+- **Uninstall apps with their leftovers (macOS)** — finds what an app left in `~/Library` by bundle id and moves it all to the Trash. Items matched only by a similar name are left unchecked, because they may belong to another app.
+- **Rules by extension, name, size and age** — conditions are ANDed (e.g. `dmg, pkg` older than 30 days); the action is *move to a folder* or *move to Trash*. Rules higher in the list win, and in-progress downloads (`.crdownload`, `.download`, `.part`) are never touched.
+- **Know what can be undone** — *Tidy now* previews every move first, and each one gets an **Undo**. App removal goes to the Trash. Junk cleanup is the one permanent delete, so it always asks and says so.
+- **Lives in the tray / menu bar** — closing the window keeps it running; optional launch at login starts it hidden. Light & dark, English & 한국어.
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="360" alt="Rules and recent activity, light and dark">
-  <img src="docs/screenshots/detail.png" width="360" alt="Rule editor">
+  <img src="docs/screenshots/junk.png" width="360" alt="Junk cleanup: grouped by system and developer with safety badges">
+  <img src="docs/screenshots/rules.png" width="360" alt="Auto tidy: rules and recent activity">
 </p>
 
 ## Install
@@ -52,13 +51,15 @@ Download from [**Releases**](https://github.com/jejezz/daylight-broom-flutter/re
 | macOS 12.0+ | `DaylightBroom-<version>-macos-universal.dmg` — open it and drag Daylight Broom to Applications |
 | Windows 10/11 (x64) | `DaylightBroom-<version>-windows-x64-setup.exe` |
 
-**macOS:** the first time Daylight Broom looks at your Downloads folder, macOS asks whether to allow it — choose **Allow** (rules can't run without it).
+**macOS:** the first time Daylight Broom looks at your Downloads folder, macOS asks whether to allow it — choose **Allow** (rules can't run without it). To see every cache (Safari, Mail…), turn on **Full Disk Access**; the Overview page offers a step-by-step guide.
 
-**Windows:** the installer isn't code-signed yet, so SmartScreen says "Windows protected your PC" — choose **More info → Run anyway**.
+**Windows:** the installer isn't code-signed yet, so SmartScreen says "Windows protected your PC" — choose **More info → Run anyway**. Junk cleanup and rules work on Windows; uninstalling apps is macOS-only for now.
+
+**Coming from Stevedore or MacBroom?** This app is both of them in one. On first launch it copies Stevedore's rules, history, settings and launch-at-login entry; your old data is left in place.
 
 ## How it works
 
-Dart does the work: `Directory.watch()` (FSEvents on macOS, `ReadDirectoryChangesW` on Windows) wakes it only when a watched folder changes. The engine is split into a side-effect-free `plan` and an `apply` that re-checks each file before touching it, so the same code drives the preview, the live watcher and the tests. A small Swift bridge calls `FileManager.trashItem`, which is what makes Undo from the Trash possible on macOS; on Windows the Recycle Bin is reached through PowerShell, so Trash moves can't be undone from inside the app yet.
+Dart does the work. Junk is measured with `du -sk` on macOS (50k+ files in `~/Library/Caches` is routine) and in a background isolate on Windows. Cleanup goes through a deleter that refuses anything outside the scanned folders — never your home folder or a drive root — and empties the Trash instead of removing it. The rules engine is split into a side-effect-free `plan` and an `apply` that re-checks each file before touching it, so the same code drives the preview, the live watcher (`Directory.watch()`: FSEvents on macOS, `ReadDirectoryChangesW` on Windows) and the tests. A small Swift bridge calls `FileManager.trashItem` (so Finder's *Put Back* works), reads the volume capacity the way Finder does and checks Full Disk Access; on Windows the Recycle Bin and disk size are reached through PowerShell.
 
 ## Development
 
@@ -68,6 +69,10 @@ flutter run -d macos
 ```
 
 No extra tools are needed. The macOS app is deliberately **not sandboxed** — it has to read Downloads and move files into arbitrary folders — so it ships as a notarized DMG rather than through the App Store. Settings live in `~/Library/Application Support/DaylightBroom` (`%APPDATA%\DaylightBroom` on Windows): `rules.json` and `history.json`.
+
+Adding a junk category: add a `ScanTarget` (paths per OS, safety rating) to `lib/cleaner/scan_target.dart`, then its title and description to `lib/cleaner/target_labels.dart` and both `.arb` files. It then shows up in the scan, the list and the cleanup.
+
+README screenshots are rendered by a widget test with sample data, so no personal paths end up in them: `flutter test tool/screenshots/capture_test.dart`, then `tool/readme/frame.py`.
 
 Releasing: `scripts/bump-version.sh patch`, merge, then tag `vX.Y.Z` — CI builds and publishes every platform. Rules: [application-release-templates/conventions](https://github.com/jejezz/application-release-templates/tree/main/conventions).
 

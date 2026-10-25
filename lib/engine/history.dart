@@ -3,7 +3,8 @@ import 'dart:io';
 import '../rules/rule_store.dart';
 import '../storage/json_file.dart';
 
-enum HistoryKind { move, trash }
+/// [move]·[trash]는 규칙 정리, [junk]는 정크 정리(영구 삭제), [uninstall]은 앱 제거(휴지통).
+enum HistoryKind { move, trash, junk, uninstall }
 
 /// 정리한 파일 하나의 기록. 되돌리기에 필요한 경로를 함께 남긴다.
 class HistoryEntry {
@@ -18,6 +19,8 @@ class HistoryEntry {
     this.resultPath,
     this.error,
     this.restoredPath,
+    this.bytes,
+    this.count,
   });
 
   final String id;
@@ -35,6 +38,10 @@ class HistoryEntry {
   /// 되돌렸다면 되돌려진 위치.
   final String? restoredPath;
 
+  /// 정크 정리·앱 제거가 다룬 용량과 항목 수 (규칙 정리 기록에는 없다).
+  final int? bytes;
+  final int? count;
+
   bool get succeeded => error == null;
   bool get undone => restoredPath != null;
   bool get canUndo => succeeded && !undone && resultPath != null;
@@ -50,6 +57,8 @@ class HistoryEntry {
         resultPath: resultPath,
         error: error,
         restoredPath: path,
+        bytes: bytes,
+        count: count,
       );
 
   Map<String, Object?> toJson() => {
@@ -63,6 +72,8 @@ class HistoryEntry {
         if (resultPath != null) 'resultPath': resultPath,
         if (error != null) 'error': error,
         if (restoredPath != null) 'restoredPath': restoredPath,
+        if (bytes != null) 'bytes': bytes,
+        if (count != null) 'count': count,
       };
 
   factory HistoryEntry.fromJson(Map<String, Object?> json) => HistoryEntry(
@@ -76,6 +87,8 @@ class HistoryEntry {
         resultPath: json['resultPath'] as String?,
         error: json['error'] as String?,
         restoredPath: json['restoredPath'] as String?,
+        bytes: json['bytes'] as int?,
+        count: json['count'] as int?,
       );
 }
 
