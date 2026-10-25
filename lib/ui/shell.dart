@@ -6,11 +6,15 @@ import '../cleaner/junk_controller.dart';
 import '../cleaner/scan_target.dart';
 import '../cleaner/scanner.dart';
 import '../engine/tidy_service.dart';
+import '../uninstaller/app_scanner.dart';
+import '../uninstaller/app_trasher.dart';
+import '../uninstaller/apps_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/settings_menus.dart';
 import '../system/login_item.dart';
 import '../theme/app_theme.dart';
 import '../window/focus_tint.dart';
+import 'apps_page.dart';
 import 'broom/glass.dart';
 import 'broom/nav_rail.dart';
 import 'cleanup_options_button.dart';
@@ -22,7 +26,7 @@ import 'overview_page.dart';
 /// 앱의 뼈대: 왼쪽 NavRail + 오른쪽 페이지. 페이지는 목록(`_pages`)에서 고르므로
 /// 정크·앱 제거 같은 새 기능은 항목 하나를 더하면 레일에 나타난다.
 class BroomShell extends StatefulWidget {
-  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk});
+  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk, this.apps});
 
   final VoidCallback onAbout;
   final TidyService service;
@@ -37,17 +41,32 @@ class BroomShell extends StatefulWidget {
   /// 디스크 상태. null 이면 만들어 쓴다.
   final DiskController? disk;
 
+  /// 앱 제거 상태. null 이면 이 OS 용으로 만든다 (지금은 macOS 만 지원).
+  final AppsController? apps;
+
   @override
   State<BroomShell> createState() => _BroomShellState();
 }
 
 class _BroomShellState extends State<BroomShell> {
   int _index = 0;
+
+  /// 앱 제거 화면은 처음 열 때에야 앱 목록을 읽는다 (시작할 때마다 /Applications 를 훑지 않도록).
+  bool _appsVisited = false;
   late final DiskController _disk = widget.disk ?? DiskController(DiskInfo());
   late final bool _ownsDisk = widget.disk == null;
   late final JunkController? _junk = widget.junk ??
       (CleanerPlatform.current == null ? null : JunkController(scanner: JunkScanner(), onCleaned: _disk.refresh));
   late final bool _ownsJunk = widget.junk == null;
+  late final AppsController? _apps = widget.apps ??
+      (CleanerPlatform.current == CleanerPlatform.macos
+          ? AppsController(
+              scanner: AppScanner(ownBundleId: AppIdentity.bundleId),
+              trasher: SystemAppTrasher(),
+              onChanged: _disk.refresh,
+            )
+          : null);
+  late final bool _ownsApps = widget.apps == null;
 
   @override
   void initState() {
@@ -58,6 +77,7 @@ class _BroomShellState extends State<BroomShell> {
   @override
   void dispose() {
     if (_ownsJunk) _junk?.dispose();
+    if (_ownsApps) _apps?.dispose();
     if (_ownsDisk) _disk.dispose();
     super.dispose();
   }
@@ -66,10 +86,13 @@ class _BroomShellState extends State<BroomShell> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final junk = _junk;
+    final apps = _apps;
+    if (apps != null && _index == (junk != null ? 3 : 2)) _appsVisited = true;
     final items = [
       NavItem(icon: Icons.donut_large_rounded, label: l10n.navOverview),
       NavItem(icon: Icons.auto_awesome_rounded, label: l10n.navTidy),
       if (junk != null) NavItem(icon: Icons.cleaning_services_rounded, label: l10n.navJunk),
+      if (apps != null) NavItem(icon: Icons.apps_rounded, label: l10n.navApps),
     ];
     final pages = [
       OverviewPage(
@@ -81,6 +104,7 @@ class _BroomShellState extends State<BroomShell> {
       ),
       HomeScreen(key: widget.homeKey, service: widget.service),
       if (junk != null) JunkPage(controller: junk),
+      if (apps != null) (_appsVisited ? AppsPage(controller: apps, disk: _disk.info) : const SizedBox.shrink()),
     ];
     // 레일이 창 높이 전체를 쓰고, 앱 바는 오른쪽 내용 위에만 둔다.
     return Material(
