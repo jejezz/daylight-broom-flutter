@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "Jongyun Ahn" "\0"
-            VALUE "FileDescription", "Stevedore" "\0"
+            VALUE "FileDescription", "Daylight Broom" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "stevedore" "\0"
+            VALUE "InternalName", "daylight_broom" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 Jongyun Ahn" "\0"
-            VALUE "OriginalFilename", "stevedore.exe" "\0"
-            VALUE "ProductName", "Stevedore" "\0"
+            VALUE "OriginalFilename", "daylight_broom.exe" "\0"
+            VALUE "ProductName", "Daylight Broom" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

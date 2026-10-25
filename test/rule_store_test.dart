@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/rules/rule.dart';
-import 'package:stevedore/rules/rule_store.dart';
+import 'package:daylight_broom/rules/rule.dart';
+import 'package:daylight_broom/rules/rule_store.dart';
 
 void main() {
   late Directory dir;
   late RuleStore store;
 
   setUp(() {
-    dir = Directory.systemTemp.createTempSync('stevedore_rules_');
-    store = RuleStore(Directory('${dir.path}/Stevedore'));
+    dir = Directory.systemTemp.createTempSync('daylight_broom_rules_');
+    store = RuleStore(Directory('${dir.path}/DaylightBroom'));
   });
   tearDown(() => dir.deleteSync(recursive: true));
 

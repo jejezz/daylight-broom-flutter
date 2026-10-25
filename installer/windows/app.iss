@@ -15,10 +15,10 @@
 ;   2. MyAppURL — this app's GitHub repository (conventions/identity.md §1).
 
 #ifndef MyAppName
-  #define MyAppName "Stevedore"
+  #define MyAppName "Daylight Broom"
 #endif
 #ifndef MyFileName
-  #define MyFileName "Stevedore"
+  #define MyFileName "DaylightBroom"
 #endif
 #ifndef MyAppVersion
   #define MyAppVersion "0.0.0"
@@ -27,16 +27,16 @@
   #define MyAppNumericVersion "0.0.0"
 #endif
 #ifndef MyAppExeName
-  #define MyAppExeName "stevedore.exe"
+  #define MyAppExeName "daylight_broom.exe"
 #endif
 #define MyAppPublisher "Jongyun Ahn"
-#define MyAppURL "https://github.com/jejezz/stevedore-flutter"
+#define MyAppURL "https://github.com/jejezz/daylight-broom-flutter"
 ; The app's first release year — edit it for apps started after 2026.
 #define MyFirstReleaseYear "2026"
 #define SourceDir "..\..\build\windows\x64\runner\Release"
 
 [Setup]
-AppId={{C38F669B-7EBE-4225-961E-27618D246A71}
+AppId={{B1018332-D83F-42F7-A39B-7CEA8F0F9F8A}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}

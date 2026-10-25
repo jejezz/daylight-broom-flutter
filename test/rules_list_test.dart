@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/l10n/app_localizations.dart';
-import 'package:stevedore/rules/rule.dart';
-import 'package:stevedore/ui/rules_list.dart';
+import 'package:daylight_broom/l10n/app_localizations.dart';
+import 'package:daylight_broom/rules/rule.dart';
+import 'package:daylight_broom/ui/rules_list.dart';
 
 void main() {
   Rule rule(String id, String folder, {bool enabled = true}) => Rule(

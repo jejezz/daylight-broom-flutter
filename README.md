@@ -3,21 +3,21 @@
      Fill every {{TODO: …}}; tool/readme/check_readme.py fails while any is left. -->
 
 <p align="center">
-  <img src="assets/icon/app_icon.png" width="128" alt="Stevedore icon">
+  <img src="assets/icon/app_icon.png" width="128" alt="Daylight Broom icon">
 </p>
 
-<h1 align="center">Stevedore</h1>
+<h1 align="center">Daylight Broom</h1>
 
 <p align="center">
   A free, open-source <b>Hazel alternative for macOS and Windows</b> — a tray app that sorts your Downloads folder by rules, automatically or on demand.
 </p>
 
 <p align="center">
-  <a href="https://github.com/jejezz/stevedore-flutter/releases/latest"><img src="https://img.shields.io/github/v/release/jejezz/stevedore-flutter?style=flat-square&color=4c9dff" alt="Latest release"></a>
-  <a href="https://github.com/jejezz/stevedore-flutter/releases"><img src="https://img.shields.io/github/downloads/jejezz/stevedore-flutter/total?style=flat-square&color=7c5cff" alt="Downloads"></a>
+  <a href="https://github.com/jejezz/daylight-broom-flutter/releases/latest"><img src="https://img.shields.io/github/v/release/jejezz/daylight-broom-flutter?style=flat-square&color=4c9dff" alt="Latest release"></a>
+  <a href="https://github.com/jejezz/daylight-broom-flutter/releases"><img src="https://img.shields.io/github/downloads/jejezz/daylight-broom-flutter/total?style=flat-square&color=7c5cff" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows-34d399?style=flat-square" alt="macOS · Windows">
   <img src="https://img.shields.io/badge/built%20with-Flutter-02569b?style=flat-square" alt="Flutter">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/jejezz/stevedore-flutter?style=flat-square" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/jejezz/daylight-broom-flutter?style=flat-square" alt="MIT license"></a>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/demo.gif" width="720" alt="Stevedore demo: four files dropped into Downloads are sorted into Documents, Images, Installers and Archives and show up in Recent activity">
+  <img src="docs/screenshots/demo.gif" width="720" alt="Daylight Broom demo: four files dropped into Downloads are sorted into Documents, Images, Installers and Archives and show up in Recent activity">
 </p>
 
 ## Features
@@ -45,14 +45,14 @@
 
 ## Install
 
-Download from [**Releases**](https://github.com/jejezz/stevedore-flutter/releases/latest):
+Download from [**Releases**](https://github.com/jejezz/daylight-broom-flutter/releases/latest):
 
 | OS | File |
 |---|---|
-| macOS 12.0+ | `Stevedore-<version>-macos-universal.dmg` — open it and drag Stevedore to Applications |
-| Windows 10/11 (x64) | `Stevedore-<version>-windows-x64-setup.exe` |
+| macOS 12.0+ | `DaylightBroom-<version>-macos-universal.dmg` — open it and drag Daylight Broom to Applications |
+| Windows 10/11 (x64) | `DaylightBroom-<version>-windows-x64-setup.exe` |
 
-**macOS:** the first time Stevedore looks at your Downloads folder, macOS asks whether to allow it — choose **Allow** (rules can't run without it).
+**macOS:** the first time Daylight Broom looks at your Downloads folder, macOS asks whether to allow it — choose **Allow** (rules can't run without it).
 
 **Windows:** the installer isn't code-signed yet, so SmartScreen says "Windows protected your PC" — choose **More info → Run anyway**.
 
@@ -67,7 +67,7 @@ flutter pub get
 flutter run -d macos
 ```
 
-No extra tools are needed. The macOS app is deliberately **not sandboxed** — it has to read Downloads and move files into arbitrary folders — so it ships as a notarized DMG rather than through the App Store. Settings live in `~/Library/Application Support/Stevedore` (`%APPDATA%\Stevedore` on Windows): `rules.json` and `history.json`.
+No extra tools are needed. The macOS app is deliberately **not sandboxed** — it has to read Downloads and move files into arbitrary folders — so it ships as a notarized DMG rather than through the App Store. Settings live in `~/Library/Application Support/DaylightBroom` (`%APPDATA%\DaylightBroom` on Windows): `rules.json` and `history.json`.
 
 Releasing: `scripts/bump-version.sh patch`, merge, then tag `vX.Y.Z` — CI builds and publishes every platform. Rules: [application-release-templates/conventions](https://github.com/jejezz/application-release-templates/tree/main/conventions).
 

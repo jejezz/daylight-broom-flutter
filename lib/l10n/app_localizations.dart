@@ -185,7 +185,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutDescription.
   ///
   /// In ko, this message translates to:
-  /// **'Stevedore는 다운로드 폴더 같은 곳에 생긴 파일을 확장자, 이름, 크기, 오래된 정도에 따라 자동으로 분류하고 정리합니다. 상주하며 바로 처리하거나, 원할 때 \"지금 정리\"로 직접 실행할 수 있습니다.'**
+  /// **'Daylight Broom은 다운로드 폴더 같은 곳에 생긴 파일을 확장자, 이름, 크기, 오래된 정도에 따라 자동으로 분류하고 정리합니다. 상주하며 바로 처리하거나, 원할 때 \"지금 정리\"로 직접 실행할 수 있습니다.'**
   String get aboutDescription;
 
   /// No description provided for @homeEmptyTitle.
@@ -203,7 +203,7 @@ abstract class AppLocalizations {
   /// No description provided for @trayOpen.
   ///
   /// In ko, this message translates to:
-  /// **'Stevedore 열기'**
+  /// **'Daylight Broom 열기'**
   String get trayOpen;
 
   /// No description provided for @trayTidyNow.
@@ -365,7 +365,7 @@ abstract class AppLocalizations {
   /// No description provided for @watchErrorHint.
   ///
   /// In ko, this message translates to:
-  /// **'폴더가 있는지, 시스템 설정의 개인정보 보호 및 보안에서 Stevedore의 파일 및 폴더 접근이 허용돼 있는지 확인하세요.'**
+  /// **'폴더가 있는지, 시스템 설정의 개인정보 보호 및 보안에서 Daylight Broom의 파일 및 폴더 접근이 허용돼 있는지 확인하세요.'**
   String get watchErrorHint;
 
   /// No description provided for @rulesTitle.

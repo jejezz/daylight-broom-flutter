@@ -6,9 +6,9 @@
 
 abstract final class AppIdentity {
   /// 표시 이름. 번역하지 않는다 (conventions/localization.md §2).
-  static const displayName = 'Stevedore';
+  static const displayName = 'Daylight Broom';
 
-  static const repositoryUrl = 'https://github.com/jejezz/stevedore-flutter';
+  static const repositoryUrl = 'https://github.com/jejezz/daylight-broom-flutter';
 
   static const copyrightHolder = 'Jongyun Ahn';
 

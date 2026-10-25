@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/rules/presets.dart';
-import 'package:stevedore/rules/rule.dart';
-import 'package:stevedore/system/login_item.dart';
+import 'package:daylight_broom/rules/presets.dart';
+import 'package:daylight_broom/rules/rule.dart';
+import 'package:daylight_broom/system/login_item.dart';
 
 void main() {
   group('MacLoginItem', () {
     late Directory home;
-    setUp(() => home = Directory.systemTemp.createTempSync('stevedore_login_'));
+    setUp(() => home = Directory.systemTemp.createTempSync('daylight_broom_login_'));
     tearDown(() => home.deleteSync(recursive: true));
 
-    MacLoginItem item([String app = '/Applications/Stevedore.app']) =>
+    MacLoginItem item([String app = '/Applications/Daylight Broom.app']) =>
         MacLoginItem(home: home.path, appBundlePath: app);
 
     test('켜면 LaunchAgent를 만들고 --background로 실행하게 하며, 끄면 지운다', () async {
@@ -19,8 +19,8 @@ void main() {
       expect(await login.isEnabled(), isFalse);
       await login.setEnabled(true);
       expect(await login.isEnabled(), isTrue);
-      final plist = File('${home.path}/Library/LaunchAgents/art.zoomon.stevedore.plist').readAsStringSync();
-      expect(plist, contains('<string>/Applications/Stevedore.app</string>'));
+      final plist = File('${home.path}/Library/LaunchAgents/art.zoomon.daylightbroom.plist').readAsStringSync();
+      expect(plist, contains('<string>/Applications/Daylight Broom.app</string>'));
       expect(plist, contains('<string>--background</string>'));
       expect(plist, contains('<key>RunAtLoad</key>'));
       await login.setEnabled(false);
@@ -29,12 +29,12 @@ void main() {
     });
 
     test('앱을 옮겼으면 켜져 있을 때만 새 경로로 고친다', () async {
-      await item('/old/Stevedore.app').refresh();
+      await item('/old/Daylight Broom.app').refresh();
       expect(await item().isEnabled(), isFalse); // 꺼져 있으면 만들지 않는다
-      await item('/old/Stevedore.app').setEnabled(true);
-      await item('/new/Stevedore.app').refresh();
-      final plist = File('${home.path}/Library/LaunchAgents/art.zoomon.stevedore.plist').readAsStringSync();
-      expect(plist, contains('/new/Stevedore.app'));
+      await item('/old/Daylight Broom.app').setEnabled(true);
+      await item('/new/Daylight Broom.app').refresh();
+      final plist = File('${home.path}/Library/LaunchAgents/art.zoomon.daylightbroom.plist').readAsStringSync();
+      expect(plist, contains('/new/Daylight Broom.app'));
       expect(plist, isNot(contains('/old/')));
     });
 
@@ -58,16 +58,16 @@ void main() {
             registered = false;
             return ProcessResult(0, ok ? 0 : 1, '', '');
           default:
-            return ProcessResult(0, registered ? 0 : 1, registered ? r'"C:\App\stevedore.exe" --background' : '', '');
+            return ProcessResult(0, registered ? 0 : 1, registered ? r'"C:\App\daylight_broom.exe" --background' : '', '');
         }
       }
 
-      final login = WindowsLoginItem(run: run, executable: r'C:\App\stevedore.exe');
+      final login = WindowsLoginItem(run: run, executable: r'C:\App\daylight_broom.exe');
       expect(await login.isEnabled(), isFalse);
       await login.setEnabled(true);
       expect(calls.firstWhere((c) => c[1] == 'add'), [
-        'reg', 'add', r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run', '/v', 'Stevedore',
-        '/t', 'REG_SZ', '/d', r'"C:\App\stevedore.exe" --background', '/f',
+        'reg', 'add', r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run', '/v', 'DaylightBroom',
+        '/t', 'REG_SZ', '/d', r'"C:\App\daylight_broom.exe" --background', '/f',
       ]);
       expect(await login.isEnabled(), isTrue);
       await login.setEnabled(false);
@@ -79,10 +79,10 @@ void main() {
       final calls = <String>[];
       Future<ProcessResult> run(String exe, List<String> args) async {
         calls.add(args.first);
-        return ProcessResult(0, 0, r'"C:\Old\stevedore.exe" --background', '');
+        return ProcessResult(0, 0, r'"C:\Old\daylight_broom.exe" --background', '');
       }
 
-      await WindowsLoginItem(run: run, executable: r'C:\New\stevedore.exe').refresh();
+      await WindowsLoginItem(run: run, executable: r'C:\New\daylight_broom.exe').refresh();
       expect(calls, contains('add'));
     });
   });
