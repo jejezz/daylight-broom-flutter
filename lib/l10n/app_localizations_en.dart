@@ -868,4 +868,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fdaClose => 'Close';
+
+  @override
+  String get navApps => 'Uninstall';
+
+  @override
+  String get appsTitle => 'Apps';
+
+  @override
+  String get appsSearchHint => 'Search apps';
+
+  @override
+  String get appsRefresh => 'Reload';
+
+  @override
+  String get appsEmpty => 'No installed apps found.';
+
+  @override
+  String get appsSelectHint => 'Select an app to see its leftover files';
+
+  @override
+  String get appsNoBundleId => 'no bundle id';
+
+  @override
+  String appsVersion(String version) {
+    return 'v$version';
+  }
+
+  @override
+  String get appsFinding => 'Looking for leftover files…';
+
+  @override
+  String appsLeftoversTitle(int count) {
+    return 'Leftovers in ~/Library · $count';
+  }
+
+  @override
+  String get appsLeftoversNone => 'Nothing found.';
+
+  @override
+  String get appsLeftoversNameHint =>
+      'Items found only by a similar name may belong to another app, so they are not selected by default. Check them yourself.';
+
+  @override
+  String get appsMatchName => 'NAME MATCH';
+
+  @override
+  String appsToRemove(String size) {
+    return '$size to remove';
+  }
+
+  @override
+  String get appsUninstall => 'Uninstall';
+
+  @override
+  String get appsUninstalling => 'Removing…';
+
+  @override
+  String appsConfirmTitle(String name) {
+    return 'Uninstall $name?';
+  }
+
+  @override
+  String appsConfirmBody(int count, String size) {
+    return 'Moves $count items ($size) to the Trash. You can restore them from the Trash.';
+  }
+
+  @override
+  String get appsConfirmAction => 'Move to Trash';
+
+  @override
+  String appsMoved(String size) {
+    return 'Moved $size to the Trash';
+  }
+
+  @override
+  String appsFailed(int count, String reason) {
+    return 'Could not move $count items: $reason';
+  }
+
+  @override
+  String get appsReveal => 'Show in Finder';
 }

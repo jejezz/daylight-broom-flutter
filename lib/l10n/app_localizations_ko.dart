@@ -852,4 +852,85 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get fdaClose => '닫기';
+
+  @override
+  String get navApps => '앱 제거';
+
+  @override
+  String get appsTitle => '앱';
+
+  @override
+  String get appsSearchHint => '앱 검색';
+
+  @override
+  String get appsRefresh => '다시 읽기';
+
+  @override
+  String get appsEmpty => '설치된 앱을 찾지 못했습니다.';
+
+  @override
+  String get appsSelectHint => '앱을 고르면 남은 파일을 보여 줍니다';
+
+  @override
+  String get appsNoBundleId => '번들 id 없음';
+
+  @override
+  String appsVersion(String version) {
+    return 'v$version';
+  }
+
+  @override
+  String get appsFinding => '남은 파일을 찾는 중…';
+
+  @override
+  String appsLeftoversTitle(int count) {
+    return '~/Library의 남은 파일 · $count';
+  }
+
+  @override
+  String get appsLeftoversNone => '남은 파일이 없습니다.';
+
+  @override
+  String get appsLeftoversNameHint =>
+      '이름이 비슷해서 찾은 항목은 다른 앱의 파일일 수 있어 기본으로 선택하지 않았습니다. 직접 확인하세요.';
+
+  @override
+  String get appsMatchName => '이름 일치';
+
+  @override
+  String appsToRemove(String size) {
+    return '$size 제거 예정';
+  }
+
+  @override
+  String get appsUninstall => '제거';
+
+  @override
+  String get appsUninstalling => '제거하는 중…';
+
+  @override
+  String appsConfirmTitle(String name) {
+    return '$name을(를) 제거할까요?';
+  }
+
+  @override
+  String appsConfirmBody(int count, String size) {
+    return '$count개 항목($size)을 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String get appsConfirmAction => '휴지통으로 옮기기';
+
+  @override
+  String appsMoved(String size) {
+    return '$size를 휴지통으로 옮겼습니다';
+  }
+
+  @override
+  String appsFailed(int count, String reason) {
+    return '$count개 항목을 옮기지 못했습니다: $reason';
+  }
+
+  @override
+  String get appsReveal => 'Finder에서 보기';
 }

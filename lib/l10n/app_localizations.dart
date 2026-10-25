@@ -1573,6 +1573,138 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'닫기'**
   String get fdaClose;
+
+  /// No description provided for @navApps.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 제거'**
+  String get navApps;
+
+  /// No description provided for @appsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱'**
+  String get appsTitle;
+
+  /// No description provided for @appsSearchHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 검색'**
+  String get appsSearchHint;
+
+  /// No description provided for @appsRefresh.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 읽기'**
+  String get appsRefresh;
+
+  /// No description provided for @appsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'설치된 앱을 찾지 못했습니다.'**
+  String get appsEmpty;
+
+  /// No description provided for @appsSelectHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱을 고르면 남은 파일을 보여 줍니다'**
+  String get appsSelectHint;
+
+  /// No description provided for @appsNoBundleId.
+  ///
+  /// In ko, this message translates to:
+  /// **'번들 id 없음'**
+  String get appsNoBundleId;
+
+  /// No description provided for @appsVersion.
+  ///
+  /// In ko, this message translates to:
+  /// **'v{version}'**
+  String appsVersion(String version);
+
+  /// No description provided for @appsFinding.
+  ///
+  /// In ko, this message translates to:
+  /// **'남은 파일을 찾는 중…'**
+  String get appsFinding;
+
+  /// No description provided for @appsLeftoversTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'~/Library의 남은 파일 · {count}'**
+  String appsLeftoversTitle(int count);
+
+  /// No description provided for @appsLeftoversNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'남은 파일이 없습니다.'**
+  String get appsLeftoversNone;
+
+  /// No description provided for @appsLeftoversNameHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름이 비슷해서 찾은 항목은 다른 앱의 파일일 수 있어 기본으로 선택하지 않았습니다. 직접 확인하세요.'**
+  String get appsLeftoversNameHint;
+
+  /// No description provided for @appsMatchName.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름 일치'**
+  String get appsMatchName;
+
+  /// No description provided for @appsToRemove.
+  ///
+  /// In ko, this message translates to:
+  /// **'{size} 제거 예정'**
+  String appsToRemove(String size);
+
+  /// No description provided for @appsUninstall.
+  ///
+  /// In ko, this message translates to:
+  /// **'제거'**
+  String get appsUninstall;
+
+  /// No description provided for @appsUninstalling.
+  ///
+  /// In ko, this message translates to:
+  /// **'제거하는 중…'**
+  String get appsUninstalling;
+
+  /// No description provided for @appsConfirmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}을(를) 제거할까요?'**
+  String appsConfirmTitle(String name);
+
+  /// No description provided for @appsConfirmBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 항목({size})을 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.'**
+  String appsConfirmBody(int count, String size);
+
+  /// No description provided for @appsConfirmAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 옮기기'**
+  String get appsConfirmAction;
+
+  /// No description provided for @appsMoved.
+  ///
+  /// In ko, this message translates to:
+  /// **'{size}를 휴지통으로 옮겼습니다'**
+  String appsMoved(String size);
+
+  /// No description provided for @appsFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 항목을 옮기지 못했습니다: {reason}'**
+  String appsFailed(int count, String reason);
+
+  /// No description provided for @appsReveal.
+  ///
+  /// In ko, this message translates to:
+  /// **'Finder에서 보기'**
+  String get appsReveal;
 }
 
 class _AppLocalizationsDelegate

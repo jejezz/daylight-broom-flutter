@@ -8,6 +8,9 @@ abstract final class AppIdentity {
   /// 표시 이름. 번역하지 않는다 (conventions/localization.md §2).
   static const displayName = 'Daylight Broom';
 
+  /// macOS/iOS 번들 식별자 (`macos/Runner/Configs/AppInfo.xcconfig`의 PRODUCT_BUNDLE_IDENTIFIER). 앱 제거 목록에서 자기 자신을 빼는 데 쓴다.
+  static const bundleId = 'art.zoomon.daylightbroom';
+
   static const repositoryUrl = 'https://github.com/jejezz/daylight-broom-flutter';
 
   static const copyrightHolder = 'Jongyun Ahn';
