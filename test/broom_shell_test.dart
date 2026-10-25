@@ -64,8 +64,10 @@ void main() {
       await tester.pumpWidget(host(mode: mode, onAbout: () => about++));
       await tester.pump();
 
-      expect(find.text('자동 정리'), findsOneWidget); // 레일 항목
-      expect(find.byType(GradientButton), findsOneWidget); // 지금 정리
+      expect(find.text('개요'), findsOneWidget); // 첫 페이지
+      await tester.tap(find.text('자동 정리').first); // 레일 항목
+      await tester.pump();
+      expect(find.byType(GradientButton).hitTestable(), findsOneWidget); // 지금 정리
       expect(tester.takeException(), isNull);
 
       await tester.tap(find.text('정보'));

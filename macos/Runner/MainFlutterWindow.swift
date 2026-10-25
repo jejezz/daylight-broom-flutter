@@ -32,6 +32,41 @@ class MainFlutterWindow: NSWindow {
       }
     }
 
+    // 디스크 용량과 전체 디스크 접근 권한: Dart만으로는 알 수 없는 것들 (lib/cleaner/disk_info.dart).
+    let systemChannel = FlutterMethodChannel(
+      name: "art.zoomon.daylightbroom/system",
+      binaryMessenger: flutterViewController.engine.binaryMessenger)
+    systemChannel.setMethodCallHandler { call, result in
+      let args = call.arguments as? [String: Any] ?? [:]
+      switch call.method {
+      // Finder·"이 Mac에 관하여"가 보여 주는 값: 비울 수 있는(purgeable) 공간을 여유로 센다.
+      case "volumeInfo":
+        let url = URL(fileURLWithPath: args["path"] as? String ?? "/")
+        do {
+          let v = try url.resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityForImportantUsageKey])
+          result(["total": v.volumeTotalCapacity ?? 0, "free": v.volumeAvailableCapacityForImportantUsage ?? 0])
+        } catch {
+          result(FlutterError(code: "volumeInfo", message: error.localizedDescription, details: nil))
+        }
+      // TCC에는 공개 API가 없다. TCC가 지키는 파일을 실제로 열어 보는 것이 표준 방법이다
+      // (isReadableFile/access(2)는 POSIX 권한만 보고 TCC를 무시한다).
+      case "hasFullDiskAccess":
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let probes = ["Library/Application Support/com.apple.TCC/TCC.db", "Library/Safari/Bookmarks.plist"]
+        result(probes.contains { FileHandle(forReadingAtPath: home.appendingPathComponent($0).path) != nil })
+      case "openFullDiskAccessSettings":
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")!)
+        result(nil)
+      case "revealInFinder":
+        if let path = args["path"] as? String {
+          NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)])
+        }
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+
     super.awakeFromNib()
   }
 

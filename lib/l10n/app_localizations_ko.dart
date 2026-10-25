@@ -727,4 +727,129 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get junkSelectGroup => '그룹 전체 선택';
+
+  @override
+  String get navOverview => '개요';
+
+  @override
+  String get overviewTitle => '디스크';
+
+  @override
+  String get overviewRefresh => '새로 고침';
+
+  @override
+  String get overviewUsedPercent => '사용 중';
+
+  @override
+  String get overviewFree => '여유';
+
+  @override
+  String get overviewUsed => '사용';
+
+  @override
+  String get overviewTotal => '전체';
+
+  @override
+  String get overviewJunkFound => '찾은 정크';
+
+  @override
+  String get overviewJunkNotScanned => '아직 스캔 전';
+
+  @override
+  String get overviewJunkScanning => '스캔하는 중…';
+
+  @override
+  String overviewFreeable(String size) {
+    return '지금 선택한 항목을 정리하면 약 $size를 확보합니다';
+  }
+
+  @override
+  String get overviewCardJunkTitle => '정크 정리';
+
+  @override
+  String get overviewCardJunkSubtitle => '캐시, 임시 파일, 개발 찌꺼기';
+
+  @override
+  String get overviewCardTidyTitle => '자동 정리';
+
+  @override
+  String overviewCardTidySubtitle(int count) {
+    return '규칙 $count개가 폴더를 감시합니다';
+  }
+
+  @override
+  String get overviewUnavailable => '디스크 용량을 읽지 못했습니다.';
+
+  @override
+  String get fdaBannerText =>
+      '전체 디스크 접근 권한이 꺼져 있어 일부 캐시(Safari, 메일 등)는 보이지 않습니다.';
+
+  @override
+  String get fdaShowMe => '방법 보기';
+
+  @override
+  String get fdaOpenSettings => '설정 열기';
+
+  @override
+  String get fdaGranted => '허용됨';
+
+  @override
+  String get fdaWaiting => '권한을 기다리는 중…';
+
+  @override
+  String get fdaStep1Title => '전체 디스크 접근 설정 열기';
+
+  @override
+  String get fdaStep1Body =>
+      'macOS는 Safari, 메일, 메시지 같은 일부 폴더를 앱이 따로 허락받기 전에는 보여 주지 않습니다. 아래 단추를 누르면 시스템 설정 › 개인정보 보호 및 보안 › 전체 디스크 접근으로 바로 이동합니다.';
+
+  @override
+  String get fdaStep2Title => '\"+\"를 누르고 잠금 풀기';
+
+  @override
+  String get fdaStep2Body =>
+      '목록 아래의 \"+\" 단추를 누르세요. 이 설정을 바꾸려면 Touch ID나 암호를 묻습니다.';
+
+  @override
+  String fdaStep3Title(String appName) {
+    return '$appName 고르기';
+  }
+
+  @override
+  String fdaStep3Body(String appName) {
+    return '파일 선택 창에서 \"$appName\"을 검색하거나 응용 프로그램 폴더에서 찾아 열기를 누르세요. Finder 창에서 목록으로 끌어다 놓아도 됩니다.';
+  }
+
+  @override
+  String get fdaStep4Title => '종료 후 다시 열기';
+
+  @override
+  String fdaStep4Body(String appName) {
+    return '$appName은 다시 시작해야 권한이 적용된다고 macOS가 안내합니다. \"종료 후 다시 열기\"를 누르면 곧바로 다시 열리고 경고 배너가 사라집니다.';
+  }
+
+  @override
+  String get fdaStep5Title => '모두 끝났습니다';
+
+  @override
+  String fdaStep5Body(String appName) {
+    return '목록에서 $appName 스위치가 켜져 있습니다. 다시 스캔하면 전에는 숨겨져 있던 캐시도 포함됩니다.';
+  }
+
+  @override
+  String fdaShowInFinder(String appName) {
+    return 'Finder에서 $appName 보기';
+  }
+
+  @override
+  String get fdaBack => '이전';
+
+  @override
+  String get fdaNext => '다음';
+
+  @override
+  String get fdaDone => '완료';
+
+  @override
+  String get fdaClose => '닫기';
 }

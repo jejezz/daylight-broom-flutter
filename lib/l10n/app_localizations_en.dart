@@ -742,4 +742,130 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get junkSelectGroup => 'Select whole group';
+
+  @override
+  String get navOverview => 'Overview';
+
+  @override
+  String get overviewTitle => 'Disk';
+
+  @override
+  String get overviewRefresh => 'Refresh';
+
+  @override
+  String get overviewUsedPercent => 'used';
+
+  @override
+  String get overviewFree => 'Free';
+
+  @override
+  String get overviewUsed => 'Used';
+
+  @override
+  String get overviewTotal => 'Total';
+
+  @override
+  String get overviewJunkFound => 'Junk found';
+
+  @override
+  String get overviewJunkNotScanned => 'Not scanned yet';
+
+  @override
+  String get overviewJunkScanning => 'Scanning…';
+
+  @override
+  String overviewFreeable(String size) {
+    return 'Cleaning the current selection frees about $size';
+  }
+
+  @override
+  String get overviewCardJunkTitle => 'Junk cleanup';
+
+  @override
+  String get overviewCardJunkSubtitle =>
+      'Caches, temp files and developer leftovers';
+
+  @override
+  String get overviewCardTidyTitle => 'Auto tidy';
+
+  @override
+  String overviewCardTidySubtitle(int count) {
+    return '$count rules are watching your folders';
+  }
+
+  @override
+  String get overviewUnavailable => 'Could not read the disk capacity.';
+
+  @override
+  String get fdaBannerText =>
+      'Full Disk Access is off — some caches (Safari, Mail…) stay hidden.';
+
+  @override
+  String get fdaShowMe => 'Show me how';
+
+  @override
+  String get fdaOpenSettings => 'Open Settings';
+
+  @override
+  String get fdaGranted => 'GRANTED';
+
+  @override
+  String get fdaWaiting => 'WAITING FOR PERMISSION…';
+
+  @override
+  String get fdaStep1Title => 'Open Full Disk Access settings';
+
+  @override
+  String get fdaStep1Body =>
+      'macOS keeps some folders (Safari, Mail, Messages…) private unless you allow an app explicitly. Press the button below to jump straight to System Settings › Privacy & Security › Full Disk Access.';
+
+  @override
+  String get fdaStep2Title => 'Click \"+\" and unlock';
+
+  @override
+  String get fdaStep2Body =>
+      'Click the \"+\" button under the list. macOS asks for Touch ID or your password before it lets you change this setting.';
+
+  @override
+  String fdaStep3Title(String appName) {
+    return 'Pick $appName';
+  }
+
+  @override
+  String fdaStep3Body(String appName) {
+    return 'In the file picker, search for \"$appName\" (or browse to Applications), select it and click Open. You can also drag it from a Finder window straight into the list.';
+  }
+
+  @override
+  String get fdaStep4Title => 'Quit & Reopen';
+
+  @override
+  String fdaStep4Body(String appName) {
+    return 'macOS explains that $appName only gets the permission after a restart. Click \"Quit & Reopen\" — it comes right back and the warning banner is gone.';
+  }
+
+  @override
+  String get fdaStep5Title => 'All set';
+
+  @override
+  String fdaStep5Body(String appName) {
+    return '$appName now shows a switch turned on in the list. Scanning again will include caches that were hidden before.';
+  }
+
+  @override
+  String fdaShowInFinder(String appName) {
+    return 'Show $appName in Finder';
+  }
+
+  @override
+  String get fdaBack => 'Back';
+
+  @override
+  String get fdaNext => 'Next';
+
+  @override
+  String get fdaDone => 'Done';
+
+  @override
+  String get fdaClose => 'Close';
 }
