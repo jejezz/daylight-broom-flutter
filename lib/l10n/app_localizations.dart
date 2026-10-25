@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('ko'),
   ];
 
+  /// No description provided for @navTidy.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 정리'**
+  String get navTidy;
+
   /// No description provided for @aboutTooltip.
   ///
   /// In ko, this message translates to:

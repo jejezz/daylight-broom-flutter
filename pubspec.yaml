@@ -72,6 +72,7 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
+    - assets/broom_glyph.png
     - assets/icon/app_icon.png
     - assets/licenses/
     - assets/tray/

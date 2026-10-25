@@ -10,6 +10,9 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get navTidy => '자동 정리';
+
+  @override
   String get aboutTooltip => '정보';
 
   @override

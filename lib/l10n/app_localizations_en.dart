@@ -10,6 +10,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get navTidy => 'Auto tidy';
+
+  @override
   String get aboutTooltip => 'About';
 
   @override

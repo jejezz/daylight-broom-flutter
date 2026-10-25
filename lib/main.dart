@@ -26,6 +26,7 @@ import 'system/legacy_migration.dart';
 import 'system/login_item.dart';
 import 'tray/tray_controller.dart';
 import 'ui/home_screen.dart';
+import 'ui/shell.dart';
 import 'update/update_scope.dart';
 import 'update/update_service.dart';
 
@@ -179,7 +180,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             onCheckForUpdates: widget.updates == null ? null : _checkForUpdates,
             child: child!,
           ),
-          home: HomeScreen(key: _homeKey, onAbout: _showAbout, service: widget.service, loginItem: widget.loginItem),
+          home: BroomShell(homeKey: _homeKey, onAbout: _showAbout, service: widget.service, loginItem: widget.loginItem),
         ),
       ),
     );
