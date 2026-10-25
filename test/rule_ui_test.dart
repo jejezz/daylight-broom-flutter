@@ -2,22 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/engine/history.dart';
-import 'package:stevedore/engine/tidy_engine.dart';
-import 'package:stevedore/engine/tidy_service.dart';
-import 'package:stevedore/l10n/app_localizations.dart';
-import 'package:stevedore/rules/rule.dart';
-import 'package:stevedore/rules/rule_store.dart';
-import 'package:stevedore/ui/rule_editor.dart';
-import 'package:stevedore/ui/rule_formatting.dart';
+import 'package:daylight_broom/engine/history.dart';
+import 'package:daylight_broom/engine/tidy_engine.dart';
+import 'package:daylight_broom/engine/tidy_service.dart';
+import 'package:daylight_broom/l10n/app_localizations.dart';
+import 'package:daylight_broom/rules/rule.dart';
+import 'package:daylight_broom/rules/rule_store.dart';
+import 'package:daylight_broom/ui/rule_editor.dart';
+import 'package:daylight_broom/ui/rule_formatting.dart';
 
 void main() {
   late Directory root;
   late TidyService service;
 
   setUp(() async {
-    root = Directory.systemTemp.createTempSync('stevedore_ui_');
-    final support = Directory('${root.path}/Stevedore');
+    root = Directory.systemTemp.createTempSync('daylight_broom_ui_');
+    final support = Directory('${root.path}/DaylightBroom');
     service = TidyService(engine: TidyEngine(), ruleStore: RuleStore(support), historyStore: HistoryStore(support));
     await service.init();
     await service.engine.stop();
@@ -49,7 +49,7 @@ void main() {
       expect(service.rules.map((r) => r.id), ['c', 'a', 'b']);
       await service.deleteRule('b');
 
-      final reloaded = await RuleStore(Directory('${root.path}/Stevedore')).load();
+      final reloaded = await RuleStore(Directory('${root.path}/DaylightBroom')).load();
       expect(reloaded.map((r) => (r.id, r.enabled)), [('c', true), ('a', false)]);
       expect(service.engine.rules.map((r) => r.id), ['c', 'a']);
     });

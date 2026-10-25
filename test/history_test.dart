@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/engine/file_ops.dart';
-import 'package:stevedore/engine/history.dart';
-import 'package:stevedore/engine/tidy_engine.dart';
-import 'package:stevedore/engine/tidy_service.dart';
-import 'package:stevedore/rules/rule.dart';
-import 'package:stevedore/rules/rule_store.dart';
+import 'package:daylight_broom/engine/file_ops.dart';
+import 'package:daylight_broom/engine/history.dart';
+import 'package:daylight_broom/engine/tidy_engine.dart';
+import 'package:daylight_broom/engine/tidy_service.dart';
+import 'package:daylight_broom/rules/rule.dart';
+import 'package:daylight_broom/rules/rule_store.dart';
 
 class _Ops implements FileOps {
   /// 휴지통 흉내: 임시 폴더로 옮기고 그 경로를 돌려준다.
@@ -38,7 +38,7 @@ void main() {
   File put(String name, [String body = 'data']) => File('${downloads.path}/$name')..writeAsStringSync(body);
 
   setUp(() {
-    root = Directory.systemTemp.createTempSync('stevedore_history_');
+    root = Directory.systemTemp.createTempSync('daylight_broom_history_');
     downloads = Directory('${root.path}/Downloads')..createSync();
     out = Directory('${root.path}/out')..createSync();
     engine = TidyEngine(ops: _Ops(Directory('${root.path}/trash')..createSync()), settle: Duration.zero);
@@ -50,7 +50,7 @@ void main() {
 
   group('HistoryStore', () {
     test('저장한 기록을 그대로 읽고, 최근 500개만 남긴다', () async {
-      final store = HistoryStore(Directory('${root.path}/Stevedore'));
+      final store = HistoryStore(Directory('${root.path}/DaylightBroom'));
       expect(await store.load(), isEmpty);
       HistoryEntry e(int i) => HistoryEntry(
             id: '$i',
@@ -165,7 +165,7 @@ void main() {
 
   group('TidyService', () {
     test('실행 결과를 기록으로 남기고, 되돌리면 기록에 표시하며 재시작 뒤에도 유지한다', () async {
-      final support = Directory('${root.path}/Stevedore');
+      final support = Directory('${root.path}/DaylightBroom');
       final ruleStore = RuleStore(support);
       final historyStore = HistoryStore(support);
       await ruleStore.save([rule(MoveAction(out.path))]);

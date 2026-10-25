@@ -4,11 +4,11 @@ import '../storage/json_file.dart';
 import 'rule.dart';
 
 /// 규칙을 `rules.json`에 저장한다. 위치는 identity.md §6: 설정 폴더 이름은
-/// 파일 이름(PascalCase) `Stevedore`.
+/// 파일 이름(PascalCase) `DaylightBroom`.
 class RuleStore {
   RuleStore(this.directory) : _file = JsonFile(directory, fileName);
 
-  /// 이 앱의 설정 폴더 (`~/Library/Application Support/Stevedore`, `%APPDATA%\Stevedore`).
+  /// 이 앱의 설정 폴더 (`~/Library/Application Support/DaylightBroom`, `%APPDATA%\DaylightBroom`).
   factory RuleStore.standard() => RuleStore(Directory(appSupportPath()));
 
   static const fileName = 'rules.json';
@@ -21,8 +21,8 @@ class RuleStore {
 
   static String appSupportPath() {
     final env = Platform.environment;
-    if (Platform.isWindows) return '${env['APPDATA']}\\Stevedore';
-    return '${env['HOME']}/Library/Application Support/Stevedore';
+    if (Platform.isWindows) return '${env['APPDATA']}\\DaylightBroom';
+    return '${env['HOME']}/Library/Application Support/DaylightBroom';
   }
 
   /// 저장된 규칙. 파일이 없으면 빈 목록. 파일이 깨졌으면 `rules.json.bak`으로

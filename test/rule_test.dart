@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/rules/rule.dart';
+import 'package:daylight_broom/rules/rule.dart';
 
 void main() {
   final now = DateTime(2026, 10, 1, 12);

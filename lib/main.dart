@@ -8,6 +8,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'about/about_dialog.dart';
@@ -21,6 +22,7 @@ import 'engine/history.dart';
 import 'engine/tidy_engine.dart';
 import 'engine/tidy_service.dart';
 import 'rules/rule_store.dart';
+import 'system/legacy_migration.dart';
 import 'system/login_item.dart';
 import 'tray/tray_controller.dart';
 import 'ui/home_screen.dart';
@@ -34,6 +36,11 @@ Future<void> main(List<String> args) async {
   final background = args.contains(backgroundFlag);
   WidgetsFlutterBinding.ensureInitialized();
   registerExtraLicenses();
+  // Stevedore에서 이름이 바뀐 앱: 옛 규칙·기록·설정·로그인 항목을 처음 한 번 옮긴다.
+  final migration = LegacyMigration();
+  await migration.migrateFiles(Directory(RuleStore.appSupportPath()));
+  await migration.migratePreferences(await SharedPreferences.getInstance());
+  final hadLegacyLoginItem = await migration.removeLegacyLoginItem();
   final settings = await AppSettings.load();
 
   if (_isDesktop) {
@@ -54,6 +61,7 @@ Future<void> main(List<String> args) async {
 
   final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null);
   await loginItem.init();
+  if (hadLegacyLoginItem && !loginItem.enabled) await loginItem.setEnabled(true);
   // 데스크톱이 아니거나 UPDATE_SERVER 가 비어 있으면 null — 업데이트 확인 없음.
   final updates = await UpdateService.create();
   final service = await _startService(settings);

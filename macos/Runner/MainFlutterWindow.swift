@@ -16,7 +16,7 @@ class MainFlutterWindow: NSWindow {
 
     // 휴지통 보내기: Finder의 "되돌려 놓기"가 되도록 FileManager.trashItem을 쓴다.
     let trashChannel = FlutterMethodChannel(
-      name: "art.zoomon.stevedore/trash",
+      name: "art.zoomon.daylightbroom/trash",
       binaryMessenger: flutterViewController.engine.binaryMessenger)
     trashChannel.setMethodCallHandler { call, result in
       guard call.method == "trash", let path = call.arguments as? String else {

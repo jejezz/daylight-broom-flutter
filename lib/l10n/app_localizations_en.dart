@@ -57,7 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutDescription =>
-      'Stevedore sorts and cleans up files that land in folders like Downloads, by extension, name, size and age. Let it run in the background, or tidy up on demand with \"Tidy now\".';
+      'Daylight Broom sorts and cleans up files that land in folders like Downloads, by extension, name, size and age. Let it run in the background, or tidy up on demand with \"Tidy now\".';
 
   @override
   String get homeEmptyTitle =>
@@ -67,7 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeEmptyAction => 'Add rule';
 
   @override
-  String get trayOpen => 'Open Stevedore';
+  String get trayOpen => 'Open Daylight Broom';
 
   @override
   String get trayTidyNow => 'Tidy now';
@@ -169,7 +169,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get watchErrorHint =>
-      'Check that the folder exists and that Stevedore is allowed to access files and folders in System Settings › Privacy & Security.';
+      'Check that the folder exists and that Daylight Broom is allowed to access files and folders in System Settings › Privacy & Security.';
 
   @override
   String get rulesTitle => 'Rules';

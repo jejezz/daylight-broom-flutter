@@ -28,14 +28,14 @@ class MacLoginItem implements LoginItemBackend {
       : _home = home ?? Platform.environment['HOME']!,
         _appBundle = appBundlePath ?? _bundleOf(Platform.resolvedExecutable);
 
-  static const label = 'art.zoomon.stevedore';
+  static const label = 'art.zoomon.daylightbroom';
 
   final String _home;
   final String _appBundle;
 
   File get _plist => File(p.join(_home, 'Library', 'LaunchAgents', '$label.plist'));
 
-  /// `…/Stevedore.app/Contents/MacOS/Stevedore` → `…/Stevedore.app`
+  /// `…/Daylight Broom.app/Contents/MacOS/Daylight Broom` → `…/Daylight Broom.app`
   static String _bundleOf(String executable) => p.dirname(p.dirname(p.dirname(executable)));
 
   @visibleForTesting
@@ -93,7 +93,7 @@ class WindowsLoginItem implements LoginItemBackend {
         _exe = executable ?? Platform.resolvedExecutable;
 
   static const _key = r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run';
-  static const _name = 'Stevedore';
+  static const _name = 'DaylightBroom';
 
   final ProcessRunner _run;
   final String _exe;

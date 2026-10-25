@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stevedore/engine/file_ops.dart';
-import 'package:stevedore/engine/ignored_files.dart';
-import 'package:stevedore/engine/paths.dart';
-import 'package:stevedore/engine/stability_tracker.dart';
-import 'package:stevedore/engine/tidy_engine.dart';
-import 'package:stevedore/rules/rule.dart';
+import 'package:daylight_broom/engine/file_ops.dart';
+import 'package:daylight_broom/engine/ignored_files.dart';
+import 'package:daylight_broom/engine/paths.dart';
+import 'package:daylight_broom/engine/stability_tracker.dart';
+import 'package:daylight_broom/engine/tidy_engine.dart';
+import 'package:daylight_broom/rules/rule.dart';
 
 class _FakeOps implements FileOps {
   final trashed = <String>[];
@@ -65,7 +65,7 @@ void main() {
 
   group('uniquePath', () {
     late Directory dir;
-    setUp(() => dir = Directory.systemTemp.createTempSync('stevedore_unique_'));
+    setUp(() => dir = Directory.systemTemp.createTempSync('daylight_broom_unique_'));
     tearDown(() => dir.deleteSync(recursive: true));
 
     test('같은 이름이 있으면 번호를 붙인다 (겹 확장자 포함)', () async {
@@ -100,7 +100,7 @@ void main() {
     }
 
     setUp(() {
-      root = Directory.systemTemp.createTempSync('stevedore_engine_');
+      root = Directory.systemTemp.createTempSync('daylight_broom_engine_');
       downloads = Directory('${root.path}/Downloads')..createSync();
       ops = _FakeOps();
       now = DateTime.now();

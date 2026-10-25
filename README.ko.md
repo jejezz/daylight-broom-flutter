@@ -3,21 +3,21 @@
      {{TODO: …}}를 모두 채우십시오. 하나라도 남아 있으면 tool/readme/check_readme.py가 실패합니다. -->
 
 <p align="center">
-  <img src="assets/icon/app_icon.png" width="128" alt="Stevedore 아이콘">
+  <img src="assets/icon/app_icon.png" width="128" alt="Daylight Broom 아이콘">
 </p>
 
-<h1 align="center">Stevedore</h1>
+<h1 align="center">Daylight Broom</h1>
 
 <p align="center">
   규칙에 따라 다운로드 폴더를 자동 또는 수동으로 정리하는 무료 오픈소스 <b>Hazel 대안 파일 정리 유틸리티</b> (macOS, Windows).
 </p>
 
 <p align="center">
-  <a href="https://github.com/jejezz/stevedore-flutter/releases/latest"><img src="https://img.shields.io/github/v/release/jejezz/stevedore-flutter?style=flat-square&color=4c9dff" alt="최신 릴리스"></a>
-  <a href="https://github.com/jejezz/stevedore-flutter/releases"><img src="https://img.shields.io/github/downloads/jejezz/stevedore-flutter/total?style=flat-square&color=7c5cff" alt="다운로드"></a>
+  <a href="https://github.com/jejezz/daylight-broom-flutter/releases/latest"><img src="https://img.shields.io/github/v/release/jejezz/daylight-broom-flutter?style=flat-square&color=4c9dff" alt="최신 릴리스"></a>
+  <a href="https://github.com/jejezz/daylight-broom-flutter/releases"><img src="https://img.shields.io/github/downloads/jejezz/daylight-broom-flutter/total?style=flat-square&color=7c5cff" alt="다운로드"></a>
   <img src="https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows-34d399?style=flat-square" alt="macOS · Windows">
   <img src="https://img.shields.io/badge/built%20with-Flutter-02569b?style=flat-square" alt="Flutter">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/jejezz/stevedore-flutter?style=flat-square" alt="MIT 라이선스"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/jejezz/daylight-broom-flutter?style=flat-square" alt="MIT 라이선스"></a>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/demo.gif" width="720" alt="Stevedore 데모: Downloads에 떨어진 파일 네 개가 문서·이미지·설치 파일·압축 파일 폴더로 정리되고 최근 기록에 나타남">
+  <img src="docs/screenshots/demo.gif" width="720" alt="Daylight Broom 데모: Downloads에 떨어진 파일 네 개가 문서·이미지·설치 파일·압축 파일 폴더로 정리되고 최근 기록에 나타남">
 </p>
 
 ## 기능
@@ -45,12 +45,12 @@
 
 ## 설치
 
-[**Releases**](https://github.com/jejezz/stevedore-flutter/releases/latest)에서 받습니다.
+[**Releases**](https://github.com/jejezz/daylight-broom-flutter/releases/latest)에서 받습니다.
 
 | OS | 파일 |
 |---|---|
-| macOS 12.0 이상 | `Stevedore-<버전>-macos-universal.dmg` — 열어서 앱을 Applications 폴더로 끌어다 놓으세요 |
-| Windows 10/11 (x64) | `Stevedore-<버전>-windows-x64-setup.exe` |
+| macOS 12.0 이상 | `DaylightBroom-<버전>-macos-universal.dmg` — 열어서 앱을 Applications 폴더로 끌어다 놓으세요 |
+| Windows 10/11 (x64) | `DaylightBroom-<버전>-windows-x64-setup.exe` |
 
 **macOS:** 처음 Downloads 폴더를 열 때 macOS가 접근을 허용할지 묻습니다. **허용**을 누르세요(허용하지 않으면 규칙이 동작하지 않습니다).
 
@@ -67,7 +67,7 @@ flutter pub get
 flutter run -d macos
 ```
 
-추가로 필요한 도구는 없습니다. macOS 앱은 Downloads를 읽고 임의의 폴더로 파일을 옮겨야 해서 일부러 **샌드박스를 끄고** 공증된 DMG로 배포합니다(App Store 배포 아님). 설정은 `~/Library/Application Support/Stevedore`(Windows는 `%APPDATA%\Stevedore`)의 `rules.json`, `history.json`에 저장됩니다.
+추가로 필요한 도구는 없습니다. macOS 앱은 Downloads를 읽고 임의의 폴더로 파일을 옮겨야 해서 일부러 **샌드박스를 끄고** 공증된 DMG로 배포합니다(App Store 배포 아님). 설정은 `~/Library/Application Support/DaylightBroom`(Windows는 `%APPDATA%\DaylightBroom`)의 `rules.json`, `history.json`에 저장됩니다.
 
 릴리스: `scripts/bump-version.sh patch` → 병합 → `vX.Y.Z` 태그. CI가 모든 플랫폼을 빌드해서 올립니다. 규칙: [application-release-templates/conventions](https://github.com/jejezz/application-release-templates/tree/main/conventions).
 

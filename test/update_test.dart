@@ -1,6 +1,6 @@
 // From jejezz/application-release-templates common/ @ conventions-v1.
 // conventions/updating.md — 업데이트 흐름의 화면: 알림 · 건너뛰기 · 내려받기 · 오류 · OS 별 설치 안내.
-// stevedore를 앱의 pubspec name으로 바꾼다. 실제 네트워크·파일·프로세스는 쓰지 않는다 (가짜 AppUpdater).
+// daylight_broom을 앱의 pubspec name으로 바꾼다. 실제 네트워크·파일·프로세스는 쓰지 않는다 (가짜 AppUpdater).
 
 import 'dart:async';
 import 'dart:io';
@@ -9,12 +9,12 @@ import 'package:app_updater/app_updater.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:stevedore/about/about_dialog.dart';
-import 'package:stevedore/app_identity.dart';
-import 'package:stevedore/l10n/app_localizations.dart';
-import 'package:stevedore/update/update_dialogs.dart';
-import 'package:stevedore/update/update_scope.dart';
-import 'package:stevedore/update/update_service.dart';
+import 'package:daylight_broom/about/about_dialog.dart';
+import 'package:daylight_broom/app_identity.dart';
+import 'package:daylight_broom/l10n/app_localizations.dart';
+import 'package:daylight_broom/update/update_dialogs.dart';
+import 'package:daylight_broom/update/update_scope.dart';
+import 'package:daylight_broom/update/update_service.dart';
 
 UpdateInfo _info({String notes = 'Fixed things.'}) => UpdateInfo(
       appId: 'sample-flutter',

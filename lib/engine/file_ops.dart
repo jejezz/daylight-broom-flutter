@@ -19,7 +19,7 @@ abstract class FileOps {
 class SystemFileOps implements FileOps {
   SystemFileOps({this.env});
 
-  static const _channel = MethodChannel('art.zoomon.stevedore/trash');
+  static const _channel = MethodChannel('art.zoomon.daylightbroom/trash');
   final Map<String, String>? env;
 
   @override
@@ -53,9 +53,9 @@ class SystemFileOps implements FileOps {
           '-NonInteractive',
           '-Command',
           'Add-Type -AssemblyName Microsoft.VisualBasic; '
-              r"[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($env:STEVEDORE_TRASH_PATH, 'OnlyErrorDialogs', 'SendToRecycleBin')",
+              r"[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($env:DAYLIGHTBROOM_TRASH_PATH, 'OnlyErrorDialogs', 'SendToRecycleBin')",
         ],
-        environment: {'STEVEDORE_TRASH_PATH': path},
+        environment: {'DAYLIGHTBROOM_TRASH_PATH': path},
       );
       if (result.exitCode != 0) throw FileSystemException('휴지통으로 보내지 못했습니다: ${result.stderr}', path);
       return null;
