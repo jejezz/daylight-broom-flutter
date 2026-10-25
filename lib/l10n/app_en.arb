@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+  "navTidy": "Auto tidy",
   "aboutTooltip": "About",
   "aboutVersion": "Version {version} (build {build})",
   "aboutOpenSourceLicenses": "Open Source Licenses",

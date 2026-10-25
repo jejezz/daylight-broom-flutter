@@ -6,26 +6,21 @@ import '../engine/history.dart';
 import '../engine/tidy_service.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
-import '../settings/settings_menus.dart';
-import 'cleanup_options_button.dart';
+import 'broom/buttons.dart';
+import 'broom/glass.dart';
 import '../theme/app_theme.dart';
 import 'history_list.dart';
-import '../system/login_item.dart';
-import 'login_item_button.dart';
 import 'preview_dialog.dart';
 import 'presets_dialog.dart';
 import 'rule_editor.dart';
 import '../rules/rule.dart';
 import 'rules_list.dart';
-import '../window/focus_tint.dart';
 
 /// 메인 화면: 규칙 요약 + "지금 정리" + 최근 기록. 규칙도 기록도 없으면 빈 상태 (ui-ux.md §6).
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.onAbout, required this.service, required this.loginItem});
+  const HomeScreen({super.key, required this.service});
 
-  final VoidCallback onAbout;
   final TidyService service;
-  final LoginItemController loginItem;
 
   @override
   State<HomeScreen> createState() => HomeScreenState();
@@ -92,31 +87,12 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return ListenableBuilder(
       listenable: widget.service,
       builder: (context, _) {
         final service = widget.service;
         final empty = service.rules.isEmpty && service.history.isEmpty;
-        return Scaffold(
-          appBar: AppBar(
-            flexibleSpace: const FocusTint(),
-            title: const Text(AppIdentity.displayName),
-            actions: [
-              LoginItemMenuButton(controller: widget.loginItem),
-              const CleanupOptionsButton(),
-              const ThemeMenuButton(),
-              const LanguageMenuButton(),
-              IconButton(
-                tooltip: l10n.aboutTooltip,
-                icon: const Icon(Icons.info_outline_rounded),
-                onPressed: widget.onAbout,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-            ],
-          ),
-          body: empty ? _emptyState(context) : _content(context),
-        );
+        return empty ? _emptyState(context) : _content(context);
       },
     );
   }
@@ -140,13 +116,16 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _section(String title, Widget body) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: AppSpacing.sm),
-          Expanded(child: body),
-        ],
+  Widget _section(String title, Widget body) => GlassCard(
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: AppSpacing.sm),
+            Expanded(child: body),
+          ],
+        ),
       );
 
   Widget _content(BuildContext context) {
@@ -177,17 +156,9 @@ class HomeScreenState extends State<HomeScreen> {
               ),
               TextButton(onPressed: () => showPresetsDialog(context, widget.service), child: Text(l10n.presetsTitle)),
               const SizedBox(width: AppSpacing.sm),
-              OutlinedButton.icon(
-                onPressed: _editRule,
-                icon: const Icon(Icons.add_rounded, size: 18),
-                label: Text(l10n.rulesAdd),
-              ),
+              GhostButton(onPressed: _editRule, icon: Icons.add_rounded, label: l10n.rulesAdd),
               const SizedBox(width: AppSpacing.sm),
-              FilledButton.icon(
-                onPressed: tidyNow,
-                icon: const Icon(Icons.cleaning_services_rounded, size: 18),
-                label: Text(l10n.tidyNow),
-              ),
+              GradientButton(onPressed: tidyNow, icon: Icons.cleaning_services_rounded, label: l10n.tidyNow),
             ],
           ),
           const SizedBox(height: AppSpacing.xl),

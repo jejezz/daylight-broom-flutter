@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+
+import '../app_identity.dart';
+import '../engine/tidy_service.dart';
+import '../l10n/app_localizations.dart';
+import '../settings/settings_menus.dart';
+import '../system/login_item.dart';
+import '../theme/app_theme.dart';
+import '../window/focus_tint.dart';
+import 'broom/glass.dart';
+import 'broom/nav_rail.dart';
+import 'cleanup_options_button.dart';
+import 'home_screen.dart';
+import 'login_item_button.dart';
+
+/// 앱의 뼈대: 왼쪽 NavRail + 오른쪽 페이지. 페이지는 목록(`_pages`)에서 고르므로
+/// 정크·앱 제거 같은 새 기능은 항목 하나를 더하면 레일에 나타난다.
+class BroomShell extends StatefulWidget {
+  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey});
+
+  final VoidCallback onAbout;
+  final TidyService service;
+  final LoginItemController loginItem;
+
+  /// 트레이 메뉴의 "지금 정리"가 자동 정리 화면을 부르기 위한 키.
+  final GlobalKey<HomeScreenState>? homeKey;
+
+  @override
+  State<BroomShell> createState() => _BroomShellState();
+}
+
+class _BroomShellState extends State<BroomShell> {
+  int _index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final items = [NavItem(icon: Icons.auto_awesome_rounded, label: l10n.navTidy)];
+    final pages = [
+      HomeScreen(key: widget.homeKey, service: widget.service),
+    ];
+    // 레일이 창 높이 전체를 쓰고, 앱 바는 오른쪽 내용 위에만 둔다.
+    return Material(
+      color: Colors.transparent,
+      child: BroomBackground(
+        child: Row(children: [
+          NavRail(
+            index: _index,
+            onChanged: (i) => setState(() => _index = i),
+            items: items,
+            footer: [NavItem(icon: Icons.info_outline_rounded, label: l10n.aboutTooltip)],
+            footerActions: [widget.onAbout],
+          ),
+          Expanded(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                flexibleSpace: const FocusTint(),
+                title: const Text(AppIdentity.displayName),
+                actions: [
+                  LoginItemMenuButton(controller: widget.loginItem),
+                  const CleanupOptionsButton(),
+                  const ThemeMenuButton(),
+                  const LanguageMenuButton(),
+                  const SizedBox(width: AppSpacing.sm),
+                ],
+              ),
+              body: pages[_index],
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}

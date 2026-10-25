@@ -8,6 +8,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'broom_style.dart';
+
 abstract final class AppColors {
   // Dark
   static const bg = Color(0xFF0A0E14);
@@ -106,6 +108,7 @@ abstract final class AppTheme {
         ),
         background: AppColors.bg,
         textLow: AppColors.textLow,
+        broom: BroomStyle.dark,
         dense: dense,
       );
 
@@ -136,12 +139,13 @@ abstract final class AppTheme {
         ),
         background: AppColors.bgLight,
         textLow: AppColors.textLowLight,
+        broom: BroomStyle.light,
         dense: dense,
       );
 
   /// [dense]: 데스크톱 밀도(본문 13)와 모바일 밀도(본문 15), ui-ux.md §4.
   static ThemeData _base(ColorScheme scheme,
-      {required Color background, required Color textLow, required bool dense}) {
+      {required Color background, required Color textLow, required BroomStyle broom, required bool dense}) {
     final hi = scheme.onSurface;
     final mid = scheme.onSurfaceVariant;
     final body = dense ? 13.0 : 15.0;
@@ -234,6 +238,7 @@ abstract final class AppTheme {
         ),
       ),
       focusColor: scheme.primary.withValues(alpha: 0.18),
+      extensions: [broom],
     );
   }
 }

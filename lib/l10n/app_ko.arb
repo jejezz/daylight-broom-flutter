@@ -1,5 +1,6 @@
 {
   "@@locale": "ko",
+  "navTidy": "자동 정리",
   "aboutTooltip": "정보",
   "aboutVersion": "버전 {version} (빌드 {build})",
   "@aboutVersion": {
