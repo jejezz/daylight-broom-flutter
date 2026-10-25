@@ -498,4 +498,248 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateQuitAndInstall => 'Quit and install';
+
+  @override
+  String get targetUserCachesTitle => 'User Caches';
+
+  @override
+  String get targetUserCachesDesc =>
+      'App caches in ~/Library/Caches. Apps rebuild these on demand.';
+
+  @override
+  String get targetUserLogsTitle => 'User Logs';
+
+  @override
+  String get targetUserLogsDesc => 'Diagnostic logs in ~/Library/Logs.';
+
+  @override
+  String get targetTrashTitle => 'Trash';
+
+  @override
+  String get targetTrashDesc =>
+      'Items already in the Trash (including iCloud Drive). Cleaning empties the Trash.';
+
+  @override
+  String get targetSavedStateTitle => 'Saved Application State';
+
+  @override
+  String get targetSavedStateDesc => 'Window positions restored on relaunch.';
+
+  @override
+  String get targetWinTempTitle => 'Temporary Files';
+
+  @override
+  String get targetWinTempDesc =>
+      'Files in your %TEMP% folder. Files in use are skipped.';
+
+  @override
+  String get targetWinInetCacheTitle => 'Internet Cache';
+
+  @override
+  String get targetWinInetCacheDesc => 'Windows internet cache (INetCache).';
+
+  @override
+  String get targetWinCrashDumpsTitle => 'Crash Dumps';
+
+  @override
+  String get targetWinCrashDumpsDesc => 'Dump files left by crashed programs.';
+
+  @override
+  String get targetWinWerTitle => 'Error Reports';
+
+  @override
+  String get targetWinWerDesc => 'Files collected by Windows Error Reporting.';
+
+  @override
+  String get targetBrowserChromeTitle => 'Chrome Cache';
+
+  @override
+  String get targetBrowserChromeDesc =>
+      'Cache of the default Chrome profile. Bookmarks and sign-ins are untouched.';
+
+  @override
+  String get targetBrowserEdgeTitle => 'Edge Cache';
+
+  @override
+  String get targetBrowserEdgeDesc =>
+      'Cache of the default Edge profile. Bookmarks and sign-ins are untouched.';
+
+  @override
+  String get targetXcodeDerivedTitle => 'Xcode DerivedData';
+
+  @override
+  String get targetXcodeDerivedDesc =>
+      'Intermediate build products. Next build is a clean build.';
+
+  @override
+  String get targetXcodeArchivesTitle => 'Xcode Archives';
+
+  @override
+  String get targetXcodeArchivesDesc =>
+      'Archived builds (.xcarchive) used for App Store uploads.';
+
+  @override
+  String get targetIosDeviceSupportTitle => 'iOS Device Support';
+
+  @override
+  String get targetIosDeviceSupportDesc =>
+      'Debug symbols per iOS version. Re-downloaded when you plug the device in.';
+
+  @override
+  String get targetSimulatorsTitle => 'iOS Simulator Devices';
+
+  @override
+  String get targetSimulatorsDesc =>
+      'Simulator disk images. Delete unused ones via \"xcrun simctl delete unavailable\".';
+
+  @override
+  String get targetGradleTitle => 'Gradle Caches';
+
+  @override
+  String get targetGradleDesc =>
+      'Android dependency and build caches in ~/.gradle/caches.';
+
+  @override
+  String get targetPubCacheTitle => 'Dart Pub Cache';
+
+  @override
+  String get targetPubCacheDesc =>
+      'Downloaded Dart/Flutter packages. Re-fetched by \"flutter pub get\".';
+
+  @override
+  String get targetCocoapodsTitle => 'CocoaPods Cache';
+
+  @override
+  String get targetCocoapodsDesc => 'Downloaded pods.';
+
+  @override
+  String get targetNpmTitle => 'npm / Yarn / pnpm Cache';
+
+  @override
+  String get targetNpmDesc => 'Package manager download caches.';
+
+  @override
+  String get targetHomebrewTitle => 'Homebrew Cache';
+
+  @override
+  String get targetHomebrewDesc =>
+      'Downloaded bottles/formulae. Same as \"brew cleanup --prune=all\".';
+
+  @override
+  String get targetPipTitle => 'pip Cache';
+
+  @override
+  String get targetPipDesc => 'Python package downloads.';
+
+  @override
+  String get targetNugetTitle => 'NuGet Cache';
+
+  @override
+  String get targetNugetDesc =>
+      'NuGet v3 download cache. Re-fetched on the next restore.';
+
+  @override
+  String get groupSystem => 'System';
+
+  @override
+  String get groupDeveloper => 'Developer';
+
+  @override
+  String get groupBrowser => 'Browsers';
+
+  @override
+  String get safetySafe => 'SAFE';
+
+  @override
+  String get safetyRebuild => 'REBUILDS';
+
+  @override
+  String get safetyReview => 'REVIEW';
+
+  @override
+  String get navJunk => 'Junk';
+
+  @override
+  String get junkTitle => 'Junk cleanup';
+
+  @override
+  String get junkScan => 'Scan';
+
+  @override
+  String get junkRescan => 'Scan again';
+
+  @override
+  String get junkScanning => 'Scanning…';
+
+  @override
+  String get junkIntro =>
+      'Finds caches, temporary files and developer leftovers to win back space. Cleaned items are deleted right away, not sent to the Trash.';
+
+  @override
+  String get junkEmptyScanned => 'No junk to clean.';
+
+  @override
+  String junkSelectedSummary(int count, String size) {
+    return '$count selected · $size';
+  }
+
+  @override
+  String junkTotalFound(String size) {
+    return 'Found $size in total';
+  }
+
+  @override
+  String get junkClean => 'Clean selected';
+
+  @override
+  String junkCleaning(int done, int total) {
+    return 'Cleaning… $done / $total';
+  }
+
+  @override
+  String get junkConfirmTitle => 'Delete permanently?';
+
+  @override
+  String junkConfirmBody(int count, String size) {
+    return 'Deletes the $count selected items ($size) right away, without using the Trash. This cannot be undone.';
+  }
+
+  @override
+  String junkConfirmReview(String names) {
+    return 'Includes items that need a closer look: $names';
+  }
+
+  @override
+  String get junkConfirmAction => 'Delete permanently';
+
+  @override
+  String junkFreed(String size) {
+    return 'Freed $size';
+  }
+
+  @override
+  String junkFailed(int count, String reason) {
+    return 'Could not remove $count items: $reason';
+  }
+
+  @override
+  String junkUnreadable(String paths) {
+    return 'Some folders could not be read: $paths';
+  }
+
+  @override
+  String get junkRestricted =>
+      'Some folders could not be fully measured because of permissions. Allowing Full Disk Access in System Settings › Privacy & Security gives a more accurate result.';
+
+  @override
+  String junkScanFailed(String error) {
+    return 'Scan failed: $error';
+  }
+
+  @override
+  String get junkUnsupported =>
+      'Junk cleanup is not supported on this operating system.';
+
+  @override
+  String get junkSelectGroup => 'Select whole group';
 }

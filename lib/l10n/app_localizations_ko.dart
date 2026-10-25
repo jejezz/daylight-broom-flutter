@@ -493,4 +493,238 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get updateQuitAndInstall => '종료하고 설치';
+
+  @override
+  String get targetUserCachesTitle => '사용자 캐시';
+
+  @override
+  String get targetUserCachesDesc =>
+      '~/Library/Caches의 앱 캐시. 앱이 필요할 때 다시 만듭니다.';
+
+  @override
+  String get targetUserLogsTitle => '사용자 로그';
+
+  @override
+  String get targetUserLogsDesc => '~/Library/Logs의 진단 로그.';
+
+  @override
+  String get targetTrashTitle => '휴지통';
+
+  @override
+  String get targetTrashDesc => '휴지통(iCloud Drive 포함)에 있는 항목. 정리하면 휴지통을 비웁니다.';
+
+  @override
+  String get targetSavedStateTitle => '저장된 앱 상태';
+
+  @override
+  String get targetSavedStateDesc => '다시 열 때 복원하는 창 위치.';
+
+  @override
+  String get targetWinTempTitle => '임시 파일';
+
+  @override
+  String get targetWinTempDesc => '%TEMP% 폴더의 임시 파일. 사용 중인 파일은 건너뜁니다.';
+
+  @override
+  String get targetWinInetCacheTitle => '인터넷 임시 파일';
+
+  @override
+  String get targetWinInetCacheDesc => 'Windows 인터넷 캐시(INetCache).';
+
+  @override
+  String get targetWinCrashDumpsTitle => '충돌 덤프';
+
+  @override
+  String get targetWinCrashDumpsDesc => '프로그램이 비정상 종료될 때 남은 덤프 파일.';
+
+  @override
+  String get targetWinWerTitle => '오류 보고 파일';
+
+  @override
+  String get targetWinWerDesc => 'Windows 오류 보고(WER)가 쌓은 파일.';
+
+  @override
+  String get targetBrowserChromeTitle => 'Chrome 캐시';
+
+  @override
+  String get targetBrowserChromeDesc => 'Chrome 기본 프로필의 캐시. 북마크·로그인은 지우지 않습니다.';
+
+  @override
+  String get targetBrowserEdgeTitle => 'Edge 캐시';
+
+  @override
+  String get targetBrowserEdgeDesc => 'Edge 기본 프로필의 캐시. 북마크·로그인은 지우지 않습니다.';
+
+  @override
+  String get targetXcodeDerivedTitle => 'Xcode DerivedData';
+
+  @override
+  String get targetXcodeDerivedDesc => '빌드 중간 산출물. 다음 빌드는 처음부터 빌드합니다.';
+
+  @override
+  String get targetXcodeArchivesTitle => 'Xcode 아카이브';
+
+  @override
+  String get targetXcodeArchivesDesc => 'App Store 업로드에 쓴 보관 빌드(.xcarchive).';
+
+  @override
+  String get targetIosDeviceSupportTitle => 'iOS 기기 지원 파일';
+
+  @override
+  String get targetIosDeviceSupportDesc => 'iOS 버전별 디버그 심볼. 기기를 연결하면 다시 받습니다.';
+
+  @override
+  String get targetSimulatorsTitle => 'iOS 시뮬레이터 기기';
+
+  @override
+  String get targetSimulatorsDesc =>
+      '시뮬레이터 디스크 이미지. 안 쓰는 것은 \"xcrun simctl delete unavailable\"로 지우세요.';
+
+  @override
+  String get targetGradleTitle => 'Gradle 캐시';
+
+  @override
+  String get targetGradleDesc => '~/.gradle/caches의 안드로이드 의존성·빌드 캐시.';
+
+  @override
+  String get targetPubCacheTitle => 'Dart Pub 캐시';
+
+  @override
+  String get targetPubCacheDesc =>
+      '내려받은 Dart/Flutter 패키지. \"flutter pub get\"으로 다시 받습니다.';
+
+  @override
+  String get targetCocoapodsTitle => 'CocoaPods 캐시';
+
+  @override
+  String get targetCocoapodsDesc => '내려받은 pod.';
+
+  @override
+  String get targetNpmTitle => 'npm / Yarn / pnpm 캐시';
+
+  @override
+  String get targetNpmDesc => '패키지 관리자 다운로드 캐시.';
+
+  @override
+  String get targetHomebrewTitle => 'Homebrew 캐시';
+
+  @override
+  String get targetHomebrewDesc =>
+      '내려받은 병/포뮬러. \"brew cleanup --prune=all\"과 같습니다.';
+
+  @override
+  String get targetPipTitle => 'pip 캐시';
+
+  @override
+  String get targetPipDesc => 'Python 패키지 다운로드.';
+
+  @override
+  String get targetNugetTitle => 'NuGet 캐시';
+
+  @override
+  String get targetNugetDesc => 'NuGet v3 다운로드 캐시. 다음 복원 때 다시 받습니다.';
+
+  @override
+  String get groupSystem => '시스템';
+
+  @override
+  String get groupDeveloper => '개발';
+
+  @override
+  String get groupBrowser => '브라우저';
+
+  @override
+  String get safetySafe => '안전';
+
+  @override
+  String get safetyRebuild => '다시 생성';
+
+  @override
+  String get safetyReview => '확인 필요';
+
+  @override
+  String get navJunk => '정크 정리';
+
+  @override
+  String get junkTitle => '정크 정리';
+
+  @override
+  String get junkScan => '스캔';
+
+  @override
+  String get junkRescan => '다시 스캔';
+
+  @override
+  String get junkScanning => '스캔하는 중…';
+
+  @override
+  String get junkIntro =>
+      '캐시·임시 파일·개발 도구 찌꺼기를 찾아 용량을 되찾습니다. 지운 항목은 휴지통을 거치지 않고 바로 삭제됩니다.';
+
+  @override
+  String get junkEmptyScanned => '정리할 정크가 없습니다.';
+
+  @override
+  String junkSelectedSummary(int count, String size) {
+    return '$count개 선택 · $size';
+  }
+
+  @override
+  String junkTotalFound(String size) {
+    return '총 $size를 찾았습니다';
+  }
+
+  @override
+  String get junkClean => '선택 항목 정리';
+
+  @override
+  String junkCleaning(int done, int total) {
+    return '정리하는 중… $done / $total';
+  }
+
+  @override
+  String get junkConfirmTitle => '영구 삭제할까요?';
+
+  @override
+  String junkConfirmBody(int count, String size) {
+    return '선택한 $count개 항목($size)을 휴지통을 거치지 않고 바로 삭제합니다. 되돌릴 수 없습니다.';
+  }
+
+  @override
+  String junkConfirmReview(String names) {
+    return '확인이 필요한 항목이 포함되어 있습니다: $names';
+  }
+
+  @override
+  String get junkConfirmAction => '영구 삭제';
+
+  @override
+  String junkFreed(String size) {
+    return '$size를 확보했습니다';
+  }
+
+  @override
+  String junkFailed(int count, String reason) {
+    return '$count개 항목을 지우지 못했습니다: $reason';
+  }
+
+  @override
+  String junkUnreadable(String paths) {
+    return '읽을 수 없는 폴더가 있습니다: $paths';
+  }
+
+  @override
+  String get junkRestricted =>
+      '일부 폴더는 권한 때문에 크기를 다 재지 못했습니다. 시스템 설정의 개인정보 보호 및 보안에서 전체 디스크 접근 권한을 허용하면 더 정확합니다.';
+
+  @override
+  String junkScanFailed(String error) {
+    return '스캔하지 못했습니다: $error';
+  }
+
+  @override
+  String get junkUnsupported => '이 운영체제에서는 정크 정리를 지원하지 않습니다.';
+
+  @override
+  String get junkSelectGroup => '그룹 전체 선택';
 }

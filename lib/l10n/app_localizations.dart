@@ -937,6 +937,426 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'종료하고 설치'**
   String get updateQuitAndInstall;
+
+  /// No description provided for @targetUserCachesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용자 캐시'**
+  String get targetUserCachesTitle;
+
+  /// No description provided for @targetUserCachesDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'~/Library/Caches의 앱 캐시. 앱이 필요할 때 다시 만듭니다.'**
+  String get targetUserCachesDesc;
+
+  /// No description provided for @targetUserLogsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용자 로그'**
+  String get targetUserLogsTitle;
+
+  /// No description provided for @targetUserLogsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'~/Library/Logs의 진단 로그.'**
+  String get targetUserLogsDesc;
+
+  /// No description provided for @targetTrashTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통'**
+  String get targetTrashTitle;
+
+  /// No description provided for @targetTrashDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통(iCloud Drive 포함)에 있는 항목. 정리하면 휴지통을 비웁니다.'**
+  String get targetTrashDesc;
+
+  /// No description provided for @targetSavedStateTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장된 앱 상태'**
+  String get targetSavedStateTitle;
+
+  /// No description provided for @targetSavedStateDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 열 때 복원하는 창 위치.'**
+  String get targetSavedStateDesc;
+
+  /// No description provided for @targetWinTempTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'임시 파일'**
+  String get targetWinTempTitle;
+
+  /// No description provided for @targetWinTempDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'%TEMP% 폴더의 임시 파일. 사용 중인 파일은 건너뜁니다.'**
+  String get targetWinTempDesc;
+
+  /// No description provided for @targetWinInetCacheTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'인터넷 임시 파일'**
+  String get targetWinInetCacheTitle;
+
+  /// No description provided for @targetWinInetCacheDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'Windows 인터넷 캐시(INetCache).'**
+  String get targetWinInetCacheDesc;
+
+  /// No description provided for @targetWinCrashDumpsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'충돌 덤프'**
+  String get targetWinCrashDumpsTitle;
+
+  /// No description provided for @targetWinCrashDumpsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로그램이 비정상 종료될 때 남은 덤프 파일.'**
+  String get targetWinCrashDumpsDesc;
+
+  /// No description provided for @targetWinWerTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오류 보고 파일'**
+  String get targetWinWerTitle;
+
+  /// No description provided for @targetWinWerDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'Windows 오류 보고(WER)가 쌓은 파일.'**
+  String get targetWinWerDesc;
+
+  /// No description provided for @targetBrowserChromeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Chrome 캐시'**
+  String get targetBrowserChromeTitle;
+
+  /// No description provided for @targetBrowserChromeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'Chrome 기본 프로필의 캐시. 북마크·로그인은 지우지 않습니다.'**
+  String get targetBrowserChromeDesc;
+
+  /// No description provided for @targetBrowserEdgeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Edge 캐시'**
+  String get targetBrowserEdgeTitle;
+
+  /// No description provided for @targetBrowserEdgeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'Edge 기본 프로필의 캐시. 북마크·로그인은 지우지 않습니다.'**
+  String get targetBrowserEdgeDesc;
+
+  /// No description provided for @targetXcodeDerivedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Xcode DerivedData'**
+  String get targetXcodeDerivedTitle;
+
+  /// No description provided for @targetXcodeDerivedDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'빌드 중간 산출물. 다음 빌드는 처음부터 빌드합니다.'**
+  String get targetXcodeDerivedDesc;
+
+  /// No description provided for @targetXcodeArchivesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Xcode 아카이브'**
+  String get targetXcodeArchivesTitle;
+
+  /// No description provided for @targetXcodeArchivesDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'App Store 업로드에 쓴 보관 빌드(.xcarchive).'**
+  String get targetXcodeArchivesDesc;
+
+  /// No description provided for @targetIosDeviceSupportTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'iOS 기기 지원 파일'**
+  String get targetIosDeviceSupportTitle;
+
+  /// No description provided for @targetIosDeviceSupportDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'iOS 버전별 디버그 심볼. 기기를 연결하면 다시 받습니다.'**
+  String get targetIosDeviceSupportDesc;
+
+  /// No description provided for @targetSimulatorsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'iOS 시뮬레이터 기기'**
+  String get targetSimulatorsTitle;
+
+  /// No description provided for @targetSimulatorsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'시뮬레이터 디스크 이미지. 안 쓰는 것은 \"xcrun simctl delete unavailable\"로 지우세요.'**
+  String get targetSimulatorsDesc;
+
+  /// No description provided for @targetGradleTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Gradle 캐시'**
+  String get targetGradleTitle;
+
+  /// No description provided for @targetGradleDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'~/.gradle/caches의 안드로이드 의존성·빌드 캐시.'**
+  String get targetGradleDesc;
+
+  /// No description provided for @targetPubCacheTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Dart Pub 캐시'**
+  String get targetPubCacheTitle;
+
+  /// No description provided for @targetPubCacheDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'내려받은 Dart/Flutter 패키지. \"flutter pub get\"으로 다시 받습니다.'**
+  String get targetPubCacheDesc;
+
+  /// No description provided for @targetCocoapodsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'CocoaPods 캐시'**
+  String get targetCocoapodsTitle;
+
+  /// No description provided for @targetCocoapodsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'내려받은 pod.'**
+  String get targetCocoapodsDesc;
+
+  /// No description provided for @targetNpmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'npm / Yarn / pnpm 캐시'**
+  String get targetNpmTitle;
+
+  /// No description provided for @targetNpmDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'패키지 관리자 다운로드 캐시.'**
+  String get targetNpmDesc;
+
+  /// No description provided for @targetHomebrewTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Homebrew 캐시'**
+  String get targetHomebrewTitle;
+
+  /// No description provided for @targetHomebrewDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'내려받은 병/포뮬러. \"brew cleanup --prune=all\"과 같습니다.'**
+  String get targetHomebrewDesc;
+
+  /// No description provided for @targetPipTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'pip 캐시'**
+  String get targetPipTitle;
+
+  /// No description provided for @targetPipDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'Python 패키지 다운로드.'**
+  String get targetPipDesc;
+
+  /// No description provided for @targetNugetTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'NuGet 캐시'**
+  String get targetNugetTitle;
+
+  /// No description provided for @targetNugetDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'NuGet v3 다운로드 캐시. 다음 복원 때 다시 받습니다.'**
+  String get targetNugetDesc;
+
+  /// No description provided for @groupSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템'**
+  String get groupSystem;
+
+  /// No description provided for @groupDeveloper.
+  ///
+  /// In ko, this message translates to:
+  /// **'개발'**
+  String get groupDeveloper;
+
+  /// No description provided for @groupBrowser.
+  ///
+  /// In ko, this message translates to:
+  /// **'브라우저'**
+  String get groupBrowser;
+
+  /// No description provided for @safetySafe.
+  ///
+  /// In ko, this message translates to:
+  /// **'안전'**
+  String get safetySafe;
+
+  /// No description provided for @safetyRebuild.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 생성'**
+  String get safetyRebuild;
+
+  /// No description provided for @safetyReview.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인 필요'**
+  String get safetyReview;
+
+  /// No description provided for @navJunk.
+  ///
+  /// In ko, this message translates to:
+  /// **'정크 정리'**
+  String get navJunk;
+
+  /// No description provided for @junkTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'정크 정리'**
+  String get junkTitle;
+
+  /// No description provided for @junkScan.
+  ///
+  /// In ko, this message translates to:
+  /// **'스캔'**
+  String get junkScan;
+
+  /// No description provided for @junkRescan.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 스캔'**
+  String get junkRescan;
+
+  /// No description provided for @junkScanning.
+  ///
+  /// In ko, this message translates to:
+  /// **'스캔하는 중…'**
+  String get junkScanning;
+
+  /// No description provided for @junkIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'캐시·임시 파일·개발 도구 찌꺼기를 찾아 용량을 되찾습니다. 지운 항목은 휴지통을 거치지 않고 바로 삭제됩니다.'**
+  String get junkIntro;
+
+  /// No description provided for @junkEmptyScanned.
+  ///
+  /// In ko, this message translates to:
+  /// **'정리할 정크가 없습니다.'**
+  String get junkEmptyScanned;
+
+  /// No description provided for @junkSelectedSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 선택 · {size}'**
+  String junkSelectedSummary(int count, String size);
+
+  /// No description provided for @junkTotalFound.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 {size}를 찾았습니다'**
+  String junkTotalFound(String size);
+
+  /// No description provided for @junkClean.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택 항목 정리'**
+  String get junkClean;
+
+  /// No description provided for @junkCleaning.
+  ///
+  /// In ko, this message translates to:
+  /// **'정리하는 중… {done} / {total}'**
+  String junkCleaning(int done, int total);
+
+  /// No description provided for @junkConfirmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제할까요?'**
+  String get junkConfirmTitle;
+
+  /// No description provided for @junkConfirmBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택한 {count}개 항목({size})을 휴지통을 거치지 않고 바로 삭제합니다. 되돌릴 수 없습니다.'**
+  String junkConfirmBody(int count, String size);
+
+  /// No description provided for @junkConfirmReview.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인이 필요한 항목이 포함되어 있습니다: {names}'**
+  String junkConfirmReview(String names);
+
+  /// No description provided for @junkConfirmAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제'**
+  String get junkConfirmAction;
+
+  /// No description provided for @junkFreed.
+  ///
+  /// In ko, this message translates to:
+  /// **'{size}를 확보했습니다'**
+  String junkFreed(String size);
+
+  /// No description provided for @junkFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 항목을 지우지 못했습니다: {reason}'**
+  String junkFailed(int count, String reason);
+
+  /// No description provided for @junkUnreadable.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽을 수 없는 폴더가 있습니다: {paths}'**
+  String junkUnreadable(String paths);
+
+  /// No description provided for @junkRestricted.
+  ///
+  /// In ko, this message translates to:
+  /// **'일부 폴더는 권한 때문에 크기를 다 재지 못했습니다. 시스템 설정의 개인정보 보호 및 보안에서 전체 디스크 접근 권한을 허용하면 더 정확합니다.'**
+  String get junkRestricted;
+
+  /// No description provided for @junkScanFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'스캔하지 못했습니다: {error}'**
+  String junkScanFailed(String error);
+
+  /// No description provided for @junkUnsupported.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 운영체제에서는 정크 정리를 지원하지 않습니다.'**
+  String get junkUnsupported;
+
+  /// No description provided for @junkSelectGroup.
+  ///
+  /// In ko, this message translates to:
+  /// **'그룹 전체 선택'**
+  String get junkSelectGroup;
 }
 
 class _AppLocalizationsDelegate
