@@ -56,11 +56,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSystemShort => 'System';
 
   @override
-  String get aboutTagline => 'Keeps your Downloads folder tidy, by your rules';
+  String get aboutTagline =>
+      'Clears junk, removes apps cleanly, and sorts your folders by your rules';
 
   @override
   String get aboutDescription =>
-      'Daylight Broom sorts and cleans up files that land in folders like Downloads, by extension, name, size and age. Let it run in the background, or tidy up on demand with \"Tidy now\".';
+      'Daylight Broom finds caches, temporary files and developer leftovers to win back disk space, removes apps together with their leftover files, and sorts files that land in folders like Downloads by extension, name, size and age. It lives in the tray: let it run in the background, or run things on demand.';
 
   @override
   String get homeEmptyTitle =>
@@ -949,4 +950,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appsReveal => 'Show in Finder';
+
+  @override
+  String historyJunkTitle(int count) {
+    return 'Cleaned $count junk items';
+  }
+
+  @override
+  String historyJunkWhere(String size) {
+    return 'Deleted permanently · $size';
+  }
+
+  @override
+  String get historyJunkIrreversible =>
+      'Junk cleanup deletes right away without using the Trash, so it cannot be undone.';
+
+  @override
+  String historyUninstallTitle(String name) {
+    return 'Uninstalled $name';
+  }
+
+  @override
+  String historyUninstallWhere(int count, String size) {
+    return 'Moved to Trash · $count items · $size';
+  }
+
+  @override
+  String get historyUninstallUndoHint =>
+      'The app was moved to the Trash. To undo, restore it from the Trash yourself.';
 }

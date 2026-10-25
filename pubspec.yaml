@@ -1,5 +1,5 @@
 name: daylight_broom
-description: "Downloads 폴더 등을 규칙에 따라 자동으로 정리하는 상주형 파일 정리 유틸리티."
+description: "캐시·임시 파일을 치우고, 앱을 남은 파일까지 지우고, 폴더를 규칙대로 정리하는 상주형 청소 유틸리티."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

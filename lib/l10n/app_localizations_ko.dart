@@ -56,11 +56,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get languageSystemShort => '시스템';
 
   @override
-  String get aboutTagline => '다운로드 폴더를 규칙대로 알아서 정리합니다';
+  String get aboutTagline => '정크를 치우고, 앱을 깔끔히 지우고, 폴더를 규칙대로 정리합니다';
 
   @override
   String get aboutDescription =>
-      'Daylight Broom은 다운로드 폴더 같은 곳에 생긴 파일을 확장자, 이름, 크기, 오래된 정도에 따라 자동으로 분류하고 정리합니다. 상주하며 바로 처리하거나, 원할 때 \"지금 정리\"로 직접 실행할 수 있습니다.';
+      'Daylight Broom은 캐시·임시 파일·개발 도구 찌꺼기를 찾아 용량을 되찾고, 앱을 남은 파일까지 함께 제거하며, 다운로드 폴더 같은 곳의 파일을 확장자·이름·크기·오래된 정도에 따라 자동으로 정리합니다. 트레이에 상주하며 바로 처리하거나, 원할 때 직접 실행할 수 있습니다.';
 
   @override
   String get homeEmptyTitle => '아직 정리 규칙이 없습니다. 규칙을 추가해 다운로드 폴더 정리를 시작하세요';
@@ -933,4 +933,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appsReveal => 'Finder에서 보기';
+
+  @override
+  String historyJunkTitle(int count) {
+    return '정크 $count개 항목 정리';
+  }
+
+  @override
+  String historyJunkWhere(String size) {
+    return '영구 삭제 · $size';
+  }
+
+  @override
+  String get historyJunkIrreversible =>
+      '정크 정리는 휴지통을 거치지 않고 바로 삭제해서 되돌릴 수 없습니다.';
+
+  @override
+  String historyUninstallTitle(String name) {
+    return '$name 제거';
+  }
+
+  @override
+  String historyUninstallWhere(int count, String size) {
+    return '휴지통으로 이동 · $count개 항목 · $size';
+  }
+
+  @override
+  String get historyUninstallUndoHint =>
+      '앱 제거는 휴지통으로 옮겼습니다. 되돌리려면 휴지통에서 직접 복원하세요.';
 }

@@ -56,7 +56,7 @@ class _BroomShellState extends State<BroomShell> {
   late final DiskController _disk = widget.disk ?? DiskController(DiskInfo());
   late final bool _ownsDisk = widget.disk == null;
   late final JunkController? _junk = widget.junk ??
-      (CleanerPlatform.current == null ? null : JunkController(scanner: JunkScanner(), onCleaned: _disk.refresh));
+      (CleanerPlatform.current == null ? null : JunkController(scanner: JunkScanner(), onCleaned: _disk.refresh, onRecord: widget.service.recordActivity));
   late final bool _ownsJunk = widget.junk == null;
   late final AppsController? _apps = widget.apps ??
       (CleanerPlatform.current == CleanerPlatform.macos
@@ -64,6 +64,7 @@ class _BroomShellState extends State<BroomShell> {
               scanner: AppScanner(ownBundleId: AppIdentity.bundleId),
               trasher: SystemAppTrasher(),
               onChanged: _disk.refresh,
+              onRecord: widget.service.recordActivity,
             )
           : null);
   late final bool _ownsApps = widget.apps == null;

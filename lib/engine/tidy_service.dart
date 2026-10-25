@@ -108,6 +108,13 @@ class TidyService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 정크 정리·앱 제거가 끝난 뒤 그 결과를 같은 이력에 남긴다.
+  Future<void> recordActivity(HistoryEntry entry) async {
+    _history = [entry, ..._history].take(HistoryStore.maxEntries).toList();
+    await historyStore.save(_history);
+    notifyListeners();
+  }
+
   Future<void> _record(List<ActionResult> results) async {
     final entries = [
       for (final r in results)
