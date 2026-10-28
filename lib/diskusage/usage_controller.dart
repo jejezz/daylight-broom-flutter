@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../engine/file_ops.dart';
+import 'file_category.dart';
 import 'usage_cache.dart';
 import 'usage_model.dart';
 import 'usage_scanner.dart';
@@ -18,12 +20,19 @@ class UsageController extends ChangeNotifier {
   UsageController({
     Future<UsageScanHandle> Function(String root, void Function(UsageProgress) onProgress)? starter,
     this.cache,
-  }) : _starter = starter ?? ((root, onProgress) => startUsageScan(root, onProgress: onProgress));
+    FileOps? ops,
+    this.onTrashed,
+  })  : _ops = ops ?? SystemFileOps(),
+        _starter = starter ?? ((root, onProgress) => startUsageScan(root, onProgress: onProgress));
 
   final Future<UsageScanHandle> Function(String root, void Function(UsageProgress) onProgress) _starter;
 
   /// 지난 분석 결과를 저장해 두는 곳. null 이면 저장하지 않는다.
   final UsageCache? cache;
+  final FileOps _ops;
+
+  /// 휴지통으로 보낸 뒤 (디스크 여유 용량을 다시 읽는 데 쓴다).
+  final VoidCallback? onTrashed;
   final Map<String, VolumeUsage> _volumes = {};
   final Set<String> _restored = {};
   String? _activeRoot;
@@ -83,6 +92,31 @@ class UsageController extends ChangeNotifier {
   }
 
   void cancel() => _handle?.cancel();
+
+  /// [path]를 휴지통으로 보내고 분석 결과에서 뺀다. 실패하면 이유를, 성공하면 null.
+  /// 파일이면 [category]와 [bytes]를 줘야 그 종류에서 정확히 뺄 수 있다.
+  Future<String?> trash(String root, String path, {required bool isDirectory, FileCategory? category, int bytes = 0}) async {
+    final usage = of(root).result;
+    if (usage == null) return null;
+    try {
+      await _ops.trash(path);
+    } on Object catch (e) {
+      return '$e';
+    }
+    if (isDirectory) {
+      usage.removeDirectory(path);
+    } else if (category != null) {
+      usage.removeFile(category, path, bytes);
+    }
+    notifyListeners();
+    onTrashed?.call();
+    try {
+      await cache?.save(usage);
+    } on Object {
+      // 저장하지 못해도 화면은 그대로 쓴다.
+    }
+    return null;
+  }
 
   @override
   void dispose() {

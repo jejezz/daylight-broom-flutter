@@ -20,6 +20,7 @@ class SystemFileOps implements FileOps {
   SystemFileOps({this.env});
 
   static const _channel = MethodChannel('art.zoomon.daylightbroom/trash');
+  static const _bigFileBytes = 500 * 1000 * 1000;
   final Map<String, String>? env;
 
   @override
@@ -46,6 +47,10 @@ class SystemFileOps implements FileOps {
     }
     if (Platform.isWindows) {
       // 경로는 환경 변수로 넘겨 따옴표 이스케이프 문제를 피한다.
+      // OnlyErrorDialogs 는 "영구 삭제할까요?" 확인도 건너뛰고 예로 답한다. 휴지통 용량을 넘기기 쉬운 폴더와 큰 파일은
+      // 그 확인이 뜨도록 AllDialogs 로 보낸다 (조용히 영구 삭제되는 일을 막는다).
+      final isDir = Directory(path).existsSync();
+      final big = isDir || (File(path).existsSync() && File(path).lengthSync() >= _bigFileBytes);
       final result = await Process.run(
         'powershell',
         [
@@ -53,7 +58,10 @@ class SystemFileOps implements FileOps {
           '-NonInteractive',
           '-Command',
           'Add-Type -AssemblyName Microsoft.VisualBasic; '
-              r"[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($env:DAYLIGHTBROOM_TRASH_PATH, 'OnlyErrorDialogs', 'SendToRecycleBin')",
+              '[Microsoft.VisualBasic.FileIO.FileSystem]::${isDir ? 'DeleteDirectory' : 'DeleteFile'}'
+              r"($env:DAYLIGHTBROOM_TRASH_PATH, '"
+              "${big ? 'AllDialogs' : 'OnlyErrorDialogs'}"
+              "', 'SendToRecycleBin')",
         ],
         environment: {'DAYLIGHTBROOM_TRASH_PATH': path},
       );

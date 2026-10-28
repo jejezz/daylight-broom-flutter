@@ -74,7 +74,7 @@ class _BroomShellState extends State<BroomShell> {
             )
           : null);
   late final bool _ownsApps = widget.apps == null;
-  late final UsageController _usage = widget.usage ?? UsageController(cache: UsageCache.standard());
+  late final UsageController _usage = widget.usage ?? UsageController(cache: UsageCache.standard(), onTrashed: _disk.refresh);
   late final bool _ownsUsage = widget.usage == null;
 
   @override

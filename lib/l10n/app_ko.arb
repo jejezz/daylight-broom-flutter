@@ -550,5 +550,14 @@
   "storageEmptyCategory": "이 종류의 파일이 없습니다.",
   "storageDirectFiles": "이 폴더에 바로 있는 파일",
   "storageLargestFiles": "가장 큰 파일",
-  "storageReveal": "위치 열기"
+  "storageReveal": "위치 열기",
+  "storageTrash": "휴지통으로 보내기",
+  "storageTrashTitle": "휴지통으로 보낼까요?",
+  "storageTrashFolderBody": "{path}\n\n이 폴더 안의 모든 파일(종류와 상관없이) 약 {size}를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.",
+  "@storageTrashFolderBody": {"placeholders": {"path": {"type": "String"}, "size": {"type": "String"}}},
+  "storageTrashFileBody": "{path}\n\n{size}를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.",
+  "@storageTrashFileBody": {"placeholders": {"path": {"type": "String"}, "size": {"type": "String"}}},
+  "storageTrashAction": "휴지통으로 이동",
+  "storageTrashFailed": "휴지통으로 보내지 못했습니다: {error}",
+  "@storageTrashFailed": {"placeholders": {"error": {"type": "String"}}}
 }

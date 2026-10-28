@@ -533,5 +533,14 @@
   "storageEmptyCategory": "No files of this kind.",
   "storageDirectFiles": "Files directly in this folder",
   "storageLargestFiles": "Largest files",
-  "storageReveal": "Show in folder"
+  "storageReveal": "Show in folder",
+  "storageTrash": "Move to Trash",
+  "storageTrashTitle": "Move to the Trash?",
+  "storageTrashFolderBody": "{path}\n\nEverything in this folder (of every kind), about {size}, will be moved to the Trash. You can restore it from there.",
+  "@storageTrashFolderBody": {"placeholders": {"path": {"type": "String"}, "size": {"type": "String"}}},
+  "storageTrashFileBody": "{path}\n\n{size} will be moved to the Trash. You can restore it from there.",
+  "@storageTrashFileBody": {"placeholders": {"path": {"type": "String"}, "size": {"type": "String"}}},
+  "storageTrashAction": "Move to Trash",
+  "storageTrashFailed": "Could not move it to the Trash: {error}",
+  "@storageTrashFailed": {"placeholders": {"error": {"type": "String"}}}
 }

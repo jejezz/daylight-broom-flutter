@@ -1036,4 +1036,28 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get storageReveal => '위치 열기';
+
+  @override
+  String get storageTrash => '휴지통으로 보내기';
+
+  @override
+  String get storageTrashTitle => '휴지통으로 보낼까요?';
+
+  @override
+  String storageTrashFolderBody(String path, String size) {
+    return '$path\n\n이 폴더 안의 모든 파일(종류와 상관없이) 약 $size를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String storageTrashFileBody(String path, String size) {
+    return '$path\n\n$size를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String get storageTrashAction => '휴지통으로 이동';
+
+  @override
+  String storageTrashFailed(String error) {
+    return '휴지통으로 보내지 못했습니다: $error';
+  }
 }
