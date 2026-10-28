@@ -126,6 +126,19 @@ class DiskInfo {
   Future<void> revealInFinder(String path) async {
     if (_isMac) await _channel.invokeMethod<void>('revealInFinder', {'path': path});
   }
+
+  /// Finder(macOS)나 탐색기(Windows)에서 그 항목을 고른 채로 연다.
+  Future<void> reveal(String path) async {
+    try {
+      if (_isMac) {
+        await _channel.invokeMethod<void>('revealInFinder', {'path': path});
+      } else if (_isWindows) {
+        await _run('explorer.exe', ['/select,$path']); // 성공해도 종료 코드가 1이라 값은 보지 않는다
+      }
+    } on Object {
+      // 열지 못해도 화면은 그대로 둔다.
+    }
+  }
 }
 
 /// 개요 화면의 디스크 상태.
