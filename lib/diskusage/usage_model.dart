@@ -53,6 +53,52 @@ class DiskUsage {
   /// 권한 등으로 읽지 못한 폴더·파일 수. 있으면 합계가 실제보다 작다.
   final int unreadable;
 
+  static const _formatVersion = 1;
+
+  Map<String, Object?> toJson() => {
+        'v': _formatVersion,
+        'root': root,
+        'sep': separator,
+        'at': scannedAt.millisecondsSinceEpoch,
+        'counts': fileCounts,
+        'unreadable': unreadable,
+        'dirs': dirs,
+        'top': [
+          for (final list in topFiles) [for (final f in list) [f.path, f.bytes]],
+        ],
+      };
+
+  /// 형식이 맞지 않으면 [FormatException]. 버전이 다르면 옛 캐시이므로 같은 예외로 버린다.
+  factory DiskUsage.fromJson(Map<String, Object?> j) {
+    try {
+      if (j['v'] != _formatVersion) throw const FormatException('version');
+      final n = FileCategory.values.length;
+      final dirs = [
+        for (final m in j['dirs']! as List)
+          {for (final e in (m as Map).entries) e.key as String: e.value as int},
+      ];
+      final top = [
+        for (final l in j['top']! as List)
+          [for (final f in l as List) UsageFile((f as List)[0] as String, f[1] as int)],
+      ];
+      final counts = [for (final c in j['counts']! as List) c as int];
+      if (dirs.length != n || top.length != n || counts.length != n) throw const FormatException('shape');
+      return DiskUsage(
+        root: j['root']! as String,
+        separator: j['sep']! as String,
+        scannedAt: DateTime.fromMillisecondsSinceEpoch(j['at']! as int),
+        fileCounts: counts,
+        dirs: dirs,
+        topFiles: top,
+        unreadable: j['unreadable']! as int,
+      );
+    } on FormatException {
+      rethrow;
+    } on Object catch (e) {
+      throw FormatException('$e');
+    }
+  }
+
   int bytesOf(FileCategory c) => dirs[c.index].values.fold(0, (a, b) => a + b);
 
   int get totalBytes => FileCategory.values.fold(0, (a, c) => a + bytesOf(c));

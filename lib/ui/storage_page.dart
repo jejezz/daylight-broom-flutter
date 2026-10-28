@@ -37,10 +37,13 @@ String _categoryLabel(AppLocalizations l10n, FileCategory c) => switch (c) {
 
 /// 디스크 선택 → 종류 → 폴더로 내려가며 어디에 용량이 있는지 보여 준다.
 class StoragePage extends StatefulWidget {
-  const StoragePage({super.key, required this.disk, required this.usage});
+  const StoragePage({super.key, required this.disk, required this.usage, this.active = true});
 
   final DiskController disk;
   final UsageController usage;
+
+  /// 지금 보이는 탭인지. 보일 때에야 지난 분석 결과를 불러온다 (시작할 때 디스크를 읽지 않도록).
+  final bool active;
 
   @override
   State<StoragePage> createState() => _StoragePageState();
@@ -56,6 +59,30 @@ class _StoragePageState extends State<StoragePage> {
   final Map<String, _Nav> _nav = {};
 
   _Nav _navOf(String root) => _nav.putIfAbsent(root, _Nav.new);
+
+  void _restore() {
+    final path = widget.disk.volume?.path;
+    if (widget.active && path != null) widget.usage.restore(path);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.disk.addListener(_restore);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _restore());
+  }
+
+  @override
+  void didUpdateWidget(StoragePage old) {
+    super.didUpdateWidget(old);
+    if (widget.active && !old.active) _restore();
+  }
+
+  @override
+  void dispose() {
+    widget.disk.removeListener(_restore);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
