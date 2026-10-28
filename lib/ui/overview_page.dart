@@ -21,6 +21,7 @@ class OverviewPage extends StatelessWidget {
     required this.service,
     required this.onGoToJunk,
     required this.onGoToTidy,
+    this.onGoToStorage,
   });
 
   final DiskController disk;
@@ -28,6 +29,7 @@ class OverviewPage extends StatelessWidget {
   final TidyService service;
   final VoidCallback onGoToJunk;
   final VoidCallback onGoToTidy;
+  final VoidCallback? onGoToStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +131,16 @@ class OverviewPage extends StatelessWidget {
                 ),
               ),
             ]),
+            if (onGoToStorage != null) ...[
+              const SizedBox(height: AppSpacing.lg),
+              _ActionCard(
+                icon: Icons.pie_chart_rounded,
+                gradient: BroomAccent.success,
+                title: l10n.storageTitle,
+                subtitle: l10n.storageIntro,
+                onTap: onGoToStorage,
+              ),
+            ],
             if (disk.fullDiskAccess == false) ...[
               const SizedBox(height: AppSpacing.lg),
               _FdaBanner(
