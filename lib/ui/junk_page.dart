@@ -130,7 +130,8 @@ class JunkPage extends StatelessWidget {
         ]),
       ));
     }
-    return ListView(children: children);
+    // 정리·재스캔으로 목록이 짧아지면 이전 스크롤 위치가 남아 카드가 위쪽에서 잘려 보인다. 결과가 바뀌면 맨 위부터 다시 그린다.
+    return ListView(key: ValueKey((controller.lastFreed, controller.items.length)), children: children);
   }
 
   static String _groupLabel(AppLocalizations l10n, TargetGroup g) => switch (g) {
