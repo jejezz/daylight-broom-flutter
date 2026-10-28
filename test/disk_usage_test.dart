@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:daylight_broom/diskusage/file_category.dart';
+import 'package:daylight_broom/diskusage/protected_paths.dart';
 import 'package:daylight_broom/diskusage/usage_cache.dart';
+import 'package:daylight_broom/engine/file_ops.dart';
 import 'package:daylight_broom/diskusage/usage_controller.dart';
 import 'package:daylight_broom/diskusage/usage_model.dart';
 import 'package:daylight_broom/diskusage/usage_scanner.dart';
@@ -203,4 +205,108 @@ void main() {
       expect(second.of(tree.path).result!.bytesOf(FileCategory.documents), 123);
     });
   });
+
+  group('삭제', () {
+    test('디스크 루트와 시스템 폴더, 사용자 홈 자체는 보호한다', () {
+      bool win(String p) => isProtectedPath(p, root: r'C:\', separator: r'\', windows: true);
+      expect(win(r'C:\'), isTrue);
+      expect(win(r'C:\Windows'), isTrue);
+      expect(win(r'c:\program files'), isTrue);
+      expect(win(r'C:\Users'), isTrue);
+      expect(win(r'C:\Users\jejez'), isTrue);
+      expect(win(r'C:\Users\jejez\Downloads'), isFalse);
+      expect(win(r'C:\FlutterSDK'), isFalse);
+      expect(win(r'D:\Other'), isTrue); // 이 디스크 밖
+      bool mac(String p) => isProtectedPath(p, root: '/', separator: '/', windows: false);
+      expect(mac('/'), isTrue);
+      expect(mac('/System'), isTrue);
+      expect(mac('/Users/a'), isTrue);
+      expect(mac('/Users/a/Movies'), isFalse);
+      expect(mac('/Applications'), isTrue);
+      expect(mac('/data'), isFalse);
+    });
+
+    DiskUsage sample() {
+      final dirs = [for (var i = 0; i < FileCategory.values.length; i++) <String, int>{}];
+      dirs[FileCategory.video.index].addAll({'/r': 5, '/r/a': 1000, '/r/a/b': 500, '/r/c': 300});
+      dirs[FileCategory.other.index].addAll({'/r/a/b': 70, '/r/c': 30});
+      return DiskUsage(
+        root: '/r',
+        separator: '/',
+        scannedAt: DateTime(2026),
+        fileCounts: [0, 0, 0, 4, 2],
+        dirs: dirs,
+        topFiles: [
+          for (final c in FileCategory.values)
+            c == FileCategory.video ? [const UsageFile('/r/a/b/x.mp4', 400), const UsageFile('/r/c/y.mp4', 300)] : <UsageFile>[],
+        ],
+        unreadable: 0,
+      );
+    }
+
+    test('폴더를 지우면 모든 종류에서 그 아래가 빠진다', () {
+      final u = sample()..removeDirectory('/r/a');
+      expect(u.bytesOf(FileCategory.video), 305);
+      expect(u.bytesOf(FileCategory.other), 30);
+      expect(u.topFiles[FileCategory.video.index].map((f) => f.path), ['/r/c/y.mp4']);
+      expect(u.countsStale, isTrue);
+      expect(u.bytesUnderAll('/r/c'), 330);
+    });
+
+    test('"/r/ab"처럼 이름이 앞부분만 같은 폴더는 건드리지 않는다', () {
+      final u = sample();
+      u.dirs[FileCategory.video.index]['/r/ab'] = 9;
+      u.removeDirectory('/r/a');
+      expect(u.dirs[FileCategory.video.index]['/r/ab'], 9);
+    });
+
+    test('파일을 지우면 그 종류의 가장 가까운 상위 폴더에서 빼고 개수도 줄인다', () {
+      final u = sample()..removeFile(FileCategory.video, '/r/a/b/x.mp4', 400);
+      expect(u.dirs[FileCategory.video.index]['/r/a/b'], 100);
+      expect(u.fileCounts[FileCategory.video.index], 3);
+      expect(u.countsStale, isFalse);
+      // 작은 폴더가 합쳐져 키가 없으면 위로 올라가서 뺀다.
+      u.removeFile(FileCategory.video, '/r/a/zz/q.mp4', 200);
+      expect(u.dirs[FileCategory.video.index]['/r/a'], 800);
+    });
+
+    test('JSON 으로 저장해도 stale 표시를 잃지 않는다', () {
+      final u = sample()..removeDirectory('/r/c');
+      expect(DiskUsage.fromJson(u.toJson()).countsStale, isTrue);
+    });
+
+    test('컨트롤러는 휴지통에 보낸 뒤 결과에서 빼고, 실패하면 그대로 둔다', () async {
+      final ops = _FakeOps();
+      var refreshed = 0;
+      final c = UsageController(ops: ops, onTrashed: () => refreshed++);
+      addTearDown(c.dispose);
+      c.of('/r')
+        ..result = sample()
+        ..status = UsageStatus.done;
+      expect(await c.trash('/r', '/r/c', isDirectory: true), isNull);
+      expect(ops.trashed, ['/r/c']);
+      expect(refreshed, 1);
+      expect(c.of('/r').result!.bytesUnderAll('/r/c'), 0);
+
+      ops.fail = true;
+      expect(await c.trash('/r', '/r/a', isDirectory: true), contains('boom'));
+      expect(c.of('/r').result!.bytesUnderAll('/r/a'), 1570);
+      expect(refreshed, 1);
+    });
+  });
+}
+
+class _FakeOps implements FileOps {
+  final trashed = <String>[];
+  bool fail = false;
+
+  @override
+  Future<String?> trash(String path) async {
+    if (fail) throw StateError('boom');
+    trashed.add(path);
+    return null;
+  }
+
+  @override
+  Future<String> move(String src, String destDir, {String? asName}) => throw UnimplementedError();
 }

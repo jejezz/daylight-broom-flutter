@@ -1873,6 +1873,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'위치 열기'**
   String get storageReveal;
+
+  /// No description provided for @storageTrash.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보내기'**
+  String get storageTrash;
+
+  /// No description provided for @storageTrashTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보낼까요?'**
+  String get storageTrashTitle;
+
+  /// No description provided for @storageTrashFolderBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{path}\n\n이 폴더 안의 모든 파일(종류와 상관없이) 약 {size}를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.'**
+  String storageTrashFolderBody(String path, String size);
+
+  /// No description provided for @storageTrashFileBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{path}\n\n{size}를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.'**
+  String storageTrashFileBody(String path, String size);
+
+  /// No description provided for @storageTrashAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 이동'**
+  String get storageTrashAction;
+
+  /// No description provided for @storageTrashFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보내지 못했습니다: {error}'**
+  String storageTrashFailed(String error);
 }
 
 class _AppLocalizationsDelegate

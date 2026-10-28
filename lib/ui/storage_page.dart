@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../cleaner/disk_info.dart';
 import '../cleaner/format.dart';
 import '../diskusage/file_category.dart';
+import '../diskusage/protected_paths.dart';
 import '../diskusage/usage_controller.dart';
 import '../diskusage/usage_model.dart';
 import '../l10n/app_localizations.dart';
@@ -195,11 +196,37 @@ class _StoragePageState extends State<StoragePage> {
           dir: nav.dir ?? result.root,
           disk: widget.disk.info,
           onOpen: (d) => setState(() => nav.dir = d),
+          onTrash: (path, isDirectory, bytes) => _trash(result, category, path, isDirectory: isDirectory, bytes: bytes),
         ),
       const SizedBox(height: AppSpacing.lg),
       Text(l10n.storageScannedAt(_formatTime(result.scannedAt)), style: theme.textTheme.bodySmall),
       if (result.unreadable > 0) Text(l10n.storageUnreadable(result.unreadable), style: theme.textTheme.bodySmall),
     ]);
+  }
+
+  /// 확인 창을 거쳐 휴지통으로 보낸다. 실패하면 이유를 알린다.
+  Future<void> _trash(DiskUsage usage, FileCategory category, String path, {required bool isDirectory, required int bytes}) async {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.storageTrashTitle),
+        content: Text(isDirectory ? l10n.storageTrashFolderBody(path, formatBytes(bytes)) : l10n.storageTrashFileBody(path, formatBytes(bytes))),
+        actions: [
+          TextButton(autofocus: true, onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: theme.colorScheme.error, foregroundColor: theme.colorScheme.onError),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.storageTrashAction),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final error = await widget.usage.trash(usage.root, path, isDirectory: isDirectory, category: category, bytes: bytes);
+    if (error != null) messenger.showSnackBar(SnackBar(content: Text(l10n.storageTrashFailed(error))));
   }
 
   static String _formatTime(DateTime t) {
@@ -300,7 +327,7 @@ class _Categories extends StatelessWidget {
             icon: _categoryIcon(c),
             color: _categoryColor(c),
             title: _categoryLabel(l10n, c),
-            subtitle: l10n.storageFileCount(result.fileCounts[c.index]),
+            subtitle: result.countsStale ? null : l10n.storageFileCount(result.fileCounts[c.index]),
             bytes: result.bytesOf(c),
             fraction: total == 0 ? 0 : result.bytesOf(c) / total,
             onTap: result.bytesOf(c) == 0 ? null : () => onOpen(c),
@@ -312,13 +339,14 @@ class _Categories extends StatelessWidget {
 
 /// 2단계 이후: 한 종류 안에서 폴더별 크기. 폴더를 눌러 더 내려간다.
 class _Folders extends StatelessWidget {
-  const _Folders({required this.result, required this.category, required this.dir, required this.disk, required this.onOpen});
+  const _Folders({required this.result, required this.category, required this.dir, required this.disk, required this.onOpen, required this.onTrash});
 
   final DiskUsage result;
   final FileCategory category;
   final String dir;
   final DiskInfo disk;
   final ValueChanged<String> onOpen;
+  final void Function(String path, bool isDirectory, int bytes) onTrash;
 
   String _name(String path) {
     final cut = path.lastIndexOf(result.separator);
@@ -353,6 +381,10 @@ class _Folders extends StatelessWidget {
               onTap: () => onOpen(k.path),
               onReveal: () => disk.reveal(k.path),
               revealTooltip: l10n.storageReveal,
+              onTrash: isProtectedPath(k.path, root: result.root, separator: result.separator, windows: result.separator == r'\')
+                  ? null
+                  : () => onTrash(k.path, true, result.bytesUnderAll(k.path)),
+              trashTooltip: l10n.storageTrash,
             ),
           if (direct > 0)
             _Row(
@@ -382,6 +414,8 @@ class _Folders extends StatelessWidget {
                 bytes: f.bytes,
                 onReveal: () => disk.reveal(f.path),
                 revealTooltip: l10n.storageReveal,
+                onTrash: () => onTrash(f.path, false, f.bytes),
+                trashTooltip: l10n.storageTrash,
               ),
           ]),
         ),
@@ -402,6 +436,8 @@ class _Row extends StatelessWidget {
     this.onTap,
     this.onReveal,
     this.revealTooltip,
+    this.onTrash,
+    this.trashTooltip,
   });
 
   final IconData icon;
@@ -413,6 +449,8 @@ class _Row extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onReveal;
   final String? revealTooltip;
+  final VoidCallback? onTrash;
+  final String? trashTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -462,6 +500,14 @@ class _Row extends StatelessWidget {
               iconSize: 18,
               onPressed: onReveal,
               icon: const Icon(Icons.open_in_new_rounded),
+            ),
+          if (onTrash != null)
+            IconButton(
+              tooltip: trashTooltip,
+              visualDensity: VisualDensity.compact,
+              iconSize: 18,
+              onPressed: onTrash,
+              icon: const Icon(Icons.delete_outline_rounded),
             ),
           if (onTap != null) Icon(Icons.chevron_right_rounded, size: 18, color: theme.colorScheme.onSurfaceVariant),
         ]),

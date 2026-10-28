@@ -1053,4 +1053,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storageReveal => 'Show in folder';
+
+  @override
+  String get storageTrash => 'Move to Trash';
+
+  @override
+  String get storageTrashTitle => 'Move to the Trash?';
+
+  @override
+  String storageTrashFolderBody(String path, String size) {
+    return '$path\n\nEverything in this folder (of every kind), about $size, will be moved to the Trash. You can restore it from there.';
+  }
+
+  @override
+  String storageTrashFileBody(String path, String size) {
+    return '$path\n\n$size will be moved to the Trash. You can restore it from there.';
+  }
+
+  @override
+  String get storageTrashAction => 'Move to Trash';
+
+  @override
+  String storageTrashFailed(String error) {
+    return 'Could not move it to the Trash: $error';
+  }
 }

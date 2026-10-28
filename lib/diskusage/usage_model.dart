@@ -35,6 +35,7 @@ class DiskUsage {
     required this.dirs,
     required this.topFiles,
     required this.unreadable,
+    this.countsStale = false,
   });
 
   final String root;
@@ -53,6 +54,9 @@ class DiskUsage {
   /// 권한 등으로 읽지 못한 폴더·파일 수. 있으면 합계가 실제보다 작다.
   final int unreadable;
 
+  /// 폴더를 지운 뒤에는 종류별 파일 수를 정확히 알 수 없다 (다시 분석하면 바로잡힌다).
+  bool countsStale;
+
   static const _formatVersion = 1;
 
   Map<String, Object?> toJson() => {
@@ -62,6 +66,7 @@ class DiskUsage {
         'at': scannedAt.millisecondsSinceEpoch,
         'counts': fileCounts,
         'unreadable': unreadable,
+        'stale': countsStale,
         'dirs': dirs,
         'top': [
           for (final list in topFiles) [for (final f in list) [f.path, f.bytes]],
@@ -91,6 +96,7 @@ class DiskUsage {
         dirs: dirs,
         topFiles: top,
         unreadable: j['unreadable']! as int,
+        countsStale: j['stale'] == true,
       );
     } on FormatException {
       rethrow;
@@ -119,6 +125,43 @@ class DiskUsage {
 
   /// [dir] 에 직접 들어 있는 (하위 폴더 제외) 파일의 합. 합쳐진 작은 하위 폴더는 여기에 들어 있다.
   int directBytes(FileCategory c, String dir) => dirs[c.index][dir] ?? 0;
+
+  /// [dir] 아래 전체(하위 포함), 모든 종류를 합쳐서. 폴더를 통째로 지울 때 실제로 사라지는 양이다.
+  int bytesUnderAll(String dir) => FileCategory.values.fold(0, (a, c) => a + bytesUnder(c, dir));
+
+  /// 휴지통으로 보낸 폴더를 결과에서 뺀다 (모든 종류, 하위 포함, 가장 큰 파일 목록도).
+  void removeDirectory(String dir) {
+    final prefix = dir.endsWith(separator) ? dir : '$dir$separator';
+    for (final m in dirs) {
+      m.removeWhere((k, _) => k == dir || k.startsWith(prefix));
+    }
+    for (final l in topFiles) {
+      l.removeWhere((f) => f.path.startsWith(prefix));
+    }
+    countsStale = true;
+  }
+
+  /// 휴지통으로 보낸 파일 하나를 [c] 종류에서 뺀다. 작은 폴더로 합쳐져 있으면 가장 가까운 상위 폴더에서 뺀다.
+  void removeFile(FileCategory c, String path, int bytes) {
+    final m = dirs[c.index];
+    var cut = path.lastIndexOf(separator);
+    while (cut >= 0) {
+      final dir = path.substring(0, cut);
+      final key = m.containsKey(dir) ? dir : (m.containsKey('$dir$separator') ? '$dir$separator' : null); // "C:" -> "C:\", "" -> "/"
+      if (key != null) {
+        final left = m[key]! - bytes;
+        if (left > 0) {
+          m[key] = left;
+        } else {
+          m.remove(key);
+        }
+        break;
+      }
+      cut = dir.lastIndexOf(separator);
+    }
+    topFiles[c.index].removeWhere((f) => f.path == path);
+    if (fileCounts[c.index] > 0) fileCounts[c.index]--;
+  }
 
   /// [dir] 아래 전체(하위 포함).
   int bytesUnder(FileCategory c, String dir) {

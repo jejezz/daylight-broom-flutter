@@ -2,6 +2,7 @@ import 'package:daylight_broom/cleaner/disk_info.dart';
 import 'package:daylight_broom/diskusage/file_category.dart';
 import 'package:daylight_broom/diskusage/usage_controller.dart';
 import 'package:daylight_broom/diskusage/usage_model.dart';
+import 'package:daylight_broom/engine/file_ops.dart';
 import 'package:daylight_broom/l10n/app_localizations.dart';
 import 'package:daylight_broom/theme/app_theme.dart';
 import 'package:daylight_broom/ui/storage_page.dart';
@@ -131,4 +132,63 @@ void main() {
     expect(find.text('Cancel'), findsOneWidget);
     expect(find.text('Analyze'), findsNothing);
   });
+
+  testWidgets('폴더 삭제는 확인 창을 거쳐 휴지통으로 가고, 취소하면 아무 일도 없다', (tester) async {
+    tester.view.physicalSize = const Size(1000, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final disk = DiskController(_FakeDisk(const [DiskVolume(name: 'Mac', path: '/r', isSystem: true, total: 100000, free: 50000)]));
+    await tester.runAsync(disk.refresh);
+    final trashed = <String>[];
+    final usage = UsageController(ops: _RecordingOps(trashed));
+    usage.of('/r')
+      ..result = _sample()
+      ..status = UsageStatus.done;
+    await tester.pumpWidget(MaterialApp(
+      theme: AppTheme.dark(),
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: StoragePage(disk: disk, usage: usage)),
+    ));
+    await tester.pump();
+    await tester.tap(find.text('Video').first);
+    await tester.pump();
+
+    // 취소.
+    await tester.tap(find.byTooltip('Move to Trash').first); // Movies (가장 큼)
+    await tester.pumpAndSettle();
+    expect(find.text('Move to the Trash?'), findsOneWidget);
+    expect(find.textContaining('Everything in this folder'), findsOneWidget);
+    expect(find.descendant(of: find.byType(AlertDialog), matching: find.textContaining('/r/Movies')), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(trashed, isEmpty);
+    expect(find.text('Movies'), findsOneWidget);
+
+    // 확인.
+    await tester.tap(find.byTooltip('Move to Trash').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Move to Trash'));
+    await tester.pumpAndSettle();
+    expect(trashed, ['/r/Movies']);
+    expect(find.text('Movies'), findsNothing);
+    expect(find.text('Downloads'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+}
+
+class _RecordingOps implements FileOps {
+  _RecordingOps(this.trashed);
+
+  final List<String> trashed;
+
+  @override
+  Future<String?> trash(String path) async {
+    trashed.add(path);
+    return null;
+  }
+
+  @override
+  Future<String> move(String src, String destDir, {String? asName}) => throw UnimplementedError();
 }
