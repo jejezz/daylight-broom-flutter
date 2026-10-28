@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:daylight_broom/diskusage/file_category.dart';
+import 'package:daylight_broom/diskusage/usage_cache.dart';
 import 'package:daylight_broom/diskusage/usage_controller.dart';
 import 'package:daylight_broom/diskusage/usage_model.dart';
 import 'package:daylight_broom/diskusage/usage_scanner.dart';
@@ -136,6 +137,70 @@ void main() {
       expect(c.of(root.path).status, UsageStatus.done);
       expect(c.of(root.path).result!.totalBytes, 7850);
       expect(c.scanning, isNull);
+    });
+  });
+
+  group('캐시', () {
+    late Directory dir;
+    setUp(() => dir = Directory.systemTemp.createTempSync('daylight_broom_usage_cache_'));
+    tearDown(() => dir.deleteSync(recursive: true));
+
+    DiskUsage sample(String root) => DiskUsage(
+          root: root,
+          separator: '/',
+          scannedAt: DateTime.fromMillisecondsSinceEpoch(1700000000000),
+          fileCounts: [1, 2, 3, 4, 5],
+          dirs: [
+            for (var i = 0; i < FileCategory.values.length; i++) {'$root/d$i': 100 * (i + 1)},
+          ],
+          topFiles: [
+            for (var i = 0; i < FileCategory.values.length; i++) [UsageFile('$root/d$i/f', 7)],
+          ],
+          unreadable: 9,
+        );
+
+    test('파일 이름은 디스크마다 다르고 경로 문자를 쓰지 않는다', () {
+      expect(UsageCache.fileNameFor(r'C:'), 'usage_C.json');
+      expect(UsageCache.fileNameFor('/'), 'usage_root.json');
+      expect(UsageCache.fileNameFor('/Volumes/Data'), 'usage_Volumes_Data.json');
+    });
+
+    test('저장했다가 같은 내용으로 읽는다', () async {
+      final cache = UsageCache(dir);
+      await cache.save(sample('/r'));
+      final u = (await cache.load('/r'))!;
+      expect(u.root, '/r');
+      expect(u.unreadable, 9);
+      expect(u.fileCounts, [1, 2, 3, 4, 5]);
+      expect(u.bytesOf(FileCategory.video), 400);
+      expect(u.topFiles[0].single.path, '/r/d0/f');
+      expect(u.scannedAt, DateTime.fromMillisecondsSinceEpoch(1700000000000));
+      expect(await cache.load('/other'), isNull);
+    });
+
+    test('깨진 파일은 null 이고 .bak 으로 옮긴다', () async {
+      final cache = UsageCache(dir);
+      final name = UsageCache.fileNameFor('/r');
+      File('${dir.path}${Platform.pathSeparator}$name').writeAsStringSync('{"v":1,"dirs":3}');
+      expect(await cache.load('/r'), isNull);
+      expect(File('${dir.path}${Platform.pathSeparator}$name.bak').existsSync(), isTrue);
+    });
+
+    test('컨트롤러는 분석 끝에 저장하고, 다음 실행에서 불러온다', () async {
+      final tree = Directory.systemTemp.createTempSync('daylight_broom_usage_tree_');
+      addTearDown(() => tree.deleteSync(recursive: true));
+      _file(tree, 'a.pdf', 123);
+      final first = UsageController(cache: UsageCache(dir));
+      addTearDown(first.dispose);
+      await first.scan(tree.path);
+      expect(first.of(tree.path).status, UsageStatus.done);
+
+      final second = UsageController(cache: UsageCache(dir));
+      addTearDown(second.dispose);
+      expect(second.of(tree.path).result, isNull);
+      await second.restore(tree.path);
+      expect(second.of(tree.path).status, UsageStatus.done);
+      expect(second.of(tree.path).result!.bytesOf(FileCategory.documents), 123);
     });
   });
 }

@@ -5,6 +5,7 @@ import '../cleaner/disk_info.dart';
 import '../cleaner/junk_controller.dart';
 import '../cleaner/scan_target.dart';
 import '../cleaner/scanner.dart';
+import '../diskusage/usage_cache.dart';
 import '../diskusage/usage_controller.dart';
 import '../engine/tidy_service.dart';
 import '../uninstaller/app_scanner.dart';
@@ -73,7 +74,7 @@ class _BroomShellState extends State<BroomShell> {
             )
           : null);
   late final bool _ownsApps = widget.apps == null;
-  late final UsageController _usage = widget.usage ?? UsageController();
+  late final UsageController _usage = widget.usage ?? UsageController(cache: UsageCache.standard());
   late final bool _ownsUsage = widget.usage == null;
 
   @override
@@ -116,7 +117,7 @@ class _BroomShellState extends State<BroomShell> {
       HomeScreen(key: widget.homeKey, service: widget.service),
       if (junk != null) JunkPage(controller: junk),
       if (apps != null) (_appsVisited ? AppsPage(controller: apps, disk: _disk.info) : const SizedBox.shrink()),
-      StoragePage(disk: _disk, usage: _usage),
+      StoragePage(disk: _disk, usage: _usage, active: _index == items.length - 1),
     ];
     // 레일이 창 높이 전체를 쓰고, 앱 바는 오른쪽 내용 위에만 둔다.
     return Material(
