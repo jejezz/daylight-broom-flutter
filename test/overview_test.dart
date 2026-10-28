@@ -27,14 +27,14 @@ class _WalkSizer implements FolderSizer {
 
 /// 채널 대신 값을 돌려주는 DiskInfo.
 class _FakeDisk extends DiskInfo {
-  _FakeDisk({this.vol, this.fda, this.onOpen});
+  _FakeDisk({this.vol = const [], this.fda, this.onOpen});
 
-  final VolumeInfo? vol;
+  final List<DiskVolume> vol;
   final bool? fda;
   final VoidCallback? onOpen;
 
   @override
-  Future<VolumeInfo?> volume() async => vol;
+  Future<List<DiskVolume>> volumes() async => vol;
 
   @override
   Future<bool?> hasFullDiskAccess() async => fda;
@@ -45,53 +45,65 @@ class _FakeDisk extends DiskInfo {
 
 void main() {
   group('DiskInfo', () {
-    test('PowerShell 출력 "<총량> <여유>"를 읽는다', () {
-      final v = DiskInfo.parseDriveOutput('500000000000 125000000000\r\n')!;
-      expect(v.total, 500000000000);
-      expect(v.used, 375000000000);
-      expect(v.usedRatio, closeTo(0.75, 1e-9));
+    test('PowerShell 출력 "<이름>|<라벨>|<총량>|<여유>"를 읽는다', () {
+      final v = DiskInfo.parseDrivesOutput('C:\\|OS|500000000000|125000000000\r\nD:\\||2000|1000\r\n', systemLetter: 'C');
+      expect(v.length, 2);
+      expect(v[0].name, 'C: OS');
+      expect(v[0].isSystem, isTrue);
+      expect(v[0].used, 375000000000);
+      expect(v[0].usedRatio, closeTo(0.75, 1e-9));
+      expect(v[1].name, 'D:');
+      expect(v[1].isSystem, isFalse);
     });
 
-    test('이상한 출력은 null', () {
-      expect(DiskInfo.parseDriveOutput(''), isNull);
-      expect(DiskInfo.parseDriveOutput('abc def'), isNull);
-      expect(DiskInfo.parseDriveOutput('0 0'), isNull);
-      expect(DiskInfo.parseDriveOutput('1 2 3'), isNull);
+    test('이상한 줄은 건너뛴다', () {
+      expect(DiskInfo.parseDrivesOutput(''), isEmpty);
+      expect(DiskInfo.parseDrivesOutput('abc def'), isEmpty);
+      expect(DiskInfo.parseDrivesOutput('C:\\||0|0'), isEmpty);
+      expect(DiskInfo.parseDrivesOutput('C:\\||x|y'), isEmpty);
     });
 
-    test('Windows 는 PowerShell 로 읽고 드라이브 문자 한 글자만 스크립트에 넣는다', () async {
+    test('Windows 는 PowerShell 로 고정 디스크만 읽고 시스템 디스크를 앞에 둔다', () async {
       List<String>? args;
       final info = DiskInfo(
         isMac: false,
         isWindows: true,
-        env: {'SystemDrive': r'D:; calc'},
+        env: {'SystemDrive': 'D:'},
         run: (exe, a) async {
           args = a;
-          return ProcessResult(0, 0, '1000 400', '');
+          return ProcessResult(0, 0, 'C:\\||1000|500\r\nD:\\|Sys|2000|400\r\n', '');
         },
       );
-      final v = await info.volume();
-      expect(v!.free, 400);
-      expect(args!.last, contains("DriveInfo('D')"));
-      expect(args!.last, isNot(contains('calc')));
+      final v = await info.volumes();
+      expect(v.map((e) => e.path), [r'D:\', r'C:\']);
+      expect(v.first.free, 400);
+      expect(args!.last, contains("'Fixed'")); // 이동식·네트워크는 제외
       expect(await info.hasFullDiskAccess(), isNull); // macOS 에서만 의미가 있다
     });
 
-    test('macOS 는 채널 값을 쓰고, 채널이 없으면 null', () async {
+    test('macOS 는 채널 값을 쓰고, 채널이 없으면 빈 목록', () async {
       TestWidgetsFlutterBinding.ensureInitialized();
       const channel = MethodChannel('art.zoomon.daylightbroom/system');
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
-        if (call.method == 'volumeInfo') return {'total': 1000, 'free': 250};
+        if (call.method == 'volumes') {
+          return [
+            {'name': 'Data', 'path': '/Volumes/Data', 'total': 2000, 'free': 500},
+            {'name': 'Macintosh HD', 'path': '/', 'total': 1000, 'free': 250},
+          ];
+        }
         if (call.method == 'hasFullDiskAccess') return false;
         return null;
       });
       addTearDown(() => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
       final info = DiskInfo(isMac: true, isWindows: false);
-      expect((await info.volume())!.usedRatio, 0.75);
+      final v = await info.volumes();
+      expect(v.length, 2);
+      expect(v.first.isSystem, isTrue);
+      expect(v.first.usedRatio, 0.75);
       expect(await info.hasFullDiskAccess(), isFalse);
 
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
-      expect(await info.volume(), isNull);
+      expect(await info.volumes(), isEmpty);
     });
   });
 
@@ -140,7 +152,7 @@ void main() {
       tester.view.physicalSize = const Size(960, 640);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
-      final disk = DiskController(_FakeDisk(vol: const VolumeInfo(total: 1000000, free: 250000), fda: true));
+      final disk = DiskController(_FakeDisk(vol: const [DiskVolume(name: 'C:', path: r'C:', isSystem: true, total: 1000000, free: 250000)], fda: true));
       await tester.runAsync(disk.refresh);
       await tester.pumpWidget(host(disk));
       await tester.pump(const Duration(seconds: 2));
@@ -154,12 +166,32 @@ void main() {
       expect(find.text('Cleaning the current selection frees about 2.0 KB'), findsOneWidget);
     });
 
+    testWidgets('디스크가 둘 이상이면 칩으로 고르고, 정크 정보는 시스템 디스크에서만 보인다', (tester) async {
+      tester.view.physicalSize = const Size(960, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final disk = DiskController(_FakeDisk(vol: const [
+        DiskVolume(name: 'C:', path: r'C:\', isSystem: true, total: 1000000, free: 250000),
+        DiskVolume(name: 'D: Data', path: r'D:\', isSystem: false, total: 2000000, free: 1000000),
+      ]));
+      await tester.runAsync(disk.refresh);
+      await tester.pumpWidget(host(disk));
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.text('75%'), findsOneWidget);
+      expect(find.text('Junk found'), findsOneWidget);
+
+      await tester.tap(find.textContaining('D: Data'));
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.text('50%'), findsOneWidget);
+      expect(find.text('Junk found'), findsNothing);
+    });
+
     testWidgets('전체 디스크 접근이 꺼져 있으면 배너와 설정 열기가 나온다', (tester) async {
       tester.view.physicalSize = const Size(960, 640);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       var opened = 0;
-      final disk = DiskController(_FakeDisk(vol: const VolumeInfo(total: 100, free: 50), fda: false, onOpen: () => opened++));
+      final disk = DiskController(_FakeDisk(vol: const [DiskVolume(name: 'C:', path: r'C:', isSystem: true, total: 100, free: 50)], fda: false, onOpen: () => opened++));
       await tester.runAsync(disk.refresh);
       await tester.pumpWidget(host(disk));
       await tester.pump(const Duration(seconds: 2));
@@ -185,7 +217,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       var went = 0;
-      final disk = DiskController(_FakeDisk(vol: const VolumeInfo(total: 100, free: 50)));
+      final disk = DiskController(_FakeDisk(vol: const [DiskVolume(name: 'C:', path: r'C:', isSystem: true, total: 100, free: 50)]));
       await tester.runAsync(disk.refresh);
       await tester.pumpWidget(host(disk, onGoToJunk: () => went++));
       await tester.pump(const Duration(seconds: 2));
