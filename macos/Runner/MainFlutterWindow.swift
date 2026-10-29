@@ -39,15 +39,25 @@ class MainFlutterWindow: NSWindow {
     systemChannel.setMethodCallHandler { call, result in
       let args = call.arguments as? [String: Any] ?? [:]
       switch call.method {
-      // Finder·"이 Mac에 관하여"가 보여 주는 값: 비울 수 있는(purgeable) 공간을 여유로 센다.
-      case "volumeInfo":
-        let url = URL(fileURLWithPath: args["path"] as? String ?? "/")
-        do {
-          let v = try url.resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityForImportantUsageKey])
-          result(["total": v.volumeTotalCapacity ?? 0, "free": v.volumeAvailableCapacityForImportantUsage ?? 0])
-        } catch {
-          result(FlutterError(code: "volumeInfo", message: error.localizedDescription, details: nil))
+      // 내장 디스크만: 이동식·네트워크·디스크 이미지는 뺀다. 용량은 Finder와 같은 기준(비울 수 있는 공간을 여유로 센다).
+      case "volumes":
+        let keys: [URLResourceKey] = [
+          .volumeNameKey, .volumeIsLocalKey, .volumeIsInternalKey, .volumeIsRemovableKey,
+          .volumeTotalCapacityKey, .volumeAvailableCapacityForImportantUsageKey,
+        ]
+        let urls = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]) ?? []
+        var list: [[String: Any]] = []
+        for url in urls {
+          guard let v = try? url.resourceValues(forKeys: Set(keys)),
+                v.volumeIsLocal == true, v.volumeIsInternal == true, v.volumeIsRemovable != true else { continue }
+          list.append([
+            "name": v.volumeName ?? url.lastPathComponent,
+            "path": url.path,
+            "total": v.volumeTotalCapacity ?? 0,
+            "free": v.volumeAvailableCapacityForImportantUsage ?? 0,
+          ])
         }
+        result(list)
       // TCC에는 공개 API가 없다. TCC가 지키는 파일을 실제로 열어 보는 것이 표준 방법이다
       // (isReadableFile/access(2)는 POSIX 권한만 보고 TCC를 무시한다).
       case "hasFullDiskAccess":

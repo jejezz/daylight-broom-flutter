@@ -48,7 +48,8 @@ class _FixedSizer implements FolderSizer {
 
 class _SampleDisk extends DiskInfo {
   @override
-  Future<VolumeInfo?> volume() async => const VolumeInfo(total: 494000000000, free: 183000000000);
+  Future<List<DiskVolume>> volumes() async =>
+      [const DiskVolume(name: 'Macintosh HD', path: '/', isSystem: true, total: 494000000000, free: 183000000000)];
 
   @override
   Future<bool?> hasFullDiskAccess() async => true;
