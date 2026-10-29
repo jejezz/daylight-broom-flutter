@@ -56,6 +56,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get languageSystemShort => '시스템';
 
   @override
+  String get settingsTooltip => '설정';
+
+  @override
+  String get settingsTitle => '설정';
+
+  @override
+  String get settingsSectionAppearance => '외형';
+
+  @override
+  String get settingsMode => '모드';
+
+  @override
+  String get settingsModeSystem => '시스템';
+
+  @override
+  String get settingsPalette => '색 구성';
+
+  @override
+  String get settingsPaletteSaturn => '새턴';
+
+  @override
+  String get settingsPaletteTeal => '청록';
+
+  @override
+  String get settingsPaletteAmber => '호박';
+
+  @override
+  String get settingsPaletteRose => '장미';
+
+  @override
+  String get settingsPaletteSlate => '슬레이트';
+
+  @override
+  String get settingsPaletteHighContrast => '고대비';
+
+  @override
   String get aboutTagline => '정크를 치우고, 앱을 깔끔히 지우고, 폴더를 규칙대로 정리합니다';
 
   @override

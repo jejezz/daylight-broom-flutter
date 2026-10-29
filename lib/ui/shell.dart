@@ -10,7 +10,7 @@ import '../uninstaller/app_scanner.dart';
 import '../uninstaller/app_trasher.dart';
 import '../uninstaller/apps_controller.dart';
 import '../l10n/app_localizations.dart';
-import '../settings/settings_menus.dart';
+import '../settings/settings_dialog.dart';
 import '../system/login_item.dart';
 import '../theme/app_theme.dart';
 import '../window/focus_tint.dart';
@@ -128,8 +128,11 @@ class _BroomShellState extends State<BroomShell> {
                 actions: [
                   LoginItemMenuButton(controller: widget.loginItem),
                   const CleanupOptionsButton(),
-                  const ThemeMenuButton(),
-                  const LanguageMenuButton(),
+                  IconButton(
+                    tooltip: AppLocalizations.of(context).settingsTooltip,
+                    icon: const Icon(Icons.settings_outlined),
+                    onPressed: () => showSettingsDialog(context),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                 ],
               ),

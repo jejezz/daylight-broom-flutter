@@ -10,6 +10,34 @@ import 'package:flutter/material.dart';
 
 import 'broom_style.dart';
 
+/// 고를 수 있는 색 구성 (settings-screen.md §4). 기본 [saturn]은 이 파일의 고정 팔레트
+/// 그대로이고, [highContrast] 전을 뺀 나머지는 주색(primary)만 바꾼다(다크·라이트 한 쌍).
+enum AccentPalette {
+  saturn(Color(0xFF4C9DFF), Color(0xFF2C6BE0)),
+  teal(Color(0xFF2DD4BF), Color(0xFF0F766E)),
+  amber(Color(0xFFFBBF24), Color(0xFFB45309)),
+  rose(Color(0xFFFB7185), Color(0xFFBE123C)),
+  slate(Color(0xFF94A3B8), Color(0xFF475569)),
+  highContrast(Color(0xFFFFD60A), Color(0xFF0000CC));
+
+  const AccentPalette(this.darkPrimary, this.lightPrimary);
+
+  final Color darkPrimary;
+  final Color lightPrimary;
+
+  Color primaryFor(Brightness b) => b == Brightness.dark ? darkPrimary : lightPrimary;
+
+  ColorScheme apply(ColorScheme scheme) {
+    if (this == saturn || this == highContrast) return scheme;
+    final dark = scheme.brightness == Brightness.dark;
+    return scheme.copyWith(
+      primary: dark ? darkPrimary : lightPrimary,
+      onPrimary: dark ? AppColors.bg : Colors.white,
+      inversePrimary: dark ? lightPrimary : darkPrimary,
+    );
+  }
+}
+
 abstract final class AppColors {
   // Dark
   static const bg = Color(0xFF0A0E14);
@@ -81,8 +109,8 @@ abstract final class AppFonts {
 }
 
 abstract final class AppTheme {
-  static ThemeData dark({bool dense = true}) => _base(
-        const ColorScheme(
+  static ThemeData dark({bool dense = true, AccentPalette palette = AccentPalette.saturn}) => _base(
+        palette.apply(const ColorScheme(
           brightness: Brightness.dark,
           primary: AppColors.primary,
           onPrimary: Colors.white,
@@ -105,15 +133,15 @@ abstract final class AppTheme {
           inversePrimary: AppColors.primaryDeep,
           shadow: Colors.black,
           scrim: Colors.black,
-        ),
+        )),
         background: AppColors.bg,
         textLow: AppColors.textLow,
         broom: BroomStyle.dark,
         dense: dense,
       );
 
-  static ThemeData light({bool dense = true}) => _base(
-        const ColorScheme(
+  static ThemeData light({bool dense = true, AccentPalette palette = AccentPalette.saturn}) => _base(
+        palette.apply(const ColorScheme(
           brightness: Brightness.light,
           primary: AppColors.primaryDeep,
           onPrimary: Colors.white,
@@ -136,7 +164,7 @@ abstract final class AppTheme {
           inversePrimary: AppColors.primary,
           shadow: Colors.black,
           scrim: Colors.black,
-        ),
+        )),
         background: AppColors.bgLight,
         textLow: AppColors.textLowLight,
         broom: BroomStyle.light,
