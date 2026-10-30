@@ -5,6 +5,7 @@
 //   언어 해석 · macOS 앱 메뉴 About · 앱 바 [테마 | 언어 | 정보] · 빈 상태.
 // 기존 앱에는 통째로 덮어쓰지 말고 필요한 부분만 옮긴다.
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -45,31 +46,10 @@ Future<void> main(List<String> args) async {
   final hadLegacyLoginItem = await migration.removeLegacyLoginItem();
   final settings = await AppSettings.load();
 
+  Future<void> Function()? showWindow;
   if (_isDesktop) {
     await windowManager.ensureInitialized();
-    // ui-ux.md §5: 최소 크기는 960×600 이하 (1366×768 노트북).
-    const windowSize = Size(960, 640);
-    // 시작 위치는 WindowPlacement — 모니터마다 배율이 다른 Windows 듀얼
-    // 모니터에서 center: true/저장 좌표 복원이 창을 화면 밖에 놓는다.
-    WindowPlacement? placement;
-    if (WindowPlacement.enabled) {
-      placement = WindowPlacement(await SharedPreferences.getInstance(), defaultSize: windowSize);
-    }
-    final options = WindowOptions(
-      size: windowSize,
-      minimumSize: const Size(800, 560),
-      center: placement == null,
-      title: AppIdentity.displayName,
-    );
-    await windowManager.waitUntilReadyToShow(options, () async {
-      // 백그라운드 시작이어도 위치는 잡아 둔다(center: true가 하던 일) — 나중에
-      // 트레이에서 열 때 같은 자리에 뜬다.
-      await placement?.placeInitially();
-      placement?.attach();
-      if (background) return;
-      await windowManager.show();
-      await windowManager.focus();
-    });
+    showWindow = await _prepareWindow(background: background);
   }
 
   final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null);
@@ -83,6 +63,52 @@ Future<void> main(List<String> args) async {
     service: updates,
     child: App(settings: settings, service: service, loginItem: loginItem, updates: updates),
   ));
+
+  if (showWindow != null) {
+    final show = showWindow;
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(show()));
+  }
+}
+
+/// 다음 프레임이 그려질 때까지 기다린다.
+Future<void> _nextFrame() {
+  final completer = Completer<void>();
+  WidgetsBinding.instance.addPostFrameCallback((_) => completer.complete());
+  WidgetsBinding.instance.scheduleFrame();
+  return completer.future;
+}
+
+/// ui-ux.md §5: 최소 크기는 960×600 이하 (1366×768 노트북).
+/// 시작 위치는 WindowPlacement — 모니터마다 배율이 다른 Windows 듀얼
+/// 모니터에서 center: true/저장 좌표 복원이 창을 화면 밖에 놓는다.
+/// 배치가 끝나고 첫 프레임이 그려진 뒤에 show() 를 불러야 깜빡이지 않는다 (§5).
+Future<Future<void> Function()> _prepareWindow({required bool background}) async {
+  const windowSize = Size(960, 640);
+  WindowPlacement? placement;
+  if (WindowPlacement.enabled) {
+    placement = WindowPlacement(await SharedPreferences.getInstance(), defaultSize: windowSize);
+  }
+  final options = WindowOptions(
+    size: windowSize,
+    minimumSize: const Size(800, 560),
+    center: placement == null,
+    title: AppIdentity.displayName,
+  );
+  final placed = Completer<void>();
+  await windowManager.waitUntilReadyToShow(options, () async {
+    // 백그라운드 시작이어도 위치는 잡아 둔다(center: true가 하던 일) — 나중에
+    // 트레이에서 열 때 같은 자리에 뜬다.
+    await placement?.placeInitially();
+    placed.complete();
+  });
+  return () async {
+    await placed.future;
+    placement?.attach();
+    if (background) return;
+    await _nextFrame();
+    await windowManager.show();
+    await windowManager.focus();
+  };
 }
 
 /// 저장된 규칙으로 감시를 시작한다. 규칙이 없으면 감시할 폴더도 없다.
