@@ -56,6 +56,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSystemShort => 'System';
 
   @override
+  String get settingsTooltip => 'Settings';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsSectionAppearance => 'Appearance';
+
+  @override
+  String get settingsMode => 'Mode';
+
+  @override
+  String get settingsModeSystem => 'System';
+
+  @override
+  String get settingsPalette => 'Color scheme';
+
+  @override
+  String get settingsPaletteSaturn => 'Saturn';
+
+  @override
+  String get settingsPaletteTeal => 'Teal';
+
+  @override
+  String get settingsPaletteAmber => 'Amber';
+
+  @override
+  String get settingsPaletteRose => 'Rose';
+
+  @override
+  String get settingsPaletteSlate => 'Slate';
+
+  @override
+  String get settingsPaletteHighContrast => 'High contrast';
+
+  @override
   String get aboutTagline =>
       'Clears junk, removes apps cleanly, and sorts your folders by your rules';
 
@@ -978,4 +1014,103 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get historyUninstallUndoHint =>
       'The app was moved to the Trash. To undo, restore it from the Trash yourself.';
+
+  @override
+  String get navStorage => 'Storage';
+
+  @override
+  String get storageTitle => 'Storage breakdown';
+
+  @override
+  String get storageIntro =>
+      'Scans the disk once and shows how much is used by applications, documents, music, video and everything else, and which folders hold it. This can take a few minutes depending on the disk.';
+
+  @override
+  String get storageAnalyze => 'Analyze';
+
+  @override
+  String get storageReanalyze => 'Analyze again';
+
+  @override
+  String get storageCancel => 'Cancel';
+
+  @override
+  String storageScanning(String files, String size) {
+    return 'Analyzing… $files files · $size';
+  }
+
+  @override
+  String get storageCancelled => 'Analysis was cancelled.';
+
+  @override
+  String get storageFailed => 'Could not analyze the disk.';
+
+  @override
+  String storageScannedAt(String time) {
+    return 'Analyzed $time';
+  }
+
+  @override
+  String storageUnreadable(int count) {
+    return '$count items could not be read, so sizes may be smaller than the real ones.';
+  }
+
+  @override
+  String get storageNoDisk => 'No readable disk was found.';
+
+  @override
+  String get storageCatApplications => 'Applications';
+
+  @override
+  String get storageCatDocuments => 'Documents';
+
+  @override
+  String get storageCatMusic => 'Music';
+
+  @override
+  String get storageCatVideo => 'Video';
+
+  @override
+  String get storageCatOther => 'Other';
+
+  @override
+  String storageFileCount(int count) {
+    return '$count files';
+  }
+
+  @override
+  String get storageEmptyCategory => 'No files of this kind.';
+
+  @override
+  String get storageDirectFiles => 'Files directly in this folder';
+
+  @override
+  String get storageLargestFiles => 'Largest files';
+
+  @override
+  String get storageReveal => 'Show in folder';
+
+  @override
+  String get storageTrash => 'Move to Trash';
+
+  @override
+  String get storageTrashTitle => 'Move to the Trash?';
+
+  @override
+  String storageTrashFolderBody(String path, String size) {
+    return '$path\n\nEverything in this folder (of every kind), about $size, will be moved to the Trash. You can restore it from there.';
+  }
+
+  @override
+  String storageTrashFileBody(String path, String size) {
+    return '$path\n\n$size will be moved to the Trash. You can restore it from there.';
+  }
+
+  @override
+  String get storageTrashAction => 'Move to Trash';
+
+  @override
+  String storageTrashFailed(String error) {
+    return 'Could not move it to the Trash: $error';
+  }
 }

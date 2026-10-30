@@ -56,6 +56,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get languageSystemShort => '시스템';
 
   @override
+  String get settingsTooltip => '설정';
+
+  @override
+  String get settingsTitle => '설정';
+
+  @override
+  String get settingsSectionAppearance => '외형';
+
+  @override
+  String get settingsMode => '모드';
+
+  @override
+  String get settingsModeSystem => '시스템';
+
+  @override
+  String get settingsPalette => '색 구성';
+
+  @override
+  String get settingsPaletteSaturn => '새턴';
+
+  @override
+  String get settingsPaletteTeal => '청록';
+
+  @override
+  String get settingsPaletteAmber => '호박';
+
+  @override
+  String get settingsPaletteRose => '장미';
+
+  @override
+  String get settingsPaletteSlate => '슬레이트';
+
+  @override
+  String get settingsPaletteHighContrast => '고대비';
+
+  @override
   String get aboutTagline => '정크를 치우고, 앱을 깔끔히 지우고, 폴더를 규칙대로 정리합니다';
 
   @override
@@ -961,4 +997,103 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get historyUninstallUndoHint =>
       '앱 제거는 휴지통으로 옮겼습니다. 되돌리려면 휴지통에서 직접 복원하세요.';
+
+  @override
+  String get navStorage => '디스크 분석';
+
+  @override
+  String get storageTitle => '디스크 분석';
+
+  @override
+  String get storageIntro =>
+      '디스크를 한 번 훑어서 어플리케이션·문서·음악·비디오·기타별로 얼마나 쓰는지, 어느 폴더에 있는지 보여 줍니다. 디스크 크기에 따라 몇 분 걸릴 수 있습니다.';
+
+  @override
+  String get storageAnalyze => '분석 시작';
+
+  @override
+  String get storageReanalyze => '다시 분석';
+
+  @override
+  String get storageCancel => '취소';
+
+  @override
+  String storageScanning(String files, String size) {
+    return '분석 중… 파일 $files개 · $size';
+  }
+
+  @override
+  String get storageCancelled => '분석을 취소했습니다.';
+
+  @override
+  String get storageFailed => '분석하지 못했습니다.';
+
+  @override
+  String storageScannedAt(String time) {
+    return '$time 분석';
+  }
+
+  @override
+  String storageUnreadable(int count) {
+    return '읽지 못한 항목이 $count개 있어 실제보다 작게 보일 수 있습니다.';
+  }
+
+  @override
+  String get storageNoDisk => '읽을 수 있는 디스크가 없습니다.';
+
+  @override
+  String get storageCatApplications => '어플리케이션';
+
+  @override
+  String get storageCatDocuments => '문서';
+
+  @override
+  String get storageCatMusic => '음악';
+
+  @override
+  String get storageCatVideo => '비디오';
+
+  @override
+  String get storageCatOther => '기타';
+
+  @override
+  String storageFileCount(int count) {
+    return '파일 $count개';
+  }
+
+  @override
+  String get storageEmptyCategory => '이 종류의 파일이 없습니다.';
+
+  @override
+  String get storageDirectFiles => '이 폴더에 바로 있는 파일';
+
+  @override
+  String get storageLargestFiles => '가장 큰 파일';
+
+  @override
+  String get storageReveal => '위치 열기';
+
+  @override
+  String get storageTrash => '휴지통으로 보내기';
+
+  @override
+  String get storageTrashTitle => '휴지통으로 보낼까요?';
+
+  @override
+  String storageTrashFolderBody(String path, String size) {
+    return '$path\n\n이 폴더 안의 모든 파일(종류와 상관없이) 약 $size를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String storageTrashFileBody(String path, String size) {
+    return '$path\n\n$size를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String get storageTrashAction => '휴지통으로 이동';
+
+  @override
+  String storageTrashFailed(String error) {
+    return '휴지통으로 보내지 못했습니다: $error';
+  }
 }

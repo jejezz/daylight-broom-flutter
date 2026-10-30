@@ -15,6 +15,20 @@ class VolumeInfo {
   double get usedRatio => total == 0 ? 0 : (used / total).clamp(0, 1);
 }
 
+/// 개요에서 고를 수 있는 디스크 하나 (내장·고정 디스크만. 이동식·네트워크는 대상이 아니다).
+class DiskVolume extends VolumeInfo {
+  const DiskVolume({required this.name, required this.path, required this.isSystem, required super.total, required super.free});
+
+  /// 화면에 보이는 이름. Windows 는 "C:" 또는 "C: 라벨", macOS 는 볼륨 이름.
+  final String name;
+
+  /// 마운트 위치 (macOS `/`, Windows `C:\`).
+  final String path;
+
+  /// 운영체제가 설치된 디스크.
+  final bool isSystem;
+}
+
 /// 디스크 용량과 (macOS의) 전체 디스크 접근 권한. macOS는 Swift 채널
 /// (`macos/Runner/MainFlutterWindow.swift`), Windows는 PowerShell 로 읽는다.
 class DiskInfo {
@@ -31,41 +45,68 @@ class DiskInfo {
   final bool _isMac;
   final bool _isWindows;
 
-  /// 시스템 볼륨의 용량. 읽지 못하면 null.
-  Future<VolumeInfo?> volume() async {
+  /// 고정(내장) 디스크 목록. 시스템 디스크가 맨 앞이다. 읽지 못하면 빈 목록.
+  Future<List<DiskVolume>> volumes() async {
     try {
       if (_isMac) {
-        final r = await _channel.invokeMapMethod<String, dynamic>('volumeInfo', {'path': '/'});
-        if (r == null) return null;
-        return VolumeInfo(total: (r['total'] as num).toInt(), free: (r['free'] as num).toInt());
+        final r = await _channel.invokeListMethod<Map<Object?, Object?>>('volumes');
+        final list = <DiskVolume>[
+          for (final m in r ?? const <Map<Object?, Object?>>[])
+            if (((m['total'] as num?) ?? 0) > 0)
+              DiskVolume(
+                name: '${m['name'] ?? m['path']}',
+                path: '${m['path']}',
+                isSystem: m['path'] == '/',
+                total: (m['total'] as num).toInt(),
+                free: ((m['free'] as num?) ?? 0).toInt(),
+              ),
+        ];
+        return _systemFirst(list);
       }
       if (_isWindows) {
-        // 드라이브 문자 한 글자만 받아 스크립트에 넣는다 (환경 변수 값을 그대로 넣지 않는다).
-        final letter = RegExp(r'^[A-Za-z]').firstMatch(_env['SystemDrive'] ?? 'C:')?.group(0) ?? 'C';
         final r = await _run('powershell', [
           '-NoProfile',
           '-NonInteractive',
           '-Command',
-          "\$d = New-Object System.IO.DriveInfo('$letter'); Write-Output ('{0} {1}' -f \$d.TotalSize, \$d.AvailableFreeSpace)",
+          r"[System.IO.DriveInfo]::GetDrives() | Where-Object { $_.DriveType -eq 'Fixed' -and $_.IsReady } | "
+              r"ForEach-Object { '{0}|{1}|{2}|{3}' -f $_.Name, $_.VolumeLabel, $_.TotalSize, $_.AvailableFreeSpace }",
         ]);
-        if (r.exitCode != 0) return null;
-        return parseDriveOutput('${r.stdout}');
+        if (r.exitCode != 0) return const [];
+        final systemLetter = RegExp(r'^[A-Za-z]').firstMatch(_env['SystemDrive'] ?? 'C:')?.group(0)?.toUpperCase() ?? 'C';
+        return _systemFirst(parseDrivesOutput('${r.stdout}', systemLetter: systemLetter));
       }
     } on Object {
       // 읽지 못하면 화면은 "—"로 보여 준다.
     }
-    return null;
+    return const [];
   }
 
-  /// `"<총량> <여유>"` 한 줄을 읽는다.
+  static List<DiskVolume> _systemFirst(List<DiskVolume> list) =>
+      [...list.where((v) => v.isSystem), ...list.where((v) => !v.isSystem)];
+
+  /// 한 줄에 디스크 하나, `"<이름>|<라벨>|<총량>|<여유>"`.
   @visibleForTesting
-  static VolumeInfo? parseDriveOutput(String output) {
-    final parts = output.trim().split(RegExp(r'\s+'));
-    if (parts.length != 2) return null;
-    final total = int.tryParse(parts[0]);
-    final free = int.tryParse(parts[1]);
-    if (total == null || free == null || total <= 0) return null;
-    return VolumeInfo(total: total, free: free);
+  static List<DiskVolume> parseDrivesOutput(String output, {String systemLetter = 'C'}) {
+    final volumes = <DiskVolume>[];
+    for (final line in output.split(RegExp(r'[\r\n]+'))) {
+      final parts = line.trim().split('|');
+      if (parts.length < 4) continue;
+      final path = parts.first.trim();
+      final total = int.tryParse(parts[parts.length - 2].trim());
+      final free = int.tryParse(parts.last.trim());
+      if (path.isEmpty || total == null || free == null || total <= 0) continue;
+      final label = parts.sublist(1, parts.length - 2).join('|').trim();
+      final letter = path.substring(0, 1).toUpperCase();
+      final drive = '$letter:';
+      volumes.add(DiskVolume(
+        name: label.isEmpty ? drive : '$drive $label',
+        path: path,
+        isSystem: letter == systemLetter,
+        total: total,
+        free: free,
+      ));
+    }
+    return volumes;
   }
 
   /// macOS 에서만 의미가 있다. 다른 OS 와 실패는 null (해당 없음/모름).
@@ -85,6 +126,19 @@ class DiskInfo {
   Future<void> revealInFinder(String path) async {
     if (_isMac) await _channel.invokeMethod<void>('revealInFinder', {'path': path});
   }
+
+  /// Finder(macOS)나 탐색기(Windows)에서 그 항목을 고른 채로 연다.
+  Future<void> reveal(String path) async {
+    try {
+      if (_isMac) {
+        await _channel.invokeMethod<void>('revealInFinder', {'path': path});
+      } else if (_isWindows) {
+        await _run('explorer.exe', ['/select,$path']); // 성공해도 종료 코드가 1이라 값은 보지 않는다
+      }
+    } on Object {
+      // 열지 못해도 화면은 그대로 둔다.
+    }
+  }
 }
 
 /// 개요 화면의 디스크 상태.
@@ -93,14 +147,29 @@ class DiskController extends ChangeNotifier {
 
   final DiskInfo info;
 
-  VolumeInfo? volume;
+  List<DiskVolume> volumes = const [];
+  String? _selectedPath;
 
   /// null 이면 해당 없음(macOS 가 아님)이거나 알 수 없음.
   bool? fullDiskAccess;
   bool loaded = false;
 
+  /// 지금 고른 디스크. 고른 적이 없으면 시스템 디스크(목록의 첫 번째).
+  DiskVolume? get volume {
+    for (final v in volumes) {
+      if (v.path == _selectedPath) return v;
+    }
+    return volumes.isEmpty ? null : volumes.first;
+  }
+
+  void select(DiskVolume v) {
+    if (v.path == volume?.path) return;
+    _selectedPath = v.path;
+    notifyListeners();
+  }
+
   Future<void> refresh() async {
-    volume = await info.volume();
+    volumes = await info.volumes();
     fullDiskAccess = await info.hasFullDiskAccess();
     loaded = true;
     notifyListeners();

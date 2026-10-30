@@ -21,6 +21,7 @@ class OverviewPage extends StatelessWidget {
     required this.service,
     required this.onGoToJunk,
     required this.onGoToTidy,
+    this.onGoToStorage,
   });
 
   final DiskController disk;
@@ -28,6 +29,7 @@ class OverviewPage extends StatelessWidget {
   final TidyService service;
   final VoidCallback onGoToJunk;
   final VoidCallback onGoToTidy;
+  final VoidCallback? onGoToStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,8 @@ class OverviewPage extends StatelessWidget {
         final theme = Theme.of(context);
         final v = disk.volume;
         final j = junk;
-        final selected = j?.selectedBytes ?? 0;
+        final onSystemDisk = v == null || v.isSystem; // 정크 정리는 시스템 디스크의 사용자 영역만 다룬다
+        final selected = onSystemDisk ? (j?.selectedBytes ?? 0) : 0;
         return SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -47,6 +50,17 @@ class OverviewPage extends StatelessWidget {
               GhostButton(label: l10n.overviewRefresh, icon: Icons.refresh_rounded, small: true, onPressed: disk.refresh),
             ]),
             const SizedBox(height: AppSpacing.lg),
+            if (disk.volumes.length > 1) ...[
+              Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
+                for (final d in disk.volumes)
+                  ChoiceChip(
+                    label: Text('${d.name} · ${formatBytes(d.total)}'),
+                    selected: d.path == v?.path,
+                    onSelected: (_) => disk.select(d),
+                  ),
+              ]),
+              const SizedBox(height: AppSpacing.lg),
+            ],
             GlassCard(
               padding: const EdgeInsets.all(AppSpacing.xl),
               glowColor: BroomAccent.violet,
@@ -66,7 +80,7 @@ class OverviewPage extends StatelessWidget {
                     _Stat(label: l10n.overviewFree, value: v == null ? '—' : formatBytes(v.free), color: BroomAccent.mint),
                     _Stat(label: l10n.overviewUsed, value: v == null ? '—' : formatBytes(v.used), color: BroomAccent.violet),
                     _Stat(label: l10n.overviewTotal, value: v == null ? '—' : formatBytes(v.total), color: theme.colorScheme.onSurfaceVariant),
-                    if (j != null) ...[
+                    if (j != null && onSystemDisk) ...[
                       const SizedBox(height: AppSpacing.sm),
                       Divider(color: context.broom.border),
                       const SizedBox(height: AppSpacing.sm),
@@ -117,6 +131,16 @@ class OverviewPage extends StatelessWidget {
                 ),
               ),
             ]),
+            if (onGoToStorage != null) ...[
+              const SizedBox(height: AppSpacing.lg),
+              _ActionCard(
+                icon: Icons.pie_chart_rounded,
+                gradient: BroomAccent.success,
+                title: l10n.storageTitle,
+                subtitle: l10n.storageIntro,
+                onTap: onGoToStorage,
+              ),
+            ],
             if (disk.fullDiskAccess == false) ...[
               const SizedBox(height: AppSpacing.lg),
               _FdaBanner(

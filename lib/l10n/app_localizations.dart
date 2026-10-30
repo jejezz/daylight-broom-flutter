@@ -182,6 +182,78 @@ abstract class AppLocalizations {
   /// **'시스템'**
   String get languageSystemShort;
 
+  /// No description provided for @settingsTooltip.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정'**
+  String get settingsTooltip;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsSectionAppearance.
+  ///
+  /// In ko, this message translates to:
+  /// **'외형'**
+  String get settingsSectionAppearance;
+
+  /// No description provided for @settingsMode.
+  ///
+  /// In ko, this message translates to:
+  /// **'모드'**
+  String get settingsMode;
+
+  /// No description provided for @settingsModeSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템'**
+  String get settingsModeSystem;
+
+  /// No description provided for @settingsPalette.
+  ///
+  /// In ko, this message translates to:
+  /// **'색 구성'**
+  String get settingsPalette;
+
+  /// No description provided for @settingsPaletteSaturn.
+  ///
+  /// In ko, this message translates to:
+  /// **'새턴'**
+  String get settingsPaletteSaturn;
+
+  /// No description provided for @settingsPaletteTeal.
+  ///
+  /// In ko, this message translates to:
+  /// **'청록'**
+  String get settingsPaletteTeal;
+
+  /// No description provided for @settingsPaletteAmber.
+  ///
+  /// In ko, this message translates to:
+  /// **'호박'**
+  String get settingsPaletteAmber;
+
+  /// No description provided for @settingsPaletteRose.
+  ///
+  /// In ko, this message translates to:
+  /// **'장미'**
+  String get settingsPaletteRose;
+
+  /// No description provided for @settingsPaletteSlate.
+  ///
+  /// In ko, this message translates to:
+  /// **'슬레이트'**
+  String get settingsPaletteSlate;
+
+  /// No description provided for @settingsPaletteHighContrast.
+  ///
+  /// In ko, this message translates to:
+  /// **'고대비'**
+  String get settingsPaletteHighContrast;
+
   /// No description provided for @aboutTagline.
   ///
   /// In ko, this message translates to:
@@ -1741,6 +1813,174 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'앱 제거는 휴지통으로 옮겼습니다. 되돌리려면 휴지통에서 직접 복원하세요.'**
   String get historyUninstallUndoHint;
+
+  /// No description provided for @navStorage.
+  ///
+  /// In ko, this message translates to:
+  /// **'디스크 분석'**
+  String get navStorage;
+
+  /// No description provided for @storageTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'디스크 분석'**
+  String get storageTitle;
+
+  /// No description provided for @storageIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'디스크를 한 번 훑어서 어플리케이션·문서·음악·비디오·기타별로 얼마나 쓰는지, 어느 폴더에 있는지 보여 줍니다. 디스크 크기에 따라 몇 분 걸릴 수 있습니다.'**
+  String get storageIntro;
+
+  /// No description provided for @storageAnalyze.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 시작'**
+  String get storageAnalyze;
+
+  /// No description provided for @storageReanalyze.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 분석'**
+  String get storageReanalyze;
+
+  /// No description provided for @storageCancel.
+  ///
+  /// In ko, this message translates to:
+  /// **'취소'**
+  String get storageCancel;
+
+  /// No description provided for @storageScanning.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석 중… 파일 {files}개 · {size}'**
+  String storageScanning(String files, String size);
+
+  /// No description provided for @storageCancelled.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석을 취소했습니다.'**
+  String get storageCancelled;
+
+  /// No description provided for @storageFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'분석하지 못했습니다.'**
+  String get storageFailed;
+
+  /// No description provided for @storageScannedAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'{time} 분석'**
+  String storageScannedAt(String time);
+
+  /// No description provided for @storageUnreadable.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽지 못한 항목이 {count}개 있어 실제보다 작게 보일 수 있습니다.'**
+  String storageUnreadable(int count);
+
+  /// No description provided for @storageNoDisk.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽을 수 있는 디스크가 없습니다.'**
+  String get storageNoDisk;
+
+  /// No description provided for @storageCatApplications.
+  ///
+  /// In ko, this message translates to:
+  /// **'어플리케이션'**
+  String get storageCatApplications;
+
+  /// No description provided for @storageCatDocuments.
+  ///
+  /// In ko, this message translates to:
+  /// **'문서'**
+  String get storageCatDocuments;
+
+  /// No description provided for @storageCatMusic.
+  ///
+  /// In ko, this message translates to:
+  /// **'음악'**
+  String get storageCatMusic;
+
+  /// No description provided for @storageCatVideo.
+  ///
+  /// In ko, this message translates to:
+  /// **'비디오'**
+  String get storageCatVideo;
+
+  /// No description provided for @storageCatOther.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타'**
+  String get storageCatOther;
+
+  /// No description provided for @storageFileCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'파일 {count}개'**
+  String storageFileCount(int count);
+
+  /// No description provided for @storageEmptyCategory.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 종류의 파일이 없습니다.'**
+  String get storageEmptyCategory;
+
+  /// No description provided for @storageDirectFiles.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 폴더에 바로 있는 파일'**
+  String get storageDirectFiles;
+
+  /// No description provided for @storageLargestFiles.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 큰 파일'**
+  String get storageLargestFiles;
+
+  /// No description provided for @storageReveal.
+  ///
+  /// In ko, this message translates to:
+  /// **'위치 열기'**
+  String get storageReveal;
+
+  /// No description provided for @storageTrash.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보내기'**
+  String get storageTrash;
+
+  /// No description provided for @storageTrashTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보낼까요?'**
+  String get storageTrashTitle;
+
+  /// No description provided for @storageTrashFolderBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{path}\n\n이 폴더 안의 모든 파일(종류와 상관없이) 약 {size}를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.'**
+  String storageTrashFolderBody(String path, String size);
+
+  /// No description provided for @storageTrashFileBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{path}\n\n{size}를 휴지통으로 옮깁니다. 휴지통에서 되돌릴 수 있습니다.'**
+  String storageTrashFileBody(String path, String size);
+
+  /// No description provided for @storageTrashAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 이동'**
+  String get storageTrashAction;
+
+  /// No description provided for @storageTrashFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보내지 못했습니다: {error}'**
+  String storageTrashFailed(String error);
 }
 
 class _AppLocalizationsDelegate

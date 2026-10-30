@@ -5,12 +5,14 @@ import '../cleaner/disk_info.dart';
 import '../cleaner/junk_controller.dart';
 import '../cleaner/scan_target.dart';
 import '../cleaner/scanner.dart';
+import '../diskusage/usage_cache.dart';
+import '../diskusage/usage_controller.dart';
 import '../engine/tidy_service.dart';
 import '../uninstaller/app_scanner.dart';
 import '../uninstaller/app_trasher.dart';
 import '../uninstaller/apps_controller.dart';
 import '../l10n/app_localizations.dart';
-import '../settings/settings_menus.dart';
+import '../settings/settings_dialog.dart';
 import '../system/login_item.dart';
 import '../theme/app_theme.dart';
 import '../window/focus_tint.dart';
@@ -22,11 +24,12 @@ import 'home_screen.dart';
 import 'junk_page.dart';
 import 'login_item_button.dart';
 import 'overview_page.dart';
+import 'storage_page.dart';
 
 /// 앱의 뼈대: 왼쪽 NavRail + 오른쪽 페이지. 페이지는 목록(`_pages`)에서 고르므로
 /// 정크·앱 제거 같은 새 기능은 항목 하나를 더하면 레일에 나타난다.
 class BroomShell extends StatefulWidget {
-  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk, this.apps});
+  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk, this.apps, this.usage});
 
   final VoidCallback onAbout;
   final TidyService service;
@@ -43,6 +46,9 @@ class BroomShell extends StatefulWidget {
 
   /// 앱 제거 상태. null 이면 이 OS 용으로 만든다 (지금은 macOS 만 지원).
   final AppsController? apps;
+
+  /// 디스크 분석 상태. null 이면 만들어 쓴다.
+  final UsageController? usage;
 
   @override
   State<BroomShell> createState() => _BroomShellState();
@@ -68,6 +74,8 @@ class _BroomShellState extends State<BroomShell> {
             )
           : null);
   late final bool _ownsApps = widget.apps == null;
+  late final UsageController _usage = widget.usage ?? UsageController(cache: UsageCache.standard(), onTrashed: _disk.refresh);
+  late final bool _ownsUsage = widget.usage == null;
 
   @override
   void initState() {
@@ -79,6 +87,7 @@ class _BroomShellState extends State<BroomShell> {
   void dispose() {
     if (_ownsJunk) _junk?.dispose();
     if (_ownsApps) _apps?.dispose();
+    if (_ownsUsage) _usage.dispose();
     if (_ownsDisk) _disk.dispose();
     super.dispose();
   }
@@ -94,6 +103,7 @@ class _BroomShellState extends State<BroomShell> {
       NavItem(icon: Icons.auto_awesome_rounded, label: l10n.navTidy),
       if (junk != null) NavItem(icon: Icons.cleaning_services_rounded, label: l10n.navJunk),
       if (apps != null) NavItem(icon: Icons.apps_rounded, label: l10n.navApps),
+      NavItem(icon: Icons.pie_chart_rounded, label: l10n.navStorage), // 맨 뒤: 앞 페이지들의 번호가 밀리지 않게
     ];
     final pages = [
       OverviewPage(
@@ -102,10 +112,12 @@ class _BroomShellState extends State<BroomShell> {
         service: widget.service,
         onGoToJunk: () => setState(() => _index = 2),
         onGoToTidy: () => setState(() => _index = 1),
+        onGoToStorage: () => setState(() => _index = items.length - 1),
       ),
       HomeScreen(key: widget.homeKey, service: widget.service),
       if (junk != null) JunkPage(controller: junk),
       if (apps != null) (_appsVisited ? AppsPage(controller: apps, disk: _disk.info) : const SizedBox.shrink()),
+      StoragePage(disk: _disk, usage: _usage, active: _index == items.length - 1),
     ];
     // 레일이 창 높이 전체를 쓰고, 앱 바는 오른쪽 내용 위에만 둔다.
     return Material(
@@ -128,8 +140,11 @@ class _BroomShellState extends State<BroomShell> {
                 actions: [
                   LoginItemMenuButton(controller: widget.loginItem),
                   const CleanupOptionsButton(),
-                  const ThemeMenuButton(),
-                  const LanguageMenuButton(),
+                  IconButton(
+                    tooltip: AppLocalizations.of(context).settingsTooltip,
+                    icon: const Icon(Icons.settings_outlined),
+                    onPressed: () => showSettingsDialog(context),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                 ],
               ),

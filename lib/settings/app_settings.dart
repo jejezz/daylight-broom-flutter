@@ -8,18 +8,23 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppSettings extends ChangeNotifier {
-  AppSettings._(this._prefs, this._themeMode, this._locale, this._removeEmptyFolders, this._collapsedRuleFolders);
+import '../theme/app_theme.dart';
 
-  /// 저장 키 — 모든 앱 공통 (localization.md §5). 바꾸지 않는다.
+class AppSettings extends ChangeNotifier {
+  AppSettings._(this._prefs, this._themeMode, this._locale, this._accentPalette, this._removeEmptyFolders,
+      this._collapsedRuleFolders);
+
+  /// 저장 키 — 모든 앱 공통 (localization.md §5, settings-screen.md §4). 바꾸지 않는다.
   static const themeModeKey = 'theme_mode';
   static const localeKey = 'app_locale';
+  static const accentPaletteKey = 'accent_palette';
   static const removeEmptyFoldersKey = 'remove_empty_folders';
   static const collapsedRuleFoldersKey = 'collapsed_rule_folders';
 
   final SharedPreferences _prefs;
   ThemeMode _themeMode;
   Locale? _locale;
+  AccentPalette _accentPalette;
   bool _removeEmptyFolders;
   final Set<String> _collapsedRuleFolders;
 
@@ -35,10 +40,12 @@ class AppSettings extends ChangeNotifier {
     }
     final mode = ThemeMode.values.asNameMap()[prefs.getString(themeModeKey)] ?? ThemeMode.system;
     final code = prefs.getString(localeKey);
+    final palette = AccentPalette.values.asNameMap()[prefs.getString(accentPaletteKey)] ?? AccentPalette.saturn;
     return AppSettings._(
       prefs,
       mode,
       code == null ? null : Locale(code),
+      palette,
       prefs.getBool(removeEmptyFoldersKey) ?? false,
       (prefs.getStringList(collapsedRuleFoldersKey) ?? const []).toSet(),
     );
@@ -48,6 +55,8 @@ class AppSettings extends ChangeNotifier {
 
   /// null = 시스템 언어를 따른다.
   Locale? get locale => _locale;
+
+  AccentPalette get accentPalette => _accentPalette;
 
   /// 하위 폴더의 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지울지. 기본은 지우지 않는다.
   bool get removeEmptyFolders => _removeEmptyFolders;
@@ -73,6 +82,13 @@ class AppSettings extends ChangeNotifier {
     _themeMode = mode;
     notifyListeners();
     await _prefs.setString(themeModeKey, mode.name);
+  }
+
+  Future<void> setAccentPalette(AccentPalette palette) async {
+    if (palette == _accentPalette) return;
+    _accentPalette = palette;
+    notifyListeners();
+    await _prefs.setString(accentPaletteKey, palette.name);
   }
 
   Future<void> setLocale(Locale? locale) async {
