@@ -209,6 +209,19 @@ void main() {
       expect(File('${downloads.path}/late.txt').existsSync(), isFalse);
     });
 
+    test('감시: 할 일이 없으면 타이머가 남지 않는다 (주기적으로 깨어나지 않음)', () async {
+      final e = TidyEngine(ops: ops, settle: Duration.zero, tick: const Duration(milliseconds: 50));
+      addTearDown(e.dispose);
+      await e.setRules([moveRule('r', ['zzz'], '${root.path}/out')]);
+      await e.start();
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      expect(e.hasPendingScan, isFalse);
+
+      put('a.txt'); // 규칙과 무관한 변화 — 한 번 훑고 다시 잠든다
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      expect(e.hasPendingScan, isFalse);
+    });
+
     test('감시 폴더가 없으면 오류를 알리고 멈추지 않는다', () async {
       final e = engine();
       addTearDown(e.dispose);

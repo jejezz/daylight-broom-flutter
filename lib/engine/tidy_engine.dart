@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:path/path.dart' as p;
 
 import '../rules/rule.dart';
@@ -80,7 +81,9 @@ class TidyEngine {
   /// 무한히 되풀이하는 일을 막는다.
   final Map<String, _Signature> _suppressed = {};
   final Map<String, StreamSubscription<FileSystemEvent>> _watchers = {};
+  /// 다음 훑기를 기다리는 일회성 타이머. 할 일이 없으면 null이라 프로세스가 깨어나지 않는다.
   Timer? _timer;
+  bool _running = false;
   bool _dirty = false;
   bool _busy = false;
 
@@ -95,7 +98,11 @@ class TidyEngine {
 
   List<Rule> get rules => _rules;
 
-  bool get isRunning => _timer != null;
+  bool get isRunning => _running;
+
+  /// 예약된 훑기가 있는지. 할 일이 없는 동안에는 false여야 한다 (테스트용).
+  @visibleForTesting
+  bool get hasPendingScan => _timer != null || _busy;
 
   String _folderOf(Rule r) => expandPath(r.watchedFolder, env: _env);
 
@@ -308,14 +315,17 @@ class TidyEngine {
   }
 
   /// 감시를 시작한다. 시작 직후 한 번 훑고, 이후에는 폴더에 변화가 있을 때만 깨어난다.
+  /// 변화가 없으면 타이머도 없다 (배터리를 위해 주기적으로 깨어나지 않는다).
   Future<void> start() async {
     if (isRunning) return;
+    _running = true;
     _dirty = true;
-    _timer = Timer.periodic(tick, (_) => _onTick());
+    _schedule();
     await _syncWatchers();
   }
 
   Future<void> stop() async {
+    _running = false;
     _timer?.cancel();
     _timer = null;
     for (final w in _watchers.values) {
@@ -338,18 +348,31 @@ class TidyEngine {
     for (final folder in wanted.where((f) => !_watchers.containsKey(f))) {
       try {
         _watchers[folder] = Directory(folder).watch().listen(
-          (_) => _dirty = true,
+          (_) => _markDirty(),
           onError: (Object e) => _errors.add(e),
         );
       } on FileSystemException catch (e) {
         _errors.add(e);
       }
     }
+    _markDirty();
+  }
+
+  /// 변화를 기록하고, 훑기가 예약돼 있지 않으면 [tick] 뒤로 예약한다.
+  /// 그 사이 오는 이벤트는 한 번의 훑기로 묶인다.
+  void _markDirty() {
     _dirty = true;
+    _schedule();
+  }
+
+  void _schedule() {
+    if (!_running || _timer != null || _busy) return;
+    _timer = Timer(tick, _onTick);
   }
 
   Future<void> _onTick() async {
-    if (!_dirty || _busy) return;
+    _timer = null;
+    if (!_running || !_dirty || _busy) return;
     _busy = true;
     try {
       _dirty = false;
@@ -361,6 +384,7 @@ class TidyEngine {
       _errors.add(e);
     } finally {
       _busy = false;
+      if (_dirty) _schedule(); // 기다리는 파일이 있거나 훑는 동안 변화가 생겼다
     }
   }
 }
