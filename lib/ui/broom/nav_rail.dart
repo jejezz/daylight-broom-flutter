@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app_identity.dart';
 import '../../theme/broom_style.dart';
 
 class NavItem {
@@ -37,7 +38,7 @@ class NavRail extends StatelessWidget {
       child: Column(
         children: [
           const _Logo(),
-          const SizedBox(height: 26),
+          const SizedBox(height: 22),
           // 항목이 많아 창 높이(최소 560)를 넘으면 넘치지 않고 스크롤한다.
           Expanded(
             child: SingleChildScrollView(
@@ -54,20 +55,17 @@ class NavRail extends StatelessWidget {
   }
 }
 
+/// 레일 맨 위: 앱 아이콘 (작업 표시줄·Dock 의 아이콘과 같은 그림). 그림 자체에 모서리와 여백이 있어 틀을 두르지 않는다.
 class _Logo extends StatelessWidget {
   const _Logo();
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          gradient: BroomAccent.accent,
-          borderRadius: BorderRadius.circular(13),
-          boxShadow: context.broom.glow(BroomAccent.pink, blur: 22, alpha: 0.55),
-        ),
-        padding: const EdgeInsets.all(9),
-        child: Image.asset('assets/broom_glyph.png', filterQuality: FilterQuality.medium),
+  Widget build(BuildContext context) => Image.asset(
+        AppIdentity.iconAsset,
+        width: 48,
+        height: 48,
+        filterQuality: FilterQuality.medium,
+        semanticLabel: AppIdentity.displayName,
       );
 }
 
@@ -143,7 +141,7 @@ class _RailButtonState extends State<_RailButton> {
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: active ? scheme.onSurface : fg)),
+                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: active ? scheme.onSurface : fg)),
             ]),
           ),
         ),

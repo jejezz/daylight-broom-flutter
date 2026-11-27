@@ -53,10 +53,10 @@ class OverviewPage extends StatelessWidget {
             if (disk.volumes.length > 1) ...[
               Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
                 for (final d in disk.volumes)
-                  ChoiceChip(
-                    label: Text('${d.name} · ${formatBytes(d.total)}'),
+                  SelectChip(
+                    label: '${d.name} · ${formatBytes(d.total)}',
                     selected: d.path == v?.path,
-                    onSelected: (_) => disk.select(d),
+                    onSelected: () => disk.select(d),
                   ),
               ]),
               const SizedBox(height: AppSpacing.lg),

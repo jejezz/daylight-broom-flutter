@@ -186,3 +186,59 @@ class _CheckPainter extends CustomPainter {
   @override
   bool shouldRepaint(_) => false;
 }
+
+/// 여럿 중 하나를 고르는 알약 단추 (디스크 고르기 등). [GhostButton]처럼 호버에 반응하고,
+/// 고른 것은 그라디언트로 채우고 체크 표시를 붙인다 (색만으로 구분하지 않도록).
+class SelectChip extends StatefulWidget {
+  const SelectChip({super.key, required this.label, required this.selected, required this.onSelected});
+
+  final String label;
+  final bool selected;
+  final VoidCallback? onSelected;
+
+  @override
+  State<SelectChip> createState() => _SelectChipState();
+}
+
+class _SelectChipState extends State<SelectChip> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.onSelected != null;
+    final sel = widget.selected;
+    final b = context.broom;
+    final hover = _hover && enabled;
+    final fg = sel ? Colors.white : Theme.of(context).colorScheme.onSurface;
+    return Semantics(
+      button: true,
+      selected: sel,
+      child: MouseRegion(
+        cursor: enabled ? SystemMouseCursors.click : MouseCursor.defer,
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          onTap: widget.onSelected,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+            decoration: BoxDecoration(
+              gradient: sel ? BroomAccent.accent : null,
+              color: sel ? null : (hover ? b.glassHover : b.glassBottom),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: sel ? Colors.transparent : (hover ? b.borderStrong : b.border)),
+              boxShadow: sel ? b.glow(BroomAccent.violet, blur: hover ? 22 : 12, alpha: hover ? 0.6 : 0.4) : null,
+            ),
+            child: Opacity(
+              opacity: enabled ? 1 : 0.4,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                if (sel) ...[Icon(Icons.check_rounded, size: 14, color: fg), const SizedBox(width: 6)],
+                Text(widget.label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: fg)),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
