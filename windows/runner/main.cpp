@@ -20,27 +20,33 @@ constexpr wchar_t kInstanceMutex[] = L"Local\\art.zoomon.daylightbroom.instance.
 constexpr wchar_t kInstanceMutex[] = L"Local\\art.zoomon.daylightbroom.instance";
 #endif
 
-// Shows the running instance's window (it may be hidden in the tray) and
-// brings it to the front.
-void ActivateExistingWindow() {
-  HWND existing = ::FindWindowW(kWindowClass, kWindowTitle);
-  if (!existing) return;
-  ::ShowWindow(existing, ::IsIconic(existing) ? SW_RESTORE : SW_SHOW);
-  ::SetForegroundWindow(existing);
-}
+// How long a new launch waits for an instance that is shutting down.
+constexpr DWORD kShutdownWaitMs = 5000;
 
 }  // namespace
 
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
   // Single instance: launching again (e.g. from the taskbar while the app sits
-  // in the tray) used to start another process with another tray icon. The OS
-  // closes the mutex handle when this process exits.
-  ::CreateMutexW(nullptr, FALSE, kInstanceMutex);
-  if (::GetLastError() == ERROR_ALREADY_EXISTS) {
-    // A login-item launch (--background) exits quietly without showing anything.
-    if (std::wcsstr(command_line, L"--background") == nullptr) ActivateExistingWindow();
-    return EXIT_SUCCESS;
+  // in the tray) used to start another process with another tray icon.
+  // The running instance owns the mutex; the OS releases it (as abandoned)
+  // when that process exits.
+  HANDLE instance_mutex = ::CreateMutexW(nullptr, TRUE, kInstanceMutex);
+  if (instance_mutex && ::GetLastError() == ERROR_ALREADY_EXISTS) {
+    HWND existing = ::FindWindowW(kWindowClass, kWindowTitle);
+    if (existing) {
+      // Bring the running instance forward (its window may be hidden in the
+      // tray). A login-item launch (--background) exits quietly instead.
+      if (std::wcsstr(command_line, L"--background") == nullptr) {
+        ::ShowWindow(existing, ::IsIconic(existing) ? SW_RESTORE : SW_SHOW);
+        ::SetForegroundWindow(existing);
+      }
+      return EXIT_SUCCESS;
+    }
+    // No window left: the other instance is shutting down. Wait for it to
+    // finish, then start normally instead of silently doing nothing.
+    const DWORD wait = ::WaitForSingleObject(instance_mutex, kShutdownWaitMs);
+    if (wait != WAIT_OBJECT_0 && wait != WAIT_ABANDONED) return EXIT_SUCCESS;
   }
 
   // Attach to console when present (e.g., 'flutter run') or create a

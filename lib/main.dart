@@ -156,6 +156,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         loginItem: widget.loginItem,
         onAbout: () async => _showAbout(),
         onTidyNow: () async => _homeKey.currentState?.tidyNow(),
+        // 끝내기 전에 폴더 감시와 타이머를 멈춘다.
+        onBeforeExit: () => widget.service.engine.dispose(),
       );
       _tray!.init();
     }

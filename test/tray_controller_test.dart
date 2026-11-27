@@ -4,6 +4,7 @@ import 'package:daylight_broom/tray/tray_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tray_manager/tray_manager.dart' show MenuItem;
 
 class _Backend implements LoginItemBackend {
   _Backend(this.on);
@@ -45,11 +46,21 @@ void main() {
     });
   });
 
+  late List<String> events;
+
   Future<(TrayController, LoginItemController)> make(bool on) async {
     SharedPreferences.setMockInitialValues({});
+    events = [];
     final login = LoginItemController(_Backend(on));
     await login.init();
-    final c = TrayController(settings: await AppSettings.load(), loginItem: login, onAbout: () async {}, onTidyNow: () async {});
+    final c = TrayController(
+      settings: await AppSettings.load(),
+      loginItem: login,
+      onAbout: () async {},
+      onTidyNow: () async {},
+      onBeforeExit: () async => events.add('beforeExit'),
+      exitProcess: (code) => events.add('exit $code'), // 테스트 프로세스를 끝내지 않게
+    );
     await c.init();
     return (c, login);
   }
@@ -62,8 +73,18 @@ void main() {
 
     c.onWindowClose();
     await pumpEventQueue();
-    expect(window, contains('destroy'));
+    expect(events, ['beforeExit', 'exit 0']); // 정리한 뒤 바로 끝낸다 (엔진이 내려가길 기다리지 않는다)
     expect(window, isNot(contains('hide')));
+  });
+
+  test('끝내기는 트레이 아이콘을 먼저 걷고, 두 번 불러도 한 번만 끝낸다', () async {
+    final (c, _) = await make(true);
+    tray.clear();
+    c.onTrayMenuItemClick(MenuItem(key: 'quit', label: 'quit'));
+    await c.quit();
+    await pumpEventQueue();
+    expect(tray, contains('destroy'));
+    expect(events, ['beforeExit', 'exit 0']);
   });
 
   test('상주가 켜져 있으면 아이콘을 두고, 창을 닫으면 숨기기만 한다', () async {
