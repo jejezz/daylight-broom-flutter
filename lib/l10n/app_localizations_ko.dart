@@ -716,7 +716,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get junkClean => '선택 항목 정리';
+  String get junkClean => '선택 항목 영구 삭제';
 
   @override
   String junkCleaning(int done, int total) {
@@ -728,7 +728,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String junkConfirmBody(int count, String size) {
-    return '선택한 $count개 항목($size)을 휴지통을 거치지 않고 바로 삭제합니다. 되돌릴 수 없습니다.';
+    return '선택한 $count개 항목($size)을 휴지통을 거치지 않고 바로 지웁니다. 휴지통에서도 복구할 수 없습니다.';
   }
 
   @override
@@ -741,7 +741,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String junkFreed(String size) {
-    return '$size를 확보했습니다';
+    return '$size를 영구 삭제해 확보했습니다';
   }
 
   @override
@@ -808,7 +808,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get overviewCardJunkTitle => '정크 정리';
 
   @override
-  String get overviewCardJunkSubtitle => '캐시, 임시 파일, 개발 찌꺼기';
+  String get overviewCardJunkSubtitle => '캐시, 임시 파일, 개발 찌꺼기 · 영구 삭제';
 
   @override
   String get overviewCardTidyTitle => '자동 정리';
@@ -1269,4 +1269,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String dupTrashStopped(int count) {
     return '휴지통 보내기를 멈췄습니다. 남은 $count개는 선택된 채로 두었습니다.';
   }
+
+  @override
+  String get junkPermanentBadge => '영구 삭제';
+
+  @override
+  String get junkPermanentNote => '휴지통을 거치지 않아 복구할 수 없고, 용량이 바로 확보됩니다.';
 }

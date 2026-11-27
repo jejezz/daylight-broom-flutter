@@ -69,8 +69,11 @@ void main() {
       expect(find.text('User Caches'), findsOneWidget);
       expect(find.text('Xcode Archives'), findsOneWidget);
       expect(find.text('2 selected · 3.0 KB'), findsOneWidget); // 안전한 것만 미리 선택
+      // 영구 삭제임을 화면에서 늘 알린다: 제목 옆 배지, 아래 안내, 단추 이름.
+      expect(find.text('Permanent delete'), findsOneWidget);
+      expect(find.textContaining("can't be restored"), findsOneWidget);
 
-      await tester.tap(find.text('Clean selected'));
+      await tester.tap(find.text('Delete selected permanently'));
       await tester.pumpAndSettle();
       expect(find.text('Delete permanently?'), findsOneWidget);
 
@@ -79,7 +82,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(Directory('${home.path}/c/cache1').existsSync(), isTrue);
 
-      await tester.tap(find.text('Clean selected'));
+      await tester.tap(find.text('Delete selected permanently'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete permanently'));
       await tester.pump();
@@ -92,7 +95,7 @@ void main() {
 
       expect(Directory('${home.path}/c/cache1').existsSync(), isFalse);
       expect(Directory('${home.path}/r/archive').existsSync(), isTrue);
-      expect(find.text('Freed 3.0 KB'), findsOneWidget);
+      expect(find.text('Permanently deleted 3.0 KB'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }
@@ -105,7 +108,7 @@ void main() {
     await tester.runAsync(controller.scan);
     controller.toggle('${home.path}/r/archive', true);
     await tester.pump();
-    await tester.tap(find.text('Clean selected'));
+    await tester.tap(find.text('Delete selected permanently'));
     await tester.pumpAndSettle();
     expect(find.textContaining('archive'), findsWidgets);
     expect(find.textContaining('closer look'), findsOneWidget);

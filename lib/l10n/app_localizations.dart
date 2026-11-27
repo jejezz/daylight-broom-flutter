@@ -1361,7 +1361,7 @@ abstract class AppLocalizations {
   /// No description provided for @junkClean.
   ///
   /// In ko, this message translates to:
-  /// **'선택 항목 정리'**
+  /// **'선택 항목 영구 삭제'**
   String get junkClean;
 
   /// No description provided for @junkCleaning.
@@ -1379,7 +1379,7 @@ abstract class AppLocalizations {
   /// No description provided for @junkConfirmBody.
   ///
   /// In ko, this message translates to:
-  /// **'선택한 {count}개 항목({size})을 휴지통을 거치지 않고 바로 삭제합니다. 되돌릴 수 없습니다.'**
+  /// **'선택한 {count}개 항목({size})을 휴지통을 거치지 않고 바로 지웁니다. 휴지통에서도 복구할 수 없습니다.'**
   String junkConfirmBody(int count, String size);
 
   /// No description provided for @junkConfirmReview.
@@ -1397,7 +1397,7 @@ abstract class AppLocalizations {
   /// No description provided for @junkFreed.
   ///
   /// In ko, this message translates to:
-  /// **'{size}를 확보했습니다'**
+  /// **'{size}를 영구 삭제해 확보했습니다'**
   String junkFreed(String size);
 
   /// No description provided for @junkFailed.
@@ -1511,7 +1511,7 @@ abstract class AppLocalizations {
   /// No description provided for @overviewCardJunkSubtitle.
   ///
   /// In ko, this message translates to:
-  /// **'캐시, 임시 파일, 개발 찌꺼기'**
+  /// **'캐시, 임시 파일, 개발 찌꺼기 · 영구 삭제'**
   String get overviewCardJunkSubtitle;
 
   /// No description provided for @overviewCardTidyTitle.
@@ -2251,6 +2251,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'휴지통 보내기를 멈췄습니다. 남은 {count}개는 선택된 채로 두었습니다.'**
   String dupTrashStopped(int count);
+
+  /// No description provided for @junkPermanentBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제'**
+  String get junkPermanentBadge;
+
+  /// No description provided for @junkPermanentNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통을 거치지 않아 복구할 수 없고, 용량이 바로 확보됩니다.'**
+  String get junkPermanentNote;
 }
 
 class _AppLocalizationsDelegate

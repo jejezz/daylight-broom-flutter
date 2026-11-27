@@ -737,7 +737,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get junkClean => 'Clean selected';
+  String get junkClean => 'Delete selected permanently';
 
   @override
   String junkCleaning(int done, int total) {
@@ -749,7 +749,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String junkConfirmBody(int count, String size) {
-    return 'Deletes the $count selected items ($size) right away, without using the Trash. This cannot be undone.';
+    return 'The $count selected items ($size) are deleted right away, without going to the Trash. They can\'t be restored from the Trash.';
   }
 
   @override
@@ -762,7 +762,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String junkFreed(String size) {
-    return 'Freed $size';
+    return 'Permanently deleted $size';
   }
 
   @override
@@ -831,7 +831,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overviewCardJunkSubtitle =>
-      'Caches, temp files and developer leftovers';
+      'Caches, temp files, developer leftovers · permanent delete';
 
   @override
   String get overviewCardTidyTitle => 'Auto tidy';
@@ -1294,4 +1294,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String dupTrashStopped(int count) {
     return 'Stopped moving to the Trash. The remaining $count files are still selected.';
   }
+
+  @override
+  String get junkPermanentBadge => 'Permanent delete';
+
+  @override
+  String get junkPermanentNote =>
+      'Skips the Trash, so it can\'t be restored, and the space is freed right away.';
 }
