@@ -1203,9 +1203,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dupTrash => 'Move to Trash';
 
   @override
-  String get dupTrashing => 'Moving…';
-
-  @override
   String get dupConfirmTitle => 'Move duplicates to the Trash?';
 
   @override
@@ -1287,4 +1284,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsLoginItemHint =>
       'Starts in the tray without a window when you log in and keeps running your auto-tidy rules. When off, tidying only happens while you have the app open.';
+
+  @override
+  String dupTrashingProgress(int done, int total) {
+    return 'Moving to the Trash… $done / $total';
+  }
+
+  @override
+  String dupTrashStopped(int count) {
+    return 'Stopped moving to the Trash. The remaining $count files are still selected.';
+  }
 }

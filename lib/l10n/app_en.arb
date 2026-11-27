@@ -591,7 +591,6 @@
   "dupSelectedSummary": "{count} selected · {size}",
   "@dupSelectedSummary": {"placeholders": {"count": {"type": "int"}, "size": {"type": "String"}}},
   "dupTrash": "Move to Trash",
-  "dupTrashing": "Moving…",
   "dupConfirmTitle": "Move duplicates to the Trash?",
   "dupConfirmBody": "{count} files ({size}) will be moved to the Trash. At least one file in each group is kept. You can restore them from the Trash.",
   "@dupConfirmBody": {"placeholders": {"count": {"type": "int"}, "size": {"type": "String"}}},
@@ -620,5 +619,9 @@
   "settingsCleanupTidy": "Auto tidy",
   "optionRemoveEmptyFoldersHint": "When a rule that includes subfolders moves files out and a folder is left empty, that folder is removed. The watched folder itself and move destinations are never removed.",
   "settingsLoginItem": "Stay in the tray (launch at login)",
-  "settingsLoginItemHint": "Starts in the tray without a window when you log in and keeps running your auto-tidy rules. When off, tidying only happens while you have the app open."
+  "settingsLoginItemHint": "Starts in the tray without a window when you log in and keeps running your auto-tidy rules. When off, tidying only happens while you have the app open.",
+  "dupTrashingProgress": "Moving to the Trash… {done} / {total}",
+  "@dupTrashingProgress": {"placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}},
+  "dupTrashStopped": "Stopped moving to the Trash. The remaining {count} files are still selected.",
+  "@dupTrashStopped": {"placeholders": {"count": {"type": "int"}}}
 }

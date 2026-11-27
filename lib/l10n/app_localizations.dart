@@ -2108,12 +2108,6 @@ abstract class AppLocalizations {
   /// **'휴지통으로 보내기'**
   String get dupTrash;
 
-  /// No description provided for @dupTrashing.
-  ///
-  /// In ko, this message translates to:
-  /// **'옮기는 중…'**
-  String get dupTrashing;
-
   /// No description provided for @dupConfirmTitle.
   ///
   /// In ko, this message translates to:
@@ -2245,6 +2239,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'로그인하면 창 없이 트레이에서 시작해 자동 정리 규칙을 계속 실행합니다. 끄면 앱을 직접 열어 둔 동안에만 정리합니다.'**
   String get settingsLoginItemHint;
+
+  /// No description provided for @dupTrashingProgress.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 옮기는 중… {done} / {total}'**
+  String dupTrashingProgress(int done, int total);
+
+  /// No description provided for @dupTrashStopped.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통 보내기를 멈췄습니다. 남은 {count}개는 선택된 채로 두었습니다.'**
+  String dupTrashStopped(int count);
 }
 
 class _AppLocalizationsDelegate

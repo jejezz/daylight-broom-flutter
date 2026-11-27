@@ -69,6 +69,7 @@ class DuplicatesPage extends StatelessWidget {
       if (c.status == DuplicateStatus.cancelled && c.groups.isNotEmpty) notice(Icons.pause_circle_outline_rounded, l10n.dupCancelled),
       if (c.failedCount > 0) notice(Icons.error_outline_rounded, l10n.dupTrashFailed(c.failedCount, c.failedReason ?? ''), color: error),
       if (c.lastMoved != null) notice(Icons.check_circle_rounded, l10n.dupMoved(formatBytes(c.lastMoved!)), color: BroomAccent.mint),
+      if (c.trashStopped) notice(Icons.pause_circle_outline_rounded, l10n.dupTrashStopped(c.selected.length)),
       if (c.unreadable > 0 && c.status == DuplicateStatus.done) notice(Icons.lock_outline_rounded, l10n.dupUnreadable(c.unreadable)),
     ];
   }
@@ -373,12 +374,44 @@ class _Footer extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final c = controller;
+    if (c.trashing) {
+      // 휴지통으로 보내는 중: 진행 막대, 끝낸 수 / 전체, 방금 옮긴 파일, 정지.
+      final current = c.trashCurrent;
+      return GlassCard(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+              Text(l10n.dupTrashingProgress(c.trashDone, c.trashTotal), style: theme.textTheme.titleSmall),
+              const SizedBox(height: AppSpacing.sm),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(999),
+                child: LinearProgressIndicator(
+                  // 첫 결과가 오기 전(PowerShell 시작 중)에는 움직이는 막대.
+                  value: c.trashDone == 0 || c.trashTotal == 0 ? null : c.trashDone / c.trashTotal,
+                  minHeight: 6,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                current == null ? '' : abbreviateHome(current),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppFonts.userContent.copyWith(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
+              ),
+            ]),
+          ),
+          const SizedBox(width: AppSpacing.lg),
+          GhostButton(onPressed: c.stopTrash, icon: Icons.stop_rounded, label: l10n.dupStop),
+        ]),
+      );
+    }
     return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
       child: Row(children: [
         Expanded(
           child: Text(
-            c.trashing ? l10n.dupTrashing : l10n.dupSelectedSummary(c.selected.length, formatBytes(c.selectedBytes)),
+            l10n.dupSelectedSummary(c.selected.length, formatBytes(c.selectedBytes)),
             style: theme.textTheme.titleSmall,
           ),
         ),
