@@ -22,6 +22,9 @@ constexpr wchar_t kInstanceMutex[] = L"Local\\art.zoomon.daylightbroom.instance"
 
 // How long a new launch waits for an instance that is shutting down.
 constexpr DWORD kShutdownWaitMs = 5000;
+// After handing off to a running window, how long to check that the instance
+// is not in the middle of quitting (quitting takes ~150 ms).
+constexpr DWORD kHandOffCheckMs = 500;
 
 }  // namespace
 
@@ -34,6 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   HANDLE instance_mutex = ::CreateMutexW(nullptr, TRUE, kInstanceMutex);
   if (instance_mutex && ::GetLastError() == ERROR_ALREADY_EXISTS) {
     HWND existing = ::FindWindowW(kWindowClass, kWindowTitle);
+    DWORD wait_ms = kShutdownWaitMs;
     if (existing) {
       // Bring the running instance forward (its window may be hidden in the
       // tray). A login-item launch (--background) exits quietly instead.
@@ -41,11 +45,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
         ::ShowWindow(existing, ::IsIconic(existing) ? SW_RESTORE : SW_SHOW);
         ::SetForegroundWindow(existing);
       }
-      return EXIT_SUCCESS;
+      // If that instance was quitting, take over once it is gone; otherwise
+      // it is running normally and this launch is done.
+      wait_ms = kHandOffCheckMs;
     }
-    // No window left: the other instance is shutting down. Wait for it to
+    // Without a window the other instance is shutting down: wait for it to
     // finish, then start normally instead of silently doing nothing.
-    const DWORD wait = ::WaitForSingleObject(instance_mutex, kShutdownWaitMs);
+    const DWORD wait = ::WaitForSingleObject(instance_mutex, wait_ms);
     if (wait != WAIT_OBJECT_0 && wait != WAIT_ABANDONED) return EXIT_SUCCESS;
   }
 
