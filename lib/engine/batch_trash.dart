@@ -6,10 +6,13 @@ import 'file_ops.dart';
 
 /// 파일 하나를 휴지통으로 보낸 결과. [error]가 null 이면 성공.
 class TrashResult {
-  const TrashResult(this.path, [this.error]);
+  const TrashResult(this.path, [this.error, this.location]);
 
   final String path;
   final String? error;
+
+  /// 휴지통 안의 위치를 알면 (macOS, 되돌리기용). Windows 는 null.
+  final String? location;
 
   bool get ok => error == null;
 }
@@ -30,8 +33,8 @@ class FileOpsBatchTrasher implements BatchTrasher {
   Stream<TrashResult> trashAll(List<String> paths) async* {
     for (final path in paths) {
       try {
-        await ops.trash(path);
-        yield TrashResult(path);
+        final location = await ops.trash(path);
+        yield TrashResult(path, null, location);
       } on Object catch (e) {
         yield TrashResult(path, '$e');
       }
@@ -49,21 +52,31 @@ class SystemBatchTrasher implements BatchTrasher {
   final FileOpsBatchTrasher _fallback;
   final bool _windows;
 
-  /// 휴지통 용량을 넘기기 쉬운 큰 파일은 확인 창이 뜨게 둔다 ([SystemFileOps.trash]와 같은 기준).
+  /// 휴지통 용량을 넘기기 쉬운 폴더와 큰 파일은 확인 창이 뜨게 둔다 ([SystemFileOps.trash]와 같은 기준).
   /// 목록은 파일로 넘겨 경로의 따옴표·길이 문제를 피한다. 결과는 `OK<TAB>경로` / `ERR<TAB>경로<TAB>이유`.
   static const _script = r'''
 Add-Type -AssemblyName Microsoft.VisualBasic
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 foreach ($p in (Get-Content -LiteralPath $env:DAYLIGHTBROOM_TRASH_LIST -Encoding UTF8)) {
   if ($p -eq '') { continue }
+  $existed = Test-Path -LiteralPath $p
   try {
-    $big = (Get-Item -LiteralPath $p -Force).Length -ge 500000000
-    $ui = if ($big) { 'AllDialogs' } else { 'OnlyErrorDialogs' }
-    [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($p, $ui, 'SendToRecycleBin')
+    if (Test-Path -LiteralPath $p -PathType Container) {
+      [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($p, 'AllDialogs', 'SendToRecycleBin')
+    } else {
+      $big = (Get-Item -LiteralPath $p -Force).Length -ge 500000000
+      $ui = if ($big) { 'AllDialogs' } else { 'OnlyErrorDialogs' }
+      [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($p, $ui, 'SendToRecycleBin')
+    }
     [Console]::Out.WriteLine("OK`t$p")
   } catch {
-    $m = $_.Exception.Message -replace "[`r`n`t]", ' '
-    [Console]::Out.WriteLine("ERR`t$p`t$m")
+    if ($existed -and -not (Test-Path -LiteralPath $p)) {
+      # 휴지통 호출이 가끔 옮기고도 "찾을 수 없음"을 던진다 (파일은 이미 없다): 옮긴 것으로 본다.
+      [Console]::Out.WriteLine("OK`t$p")
+    } else {
+      $m = $_.Exception.Message -replace "[`r`n`t]", ' '
+      [Console]::Out.WriteLine("ERR`t$p`t$m")
+    }
   }
   [Console]::Out.Flush()
 }

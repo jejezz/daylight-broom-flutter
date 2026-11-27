@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import '../rules/rule.dart';
+import 'batch_trash.dart';
 import 'file_ops.dart';
 import 'history.dart';
 import 'ignored_files.dart';
@@ -58,12 +59,16 @@ class TidyEngine {
     this.tick = const Duration(seconds: 2),
     Map<String, String>? env,
     this.removeEmptyFolders = false,
+    BatchTrasher? trasher,
   })  : _ops = ops ?? SystemFileOps(env: env),
+        // [ops]를 받았으면 (테스트) 휴지통도 그것으로 하나씩. 아니면 OS 기본 (Windows 는 한 번에 몰아서).
+        _trasher = trasher ?? (ops != null ? FileOpsBatchTrasher(ops) : SystemBatchTrasher(ops: SystemFileOps(env: env))),
         _clock = clock ?? DateTime.now,
         _env = env,
         _stability = StabilityTracker(settle: settle);
 
   final FileOps _ops;
+  final BatchTrasher _trasher;
   final DateTime Function() _clock;
   final Duration settle;
   final Duration tick;
@@ -201,9 +206,28 @@ class TidyEngine {
     final total = planned.length;
     final out = List<ActionResult?>.filled(total, null);
     var done = 0;
+    void tick() {
+      done++;
+      onProgress?.call(done, total);
+    }
+
+    void finish(int i, FileStat stat, {String? resultPath, Object? error}) {
+      final item = planned[i];
+      if (error == null) {
+        _stability.forget(item.path);
+        out[i] = ActionResult(planned: item, time: _clock(), resultPath: resultPath);
+      } else {
+        _suppressed[item.path] = (size: stat.size, modified: stat.modified);
+        out[i] = ActionResult(planned: item, time: _clock(), error: error);
+      }
+    }
+
+    // 휴지통으로 보낼 것은 모아 두었다가 한 번에 보낸다 (Windows 는 파일마다 PowerShell 을 띄우면 몇 초씩 걸린다).
+    final toTrash = <String, (int, FileStat)>{};
 
     Future<void> run(int i) async {
       final item = planned[i];
+      var queued = false;
       try {
         final FileStat stat;
         try {
@@ -216,20 +240,19 @@ class TidyEngine {
             stat.modified != item.facts.modified) {
           return;
         }
-        try {
-          final resultPath = switch (item.action) {
-            MoveAction(:final destination) => await _ops.move(item.path, destination),
-            TrashAction() => await _ops.trash(item.path),
-          };
-          _stability.forget(item.path);
-          out[i] = ActionResult(planned: item, time: _clock(), resultPath: resultPath);
-        } on Object catch (e) {
-          _suppressed[item.path] = (size: stat.size, modified: stat.modified);
-          out[i] = ActionResult(planned: item, time: _clock(), error: e);
+        switch (item.action) {
+          case TrashAction():
+            toTrash[item.path] = (i, stat);
+            queued = true;
+          case MoveAction(:final destination):
+            try {
+              finish(i, stat, resultPath: await _ops.move(item.path, destination));
+            } on Object catch (e) {
+              finish(i, stat, error: e);
+            }
         }
       } finally {
-        done++;
-        onProgress?.call(done, total);
+        if (!queued) tick();
       }
     }
 
@@ -237,6 +260,29 @@ class TidyEngine {
     for (var start = 0; start < total; start += _applyConcurrency) {
       final end = (start + _applyConcurrency < total) ? start + _applyConcurrency : total;
       await Future.wait([for (var i = start; i < end; i++) run(i)]);
+    }
+
+    if (toTrash.isNotEmpty) {
+      final pending = {...toTrash.keys};
+      try {
+        await for (final r in _trasher.trashAll(toTrash.keys.toList())) {
+          if (!pending.remove(r.path)) continue;
+          final (i, stat) = toTrash[r.path]!;
+          finish(i, stat, resultPath: r.location, error: r.ok ? null : FileSystemException(r.error!, r.path));
+          tick();
+        }
+      } on Object catch (e) {
+        for (final path in pending) {
+          final (i, stat) = toTrash[path]!;
+          finish(i, stat, error: e);
+          tick();
+        }
+        pending.clear();
+      }
+      // 결과가 오지 않은 것은 다음 훑기에서 다시 본다 (실행하지 않은 것으로 둔다).
+      for (final _ in pending) {
+        tick();
+      }
     }
 
     final results = out.whereType<ActionResult>().toList();
