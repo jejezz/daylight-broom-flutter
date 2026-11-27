@@ -48,14 +48,17 @@ Future<void> main(List<String> args) async {
   await migration.removeLegacyLoginItem();
   final settings = await AppSettings.load();
 
+  final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null, refreshOnInit: !kDebugMode);
+  await loginItem.init();
+  // 상주가 꺼져 있으면 트레이 아이콘이 없으므로, --background 로 불렸어도 창을 띄운다 (안 보이는 앱이 되지 않게).
+  final resident = !loginItem.supported || loginItem.enabled;
+
   Future<void> Function()? showWindow;
   if (_isDesktop) {
     await windowManager.ensureInitialized();
-    showWindow = await _prepareWindow(background: background);
+    showWindow = await _prepareWindow(background: background && resident);
   }
 
-  final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null, refreshOnInit: !kDebugMode);
-  await loginItem.init();
   // 데스크톱이 아니거나 UPDATE_SERVER 가 비어 있으면 null — 업데이트 확인 없음.
   final updates = await UpdateService.create();
   final service = await _startService(settings);

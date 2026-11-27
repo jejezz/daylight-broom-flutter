@@ -409,7 +409,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get presetOldInstallers => 'Installers older than 30 days';
 
   @override
-  String get trayLoginItem => 'Launch at login';
+  String get trayLoginItem => 'Stay in the tray (launch at login)';
 
   @override
   String get ruleIncludeSubfolders => 'Include files in subfolders';
@@ -1283,7 +1283,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLoginItemHint =>
-      'Starts in the tray without a window when you log in and keeps running your auto-tidy rules. When off, tidying only happens while you have the app open.';
+      'When on, the app keeps an icon in the tray, keeps running after you close the window, and starts without a window when you log in to run your auto-tidy rules. When off, there\'s no tray icon, closing the window quits the app, and auto-tidy only runs while the app is open.';
 
   @override
   String dupTrashingProgress(int done, int total) {

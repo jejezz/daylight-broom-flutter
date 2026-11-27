@@ -797,7 +797,7 @@ abstract class AppLocalizations {
   /// No description provided for @trayLoginItem.
   ///
   /// In ko, this message translates to:
-  /// **'로그인 시 자동 실행'**
+  /// **'시스템 상주 (로그인 시 자동 실행)'**
   String get trayLoginItem;
 
   /// No description provided for @ruleIncludeSubfolders.
@@ -2237,7 +2237,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsLoginItemHint.
   ///
   /// In ko, this message translates to:
-  /// **'로그인하면 창 없이 트레이에서 시작해 자동 정리 규칙을 계속 실행합니다. 끄면 앱을 직접 열어 둔 동안에만 정리합니다.'**
+  /// **'켜면 트레이에 아이콘을 두고, 창을 닫아도 계속 실행하며, 로그인할 때 창 없이 시작해 자동 정리 규칙을 돌립니다. 끄면 트레이 아이콘이 없고 창을 닫으면 앱이 끝나며, 자동 정리는 앱을 열어 둔 동안에만 동작합니다.'**
   String get settingsLoginItemHint;
 
   /// No description provided for @dupTrashingProgress.

@@ -404,7 +404,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get presetOldInstallers => '30일 지난 설치 파일';
 
   @override
-  String get trayLoginItem => '로그인 시 자동 실행';
+  String get trayLoginItem => '시스템 상주 (로그인 시 자동 실행)';
 
   @override
   String get ruleIncludeSubfolders => '하위 폴더의 파일도 포함';
@@ -1258,7 +1258,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsLoginItemHint =>
-      '로그인하면 창 없이 트레이에서 시작해 자동 정리 규칙을 계속 실행합니다. 끄면 앱을 직접 열어 둔 동안에만 정리합니다.';
+      '켜면 트레이에 아이콘을 두고, 창을 닫아도 계속 실행하며, 로그인할 때 창 없이 시작해 자동 정리 규칙을 돌립니다. 끄면 트레이 아이콘이 없고 창을 닫으면 앱이 끝나며, 자동 정리는 앱을 열어 둔 동안에만 동작합니다.';
 
   @override
   String dupTrashingProgress(int done, int total) {
