@@ -3,8 +3,9 @@ import 'dart:io';
 import '../rules/rule_store.dart';
 import '../storage/json_file.dart';
 
-/// [move]·[trash]는 규칙 정리, [junk]는 정크 정리(영구 삭제), [uninstall]은 앱 제거(휴지통).
-enum HistoryKind { move, trash, junk, uninstall }
+/// [move]·[trash]는 규칙 정리, [junk]는 정크 정리(영구 삭제), [uninstall]은 앱 제거(휴지통),
+/// [duplicates]는 중복 파일 정리(휴지통).
+enum HistoryKind { move, trash, junk, uninstall, duplicates }
 
 /// 정리한 파일 하나의 기록. 되돌리기에 필요한 경로를 함께 남긴다.
 class HistoryEntry {

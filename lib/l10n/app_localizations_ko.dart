@@ -1104,4 +1104,139 @@ class AppLocalizationsKo extends AppLocalizations {
   String storageTrashFailed(String error) {
     return '휴지통으로 보내지 못했습니다: $error';
   }
+
+  @override
+  String get navDuplicates => '중복 파일';
+
+  @override
+  String get dupTitle => '중복 파일 찾기';
+
+  @override
+  String get dupIntro =>
+      '폴더를 고르면 그 안의 파일을 내용으로 비교해 똑같은 파일끼리 묶어 보여 줍니다. 이름이 달라도 내용이 같으면 찾습니다.';
+
+  @override
+  String get dupSkipNote => '숨김 폴더와 앱·사진 보관함 같은 패키지 안은 보지 않습니다.';
+
+  @override
+  String get dupPickFolder => '폴더 고르기';
+
+  @override
+  String get dupChangeFolder => '다른 폴더';
+
+  @override
+  String get dupRescan => '다시 찾기';
+
+  @override
+  String dupListing(int files) {
+    return '파일을 훑는 중… $files개';
+  }
+
+  @override
+  String dupHashing(String done, String total) {
+    return '내용을 비교하는 중… $done / $total';
+  }
+
+  @override
+  String get dupCancelled => '찾기를 멈췄습니다. 멈추기 전까지 찾은 결과입니다.';
+
+  @override
+  String dupFailed(String error) {
+    return '찾지 못했습니다: $error';
+  }
+
+  @override
+  String dupNone(int count) {
+    return '내용이 똑같은 파일이 없습니다. (파일 $count개 비교)';
+  }
+
+  @override
+  String dupSummary(int groups, int files, String size) {
+    return '$groups묶음 · 파일 $files개 · 하나씩만 남기면 $size 확보';
+  }
+
+  @override
+  String dupGroupTitle(int count, String size) {
+    return '똑같은 파일 $count개 · 각 $size';
+  }
+
+  @override
+  String get dupOldest => '가장 오래됨';
+
+  @override
+  String get dupKeepOne => '묶음마다 하나는 남겨야 합니다';
+
+  @override
+  String get dupSelectExtras => '가장 오래된 것만 남기고 선택';
+
+  @override
+  String get dupClearSelection => '선택 해제';
+
+  @override
+  String dupSelectedSummary(int count, String size) {
+    return '$count개 선택 · $size';
+  }
+
+  @override
+  String get dupTrash => '휴지통으로 보내기';
+
+  @override
+  String get dupTrashing => '옮기는 중…';
+
+  @override
+  String get dupConfirmTitle => '중복 파일을 휴지통으로 보낼까요?';
+
+  @override
+  String dupConfirmBody(int count, String size) {
+    return '$count개 파일($size)을 휴지통으로 옮깁니다. 묶음마다 하나 이상은 남깁니다. 휴지통에서 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String get dupConfirmAction => '휴지통으로 옮기기';
+
+  @override
+  String dupMoved(String size) {
+    return '$size를 휴지통으로 옮겼습니다';
+  }
+
+  @override
+  String dupTrashFailed(int count, String reason) {
+    return '$count개 파일을 옮기지 못했습니다: $reason';
+  }
+
+  @override
+  String dupUnreadable(int count) {
+    return '읽지 못한 항목 $count개는 비교에서 뺐습니다.';
+  }
+
+  @override
+  String historyDuplicatesTitle(int count) {
+    return '중복 파일 $count개 정리';
+  }
+
+  @override
+  String historyDuplicatesWhere(String folder, String size) {
+    return '휴지통으로 이동 · $folder · $size';
+  }
+
+  @override
+  String get historyDuplicatesUndoHint =>
+      '중복 파일은 휴지통으로 옮겼습니다. 되돌리려면 휴지통에서 직접 복원하세요.';
+
+  @override
+  String get dupStop => '정지';
+
+  @override
+  String dupFoundSoFar(int groups, int files) {
+    return '지금까지 $groups묶음 · 파일 $files개 찾음';
+  }
+
+  @override
+  String get dupRevealFinder => 'Finder에서 보기';
+
+  @override
+  String get dupRevealExplorer => '탐색기에서 열기';
+
+  @override
+  String get dupTrashOne => '휴지통으로 보내기';
 }

@@ -38,9 +38,15 @@ class NavRail extends StatelessWidget {
         children: [
           const _Logo(),
           const SizedBox(height: 26),
-          for (var i = 0; i < items.length; i++)
-            _RailButton(item: items[i], active: i == index, onTap: () => onChanged(i)),
-          const Spacer(),
+          // 항목이 많아 창 높이(최소 560)를 넘으면 넘치지 않고 스크롤한다.
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(children: [
+                for (var i = 0; i < items.length; i++)
+                  _RailButton(item: items[i], active: i == index, onTap: () => onChanged(i)),
+              ]),
+            ),
+          ),
           for (var i = 0; i < footer.length; i++) _RailButton(item: footer[i], active: false, onTap: footerActions[i], dim: true),
         ],
       ),

@@ -1127,4 +1127,141 @@ class AppLocalizationsEn extends AppLocalizations {
   String storageTrashFailed(String error) {
     return 'Could not move it to the Trash: $error';
   }
+
+  @override
+  String get navDuplicates => 'Duplicates';
+
+  @override
+  String get dupTitle => 'Find duplicates';
+
+  @override
+  String get dupIntro =>
+      'Choose a folder and the files inside are compared by content, grouping identical ones together. Files are found even when their names differ.';
+
+  @override
+  String get dupSkipNote =>
+      'Hidden folders and packages such as apps and photo libraries are not looked into.';
+
+  @override
+  String get dupPickFolder => 'Choose folder';
+
+  @override
+  String get dupChangeFolder => 'Other folder';
+
+  @override
+  String get dupRescan => 'Scan again';
+
+  @override
+  String dupListing(int files) {
+    return 'Listing files… $files';
+  }
+
+  @override
+  String dupHashing(String done, String total) {
+    return 'Comparing contents… $done / $total';
+  }
+
+  @override
+  String get dupCancelled =>
+      'Scan stopped. These are the results found before stopping.';
+
+  @override
+  String dupFailed(String error) {
+    return 'Could not scan: $error';
+  }
+
+  @override
+  String dupNone(int count) {
+    return 'No files with identical content. ($count files compared)';
+  }
+
+  @override
+  String dupSummary(int groups, int files, String size) {
+    return '$groups groups · $files files · keep one of each to free $size';
+  }
+
+  @override
+  String dupGroupTitle(int count, String size) {
+    return '$count identical files · $size each';
+  }
+
+  @override
+  String get dupOldest => 'Oldest';
+
+  @override
+  String get dupKeepOne => 'Keep at least one file in each group';
+
+  @override
+  String get dupSelectExtras => 'Select all but the oldest';
+
+  @override
+  String get dupClearSelection => 'Clear selection';
+
+  @override
+  String dupSelectedSummary(int count, String size) {
+    return '$count selected · $size';
+  }
+
+  @override
+  String get dupTrash => 'Move to Trash';
+
+  @override
+  String get dupTrashing => 'Moving…';
+
+  @override
+  String get dupConfirmTitle => 'Move duplicates to the Trash?';
+
+  @override
+  String dupConfirmBody(int count, String size) {
+    return '$count files ($size) will be moved to the Trash. At least one file in each group is kept. You can restore them from the Trash.';
+  }
+
+  @override
+  String get dupConfirmAction => 'Move to Trash';
+
+  @override
+  String dupMoved(String size) {
+    return 'Moved $size to the Trash';
+  }
+
+  @override
+  String dupTrashFailed(int count, String reason) {
+    return 'Could not move $count files: $reason';
+  }
+
+  @override
+  String dupUnreadable(int count) {
+    return '$count unreadable items were left out of the comparison.';
+  }
+
+  @override
+  String historyDuplicatesTitle(int count) {
+    return 'Cleaned $count duplicate files';
+  }
+
+  @override
+  String historyDuplicatesWhere(String folder, String size) {
+    return 'Moved to Trash · $folder · $size';
+  }
+
+  @override
+  String get historyDuplicatesUndoHint =>
+      'Duplicates were moved to the Trash. To undo, restore them from the Trash yourself.';
+
+  @override
+  String get dupStop => 'Stop';
+
+  @override
+  String dupFoundSoFar(int groups, int files) {
+    return '$groups groups · $files files found so far';
+  }
+
+  @override
+  String get dupRevealFinder => 'Show in Finder';
+
+  @override
+  String get dupRevealExplorer => 'Show in Explorer';
+
+  @override
+  String get dupTrashOne => 'Move to Trash';
 }

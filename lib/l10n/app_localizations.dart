@@ -1993,6 +1993,216 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'휴지통으로 보내지 못했습니다: {error}'**
   String storageTrashFailed(String error);
+
+  /// No description provided for @navDuplicates.
+  ///
+  /// In ko, this message translates to:
+  /// **'중복 파일'**
+  String get navDuplicates;
+
+  /// No description provided for @dupTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'중복 파일 찾기'**
+  String get dupTitle;
+
+  /// No description provided for @dupIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'폴더를 고르면 그 안의 파일을 내용으로 비교해 똑같은 파일끼리 묶어 보여 줍니다. 이름이 달라도 내용이 같으면 찾습니다.'**
+  String get dupIntro;
+
+  /// No description provided for @dupSkipNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'숨김 폴더와 앱·사진 보관함 같은 패키지 안은 보지 않습니다.'**
+  String get dupSkipNote;
+
+  /// No description provided for @dupPickFolder.
+  ///
+  /// In ko, this message translates to:
+  /// **'폴더 고르기'**
+  String get dupPickFolder;
+
+  /// No description provided for @dupChangeFolder.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 폴더'**
+  String get dupChangeFolder;
+
+  /// No description provided for @dupRescan.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 찾기'**
+  String get dupRescan;
+
+  /// No description provided for @dupListing.
+  ///
+  /// In ko, this message translates to:
+  /// **'파일을 훑는 중… {files}개'**
+  String dupListing(int files);
+
+  /// No description provided for @dupHashing.
+  ///
+  /// In ko, this message translates to:
+  /// **'내용을 비교하는 중… {done} / {total}'**
+  String dupHashing(String done, String total);
+
+  /// No description provided for @dupCancelled.
+  ///
+  /// In ko, this message translates to:
+  /// **'찾기를 멈췄습니다. 멈추기 전까지 찾은 결과입니다.'**
+  String get dupCancelled;
+
+  /// No description provided for @dupFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'찾지 못했습니다: {error}'**
+  String dupFailed(String error);
+
+  /// No description provided for @dupNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'내용이 똑같은 파일이 없습니다. (파일 {count}개 비교)'**
+  String dupNone(int count);
+
+  /// No description provided for @dupSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'{groups}묶음 · 파일 {files}개 · 하나씩만 남기면 {size} 확보'**
+  String dupSummary(int groups, int files, String size);
+
+  /// No description provided for @dupGroupTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'똑같은 파일 {count}개 · 각 {size}'**
+  String dupGroupTitle(int count, String size);
+
+  /// No description provided for @dupOldest.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 오래됨'**
+  String get dupOldest;
+
+  /// No description provided for @dupKeepOne.
+  ///
+  /// In ko, this message translates to:
+  /// **'묶음마다 하나는 남겨야 합니다'**
+  String get dupKeepOne;
+
+  /// No description provided for @dupSelectExtras.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 오래된 것만 남기고 선택'**
+  String get dupSelectExtras;
+
+  /// No description provided for @dupClearSelection.
+  ///
+  /// In ko, this message translates to:
+  /// **'선택 해제'**
+  String get dupClearSelection;
+
+  /// No description provided for @dupSelectedSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 선택 · {size}'**
+  String dupSelectedSummary(int count, String size);
+
+  /// No description provided for @dupTrash.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보내기'**
+  String get dupTrash;
+
+  /// No description provided for @dupTrashing.
+  ///
+  /// In ko, this message translates to:
+  /// **'옮기는 중…'**
+  String get dupTrashing;
+
+  /// No description provided for @dupConfirmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'중복 파일을 휴지통으로 보낼까요?'**
+  String get dupConfirmTitle;
+
+  /// No description provided for @dupConfirmBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 파일({size})을 휴지통으로 옮깁니다. 묶음마다 하나 이상은 남깁니다. 휴지통에서 되돌릴 수 있습니다.'**
+  String dupConfirmBody(int count, String size);
+
+  /// No description provided for @dupConfirmAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 옮기기'**
+  String get dupConfirmAction;
+
+  /// No description provided for @dupMoved.
+  ///
+  /// In ko, this message translates to:
+  /// **'{size}를 휴지통으로 옮겼습니다'**
+  String dupMoved(String size);
+
+  /// No description provided for @dupTrashFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 파일을 옮기지 못했습니다: {reason}'**
+  String dupTrashFailed(int count, String reason);
+
+  /// No description provided for @dupUnreadable.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽지 못한 항목 {count}개는 비교에서 뺐습니다.'**
+  String dupUnreadable(int count);
+
+  /// No description provided for @historyDuplicatesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'중복 파일 {count}개 정리'**
+  String historyDuplicatesTitle(int count);
+
+  /// No description provided for @historyDuplicatesWhere.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 이동 · {folder} · {size}'**
+  String historyDuplicatesWhere(String folder, String size);
+
+  /// No description provided for @historyDuplicatesUndoHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'중복 파일은 휴지통으로 옮겼습니다. 되돌리려면 휴지통에서 직접 복원하세요.'**
+  String get historyDuplicatesUndoHint;
+
+  /// No description provided for @dupStop.
+  ///
+  /// In ko, this message translates to:
+  /// **'정지'**
+  String get dupStop;
+
+  /// No description provided for @dupFoundSoFar.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금까지 {groups}묶음 · 파일 {files}개 찾음'**
+  String dupFoundSoFar(int groups, int files);
+
+  /// No description provided for @dupRevealFinder.
+  ///
+  /// In ko, this message translates to:
+  /// **'Finder에서 보기'**
+  String get dupRevealFinder;
+
+  /// No description provided for @dupRevealExplorer.
+  ///
+  /// In ko, this message translates to:
+  /// **'탐색기에서 열기'**
+  String get dupRevealExplorer;
+
+  /// No description provided for @dupTrashOne.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 보내기'**
+  String get dupTrashOne;
 }
 
 class _AppLocalizationsDelegate

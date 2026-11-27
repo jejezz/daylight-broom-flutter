@@ -31,6 +31,7 @@ class HistoryList extends StatelessWidget {
         final (title, where) = switch (e.kind) {
           HistoryKind.junk => (l10n.historyJunkTitle(e.count ?? 0), l10n.historyJunkWhere(bytes)),
           HistoryKind.uninstall => (l10n.historyUninstallTitle(e.fileName), l10n.historyUninstallWhere(e.count ?? 0, bytes)),
+          HistoryKind.duplicates => (l10n.historyDuplicatesTitle(e.count ?? 0), l10n.historyDuplicatesWhere(abbreviateHome(e.sourcePath), bytes)),
           _ => (
               e.fileName,
               failed
@@ -40,7 +41,7 @@ class HistoryList extends StatelessWidget {
                       : l10n.actionMoveTo(abbreviateHome(_parentOf(e.resultPath ?? ''))),
             ),
         };
-        final activity = e.kind == HistoryKind.junk || e.kind == HistoryKind.uninstall;
+        final activity = e.kind == HistoryKind.junk || e.kind == HistoryKind.uninstall || e.kind == HistoryKind.duplicates;
         return ListTile(
           dense: true,
           leading: Icon(
@@ -49,6 +50,7 @@ class HistoryList extends StatelessWidget {
                 : switch (e.kind) {
                     HistoryKind.junk => Icons.cleaning_services_rounded,
                     HistoryKind.uninstall => Icons.apps_rounded,
+                    HistoryKind.duplicates => Icons.copy_all_rounded,
                     HistoryKind.trash => Icons.delete_outline_rounded,
                     HistoryKind.move => Icons.drive_file_move_rounded,
                   },
@@ -80,6 +82,9 @@ class HistoryList extends StatelessWidget {
     }
     if (e.kind == HistoryKind.uninstall) {
       return Tooltip(message: l10n.historyUninstallUndoHint, child: const Icon(Icons.info_outline_rounded, size: 18));
+    }
+    if (e.kind == HistoryKind.duplicates) {
+      return Tooltip(message: l10n.historyDuplicatesUndoHint, child: const Icon(Icons.info_outline_rounded, size: 18));
     }
     if (e.undone) return Text(l10n.historyUndone, style: Theme.of(context).textTheme.bodySmall);
     if (e.canUndo) return TextButton(onPressed: () => onUndo(e), child: Text(l10n.historyUndo));
