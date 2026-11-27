@@ -20,7 +20,6 @@ import '../window/focus_tint.dart';
 import 'apps_page.dart';
 import 'broom/glass.dart';
 import 'broom/nav_rail.dart';
-import 'cleanup_options_button.dart';
 import 'duplicates_page.dart';
 import 'home_screen.dart';
 import 'junk_page.dart';
@@ -150,7 +149,6 @@ class _BroomShellState extends State<BroomShell> {
                 title: const Text(AppIdentity.displayName),
                 actions: [
                   LoginItemMenuButton(controller: widget.loginItem),
-                  const CleanupOptionsButton(),
                   IconButton(
                     tooltip: AppLocalizations.of(context).settingsTooltip,
                     icon: const Icon(Icons.settings_outlined),

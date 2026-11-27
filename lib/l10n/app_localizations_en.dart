@@ -418,9 +418,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ruleSubfoldersSuffix => ' (incl. subfolders)';
 
   @override
-  String get cleanupOptionsTooltip => 'Tidy options';
-
-  @override
   String get optionRemoveEmptyFolders =>
       'Remove folders left empty after moving files';
 
@@ -1264,4 +1261,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dupTrashOne => 'Move to Trash';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsTextScale => 'Text size';
+
+  @override
+  String get settingsTextScaleReset => 'Default';
+
+  @override
+  String get settingsSectionCleanup => 'Cleanup';
+
+  @override
+  String get settingsCleanupTidy => 'Auto tidy';
+
+  @override
+  String get optionRemoveEmptyFoldersHint =>
+      'When a rule that includes subfolders moves files out and a folder is left empty, that folder is removed. The watched folder itself and move destinations are never removed.';
 }

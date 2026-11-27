@@ -812,12 +812,6 @@ abstract class AppLocalizations {
   /// **' (하위 폴더 포함)'**
   String get ruleSubfoldersSuffix;
 
-  /// No description provided for @cleanupOptionsTooltip.
-  ///
-  /// In ko, this message translates to:
-  /// **'정리 옵션'**
-  String get cleanupOptionsTooltip;
-
   /// No description provided for @optionRemoveEmptyFolders.
   ///
   /// In ko, this message translates to:
@@ -2203,6 +2197,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'휴지통으로 보내기'**
   String get dupTrashOne;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In ko, this message translates to:
+  /// **'언어'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsTextScale.
+  ///
+  /// In ko, this message translates to:
+  /// **'글자 크기'**
+  String get settingsTextScale;
+
+  /// No description provided for @settingsTextScaleReset.
+  ///
+  /// In ko, this message translates to:
+  /// **'기본값'**
+  String get settingsTextScaleReset;
+
+  /// No description provided for @settingsSectionCleanup.
+  ///
+  /// In ko, this message translates to:
+  /// **'정리'**
+  String get settingsSectionCleanup;
+
+  /// No description provided for @settingsCleanupTidy.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 정리'**
+  String get settingsCleanupTidy;
+
+  /// No description provided for @optionRemoveEmptyFoldersHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'하위 폴더까지 보는 규칙이 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지웁니다. 감시 폴더 자체와 이동 대상 폴더는 지우지 않습니다.'**
+  String get optionRemoveEmptyFoldersHint;
 }
 
 class _AppLocalizationsDelegate

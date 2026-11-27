@@ -413,9 +413,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ruleSubfoldersSuffix => ' (하위 폴더 포함)';
 
   @override
-  String get cleanupOptionsTooltip => '정리 옵션';
-
-  @override
   String get optionRemoveEmptyFolders => '파일을 옮긴 뒤 비게 된 폴더 지우기';
 
   @override
@@ -1239,4 +1236,23 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dupTrashOne => '휴지통으로 보내기';
+
+  @override
+  String get settingsLanguage => '언어';
+
+  @override
+  String get settingsTextScale => '글자 크기';
+
+  @override
+  String get settingsTextScaleReset => '기본값';
+
+  @override
+  String get settingsSectionCleanup => '정리';
+
+  @override
+  String get settingsCleanupTidy => '자동 정리';
+
+  @override
+  String get optionRemoveEmptyFoldersHint =>
+      '하위 폴더까지 보는 규칙이 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지웁니다. 감시 폴더 자체와 이동 대상 폴더는 지우지 않습니다.';
 }

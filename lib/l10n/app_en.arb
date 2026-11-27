@@ -261,7 +261,6 @@
   "trayLoginItem": "Launch at login",
   "ruleIncludeSubfolders": "Include files in subfolders",
   "ruleSubfoldersSuffix": " (incl. subfolders)",
-  "cleanupOptionsTooltip": "Tidy options",
   "optionRemoveEmptyFolders": "Remove folders left empty after moving files",
   "updateCheckMenuItem": "Check for Updates",
   "updateChecking": "Checking for updates…",
@@ -613,5 +612,11 @@
   "@dupFoundSoFar": {"placeholders": {"groups": {"type": "int"}, "files": {"type": "int"}}},
   "dupRevealFinder": "Show in Finder",
   "dupRevealExplorer": "Show in Explorer",
-  "dupTrashOne": "Move to Trash"
+  "dupTrashOne": "Move to Trash",
+  "settingsLanguage": "Language",
+  "settingsTextScale": "Text size",
+  "settingsTextScaleReset": "Default",
+  "settingsSectionCleanup": "Cleanup",
+  "settingsCleanupTidy": "Auto tidy",
+  "optionRemoveEmptyFoldersHint": "When a rule that includes subfolders moves files out and a folder is left empty, that folder is removed. The watched folder itself and move destinations are never removed."
 }

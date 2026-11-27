@@ -278,7 +278,6 @@
   "trayLoginItem": "로그인 시 자동 실행",
   "ruleIncludeSubfolders": "하위 폴더의 파일도 포함",
   "ruleSubfoldersSuffix": " (하위 폴더 포함)",
-  "cleanupOptionsTooltip": "정리 옵션",
   "optionRemoveEmptyFolders": "파일을 옮긴 뒤 비게 된 폴더 지우기",
   "updateCheckMenuItem": "업데이트 확인",
   "updateChecking": "업데이트를 확인하는 중…",
@@ -630,5 +629,11 @@
   "@dupFoundSoFar": {"placeholders": {"groups": {"type": "int"}, "files": {"type": "int"}}},
   "dupRevealFinder": "Finder에서 보기",
   "dupRevealExplorer": "탐색기에서 열기",
-  "dupTrashOne": "휴지통으로 보내기"
+  "dupTrashOne": "휴지통으로 보내기",
+  "settingsLanguage": "언어",
+  "settingsTextScale": "글자 크기",
+  "settingsTextScaleReset": "기본값",
+  "settingsSectionCleanup": "정리",
+  "settingsCleanupTidy": "자동 정리",
+  "optionRemoveEmptyFoldersHint": "하위 폴더까지 보는 규칙이 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지웁니다. 감시 폴더 자체와 이동 대상 폴더는 지우지 않습니다."
 }

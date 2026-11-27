@@ -23,6 +23,23 @@ void main() {
     expect((await AppSettings.load()).removeEmptyFolders, isTrue);
   });
 
+  test('text_scale defaults to 100%, persists, and stays within 50–150%', () async {
+    SharedPreferences.setMockInitialValues({});
+    final s = await AppSettings.load();
+    expect(s.textScale, 1.0);
+    await s.setTextScale(1.3000000001);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getDouble('text_scale'), 1.3);
+    expect((await AppSettings.load()).textScale, 1.3);
+    await s.setTextScale(3);
+    expect(s.textScale, 1.5);
+    await s.setTextScale(0.1);
+    expect(s.textScale, 0.5);
+
+    SharedPreferences.setMockInitialValues({'text_scale': 9.0}); // 손으로 고친 값도 범위 안으로
+    expect((await AppSettings.load()).textScale, 1.5);
+  });
+
   test('persists collapsed rule folders', () async {
     SharedPreferences.setMockInitialValues({});
     final s = await AppSettings.load();

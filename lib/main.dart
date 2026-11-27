@@ -213,11 +213,19 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           localeResolutionCallback: AppSettings.resolveLocale,
-          builder: (context, child) => AppMenuBar(
-            onAbout: _showAbout,
-            onCheckForUpdates: widget.updates == null ? null : _checkForUpdates,
-            child: child!,
-          ),
+          builder: (context, child) {
+            // 설정의 글자 크기 배율을 OS 배율 위에 곱한다.
+            final media = MediaQuery.of(context);
+            final scale = media.textScaler.scale(1) * widget.settings.textScale;
+            return MediaQuery(
+              data: media.copyWith(textScaler: TextScaler.linear(scale)),
+              child: AppMenuBar(
+                onAbout: _showAbout,
+                onCheckForUpdates: widget.updates == null ? null : _checkForUpdates,
+                child: child!,
+              ),
+            );
+          },
           home: BroomShell(homeKey: _homeKey, onAbout: _showAbout, service: widget.service, loginItem: widget.loginItem),
         ),
       ),
