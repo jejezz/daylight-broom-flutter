@@ -35,6 +35,9 @@ import 'window/window_placement.dart';
 
 final bool _isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
 
+/// 앱을 바로 끝내는 길 ([TrayController.quit]). 트레이가 만들어질 때 채운다.
+Future<void> Function()? _quitNow;
+
 Future<void> main(List<String> args) async {
   // 로그인으로 실행됐으면 창 없이 트레이에서만 시작한다.
   final background = args.contains(backgroundFlag);
@@ -60,7 +63,8 @@ Future<void> main(List<String> args) async {
   }
 
   // 데스크톱이 아니거나 UPDATE_SERVER 가 비어 있으면 null — 업데이트 확인 없음.
-  final updates = await UpdateService.create();
+  // 업데이트 설치를 위해 끝낼 때도 트레이의 빠른 종료를 쓴다 (엔진이 스스로 내려가면 Windows 에서 10초 넘게 걸린다).
+  final updates = await UpdateService.create(quitApp: () async => (_quitNow ?? () async => exit(0))());
   final service = await _startService(settings);
   // UpdateScope 는 MaterialApp 위 — 정보 창이 이것을 읽어 "업데이트 확인" 단추를 붙인다.
   runApp(UpdateScope(
@@ -156,8 +160,11 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         loginItem: widget.loginItem,
         onAbout: () async => _showAbout(),
         onTidyNow: () async => _homeKey.currentState?.tidyNow(),
+        // 끝내기 전에 폴더 감시와 타이머를 멈춘다.
+        onBeforeExit: () => widget.service.engine.dispose(),
       );
       _tray!.init();
+      _quitNow = _tray!.quit;
     }
     WidgetsBinding.instance.addObserver(this);
     widget.settings.addListener(_syncWindowBrightness);

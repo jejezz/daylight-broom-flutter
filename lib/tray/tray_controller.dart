@@ -13,10 +13,21 @@ import '../system/login_item.dart';
 /// - 켜짐: 트레이/메뉴바 아이콘과 메뉴를 두고, 창을 닫으면 숨기기만 한다 (끝내는 길은 트레이의 "종료").
 /// - 꺼짐: 아이콘을 두지 않고, 창을 닫으면 앱을 끝낸다.
 class TrayController with TrayListener, WindowListener {
-  TrayController({required this.settings, required this.loginItem, required this.onAbout, required this.onTidyNow});
+  TrayController({
+    required this.settings,
+    required this.loginItem,
+    required this.onAbout,
+    required this.onTidyNow,
+    this.onBeforeExit,
+    void Function(int code)? exitProcess,
+  }) : _exit = exitProcess ?? exit;
 
   final AppSettings settings;
   final LoginItemController loginItem;
+
+  /// 끝내기 직전에 정리할 것 (자동 정리 감시 멈추기 등).
+  final Future<void> Function()? onBeforeExit;
+  final void Function(int code) _exit;
 
   /// 정보 창 열기. 창을 먼저 보여준 뒤 부른다 (about-dialog.md §1: 앱 메뉴가
   /// 없는 상주 앱은 트레이 메뉴가 그 자리를 대신한다).
@@ -153,9 +164,19 @@ class TrayController with TrayListener, WindowListener {
     }
   }
 
+  bool _quitting = false;
+
+  /// 앱을 끝낸다. windowManager.destroy() 로 엔진이 스스로 내려가게 두면 Windows 에서는 창이 멈춘 채
+  /// 9–13초 남아 있었다 (측정, Dart 쪽 정리는 80ms 안에 끝난다). 트레이 아이콘을 걷고 감시를 멈춘 뒤
+  /// 프로세스를 바로 끝낸다 (약 70ms). 아이콘을 먼저 걷어야 끝난 뒤 트레이에 유령 아이콘이 남지 않는다.
   Future<void> quit() async {
-    await windowManager.setPreventClose(false);
-    await dispose();
-    await windowManager.destroy();
+    if (_quitting) return;
+    _quitting = true;
+    try {
+      await dispose();
+      await onBeforeExit?.call();
+    } finally {
+      _exit(0);
+    }
   }
 }
