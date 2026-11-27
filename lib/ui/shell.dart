@@ -6,6 +6,7 @@ import '../cleaner/junk_controller.dart';
 import '../cleaner/scan_target.dart';
 import '../cleaner/scanner.dart';
 import '../diskusage/usage_cache.dart';
+import '../duplicates/duplicate_controller.dart';
 import '../diskusage/usage_controller.dart';
 import '../engine/tidy_service.dart';
 import '../uninstaller/app_scanner.dart';
@@ -20,6 +21,7 @@ import 'apps_page.dart';
 import 'broom/glass.dart';
 import 'broom/nav_rail.dart';
 import 'cleanup_options_button.dart';
+import 'duplicates_page.dart';
 import 'home_screen.dart';
 import 'junk_page.dart';
 import 'login_item_button.dart';
@@ -29,7 +31,7 @@ import 'storage_page.dart';
 /// 앱의 뼈대: 왼쪽 NavRail + 오른쪽 페이지. 페이지는 목록(`_pages`)에서 고르므로
 /// 정크·앱 제거 같은 새 기능은 항목 하나를 더하면 레일에 나타난다.
 class BroomShell extends StatefulWidget {
-  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk, this.apps, this.usage});
+  const BroomShell({super.key, required this.onAbout, required this.service, required this.loginItem, this.homeKey, this.junk, this.disk, this.apps, this.usage, this.duplicates});
 
   final VoidCallback onAbout;
   final TidyService service;
@@ -49,6 +51,9 @@ class BroomShell extends StatefulWidget {
 
   /// 디스크 분석 상태. null 이면 만들어 쓴다.
   final UsageController? usage;
+
+  /// 중복 파일 상태. null 이면 만들어 쓴다.
+  final DuplicateController? duplicates;
 
   @override
   State<BroomShell> createState() => _BroomShellState();
@@ -76,6 +81,9 @@ class _BroomShellState extends State<BroomShell> {
   late final bool _ownsApps = widget.apps == null;
   late final UsageController _usage = widget.usage ?? UsageController(cache: UsageCache.standard(), onTrashed: _disk.refresh);
   late final bool _ownsUsage = widget.usage == null;
+  late final DuplicateController _duplicates =
+      widget.duplicates ?? DuplicateController(onChanged: _disk.refresh, onRecord: widget.service.recordActivity);
+  late final bool _ownsDuplicates = widget.duplicates == null;
 
   @override
   void initState() {
@@ -88,6 +96,7 @@ class _BroomShellState extends State<BroomShell> {
     if (_ownsJunk) _junk?.dispose();
     if (_ownsApps) _apps?.dispose();
     if (_ownsUsage) _usage.dispose();
+    if (_ownsDuplicates) _duplicates.dispose();
     if (_ownsDisk) _disk.dispose();
     super.dispose();
   }
@@ -103,6 +112,7 @@ class _BroomShellState extends State<BroomShell> {
       NavItem(icon: Icons.auto_awesome_rounded, label: l10n.navTidy),
       if (junk != null) NavItem(icon: Icons.cleaning_services_rounded, label: l10n.navJunk),
       if (apps != null) NavItem(icon: Icons.apps_rounded, label: l10n.navApps),
+      NavItem(icon: Icons.copy_all_rounded, label: l10n.navDuplicates),
       NavItem(icon: Icons.pie_chart_rounded, label: l10n.navStorage), // 맨 뒤: 앞 페이지들의 번호가 밀리지 않게
     ];
     final pages = [
@@ -117,6 +127,7 @@ class _BroomShellState extends State<BroomShell> {
       HomeScreen(key: widget.homeKey, service: widget.service),
       if (junk != null) JunkPage(controller: junk),
       if (apps != null) (_appsVisited ? AppsPage(controller: apps, disk: _disk.info) : const SizedBox.shrink()),
+      DuplicatesPage(controller: _duplicates, disk: _disk.info),
       StoragePage(disk: _disk, usage: _usage, active: _index == items.length - 1),
     ];
     // 레일이 창 높이 전체를 쓰고, 앱 바는 오른쪽 내용 위에만 둔다.

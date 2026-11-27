@@ -50,6 +50,7 @@ dependencies:
       ref: updater-v0.1.0
       path: updater
   screen_retriever: ^0.2.2
+  crypto: ^3.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter
