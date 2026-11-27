@@ -201,15 +201,31 @@ class SelectChip extends StatefulWidget {
 }
 
 class _SelectChipState extends State<SelectChip> {
-  bool _hover = false;
+  static const _anim = Duration(milliseconds: 140);
+  bool _hover = false, _down = false;
 
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onSelected != null;
     final sel = widget.selected;
     final b = context.broom;
+    final light = Theme.of(context).brightness == Brightness.light;
     final hover = _hover && enabled;
     final fg = sel ? Colors.white : Theme.of(context).colorScheme.onSurface;
+    // 호버는 보조 단추(GhostButton)보다 확실히 드러나게: 보라 틴트 배경 + 보라 윤곽 + 글로우 + 살짝 떠오름.
+    // 라이트 테마는 글로우가 약하게 그려지므로(glowScale) 틴트와 윤곽이 대부분을 맡는다.
+    final Color background;
+    final Color borderColor;
+    if (sel) {
+      background = Colors.transparent;
+      borderColor = hover ? Colors.white.withValues(alpha: 0.7) : Colors.transparent;
+    } else if (hover) {
+      background = BroomAccent.violet.withValues(alpha: light ? 0.14 : 0.24);
+      borderColor = BroomAccent.violet.withValues(alpha: light ? 0.85 : 0.95);
+    } else {
+      background = b.glassBottom;
+      borderColor = b.border;
+    }
     return Semantics(
       button: true,
       selected: sel,
@@ -218,23 +234,36 @@ class _SelectChipState extends State<SelectChip> {
         onEnter: (_) => setState(() => _hover = true),
         onExit: (_) => setState(() => _hover = false),
         child: GestureDetector(
+          onTapDown: enabled ? (_) => setState(() => _down = true) : null,
+          onTapUp: enabled ? (_) => setState(() => _down = false) : null,
+          onTapCancel: () => setState(() => _down = false),
           onTap: widget.onSelected,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 120),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-            decoration: BoxDecoration(
-              gradient: sel ? BroomAccent.accent : null,
-              color: sel ? null : (hover ? b.glassHover : b.glassBottom),
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: sel ? Colors.transparent : (hover ? b.borderStrong : b.border)),
-              boxShadow: sel ? b.glow(BroomAccent.violet, blur: hover ? 22 : 12, alpha: hover ? 0.6 : 0.4) : null,
-            ),
-            child: Opacity(
-              opacity: enabled ? 1 : 0.4,
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                if (sel) ...[Icon(Icons.check_rounded, size: 14, color: fg), const SizedBox(width: 6)],
-                Text(widget.label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: fg)),
-              ]),
+          child: AnimatedScale(
+            scale: _down ? 0.96 : (hover ? 1.05 : 1),
+            duration: _anim,
+            curve: Curves.easeOut,
+            child: AnimatedContainer(
+              duration: _anim,
+              curve: Curves.easeOut,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+              decoration: BoxDecoration(
+                gradient: sel ? BroomAccent.accent : null,
+                color: sel ? null : background,
+                borderRadius: BorderRadius.circular(999),
+                // 두께는 늘 1.5 로 둔다 — 호버 때 두께가 바뀌면 글자가 밀린다.
+                border: Border.all(color: borderColor, width: 1.5),
+                boxShadow: sel
+                    ? b.glow(BroomAccent.violet, blur: hover ? 28 : 12, alpha: hover ? 0.75 : 0.4)
+                    : (hover ? b.glow(BroomAccent.violet, blur: 18, alpha: 0.5) : null),
+              ),
+              child: Opacity(
+                opacity: enabled ? 1 : 0.4,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  if (sel) ...[Icon(Icons.check_rounded, size: 14, color: fg), const SizedBox(width: 6)],
+                  // 굵기는 바꾸지 않는다 — 글자 폭이 바뀌면 옆 칩이 밀린다.
+                  Text(widget.label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: fg)),
+                ]),
+              ),
             ),
           ),
         ),
