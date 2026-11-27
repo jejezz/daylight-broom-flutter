@@ -11,13 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 
 class AppSettings extends ChangeNotifier {
-  AppSettings._(this._prefs, this._themeMode, this._locale, this._accentPalette, this._removeEmptyFolders,
-      this._collapsedRuleFolders);
+  AppSettings._(this._prefs, this._themeMode, this._locale, this._accentPalette, this._textScale,
+      this._removeEmptyFolders, this._collapsedRuleFolders);
 
   /// 저장 키 — 모든 앱 공통 (localization.md §5, settings-screen.md §4). 바꾸지 않는다.
   static const themeModeKey = 'theme_mode';
   static const localeKey = 'app_locale';
   static const accentPaletteKey = 'accent_palette';
+  static const textScaleKey = 'text_scale';
   static const removeEmptyFoldersKey = 'remove_empty_folders';
   static const collapsedRuleFoldersKey = 'collapsed_rule_folders';
 
@@ -25,6 +26,7 @@ class AppSettings extends ChangeNotifier {
   ThemeMode _themeMode;
   Locale? _locale;
   AccentPalette _accentPalette;
+  double _textScale;
   bool _removeEmptyFolders;
   final Set<String> _collapsedRuleFolders;
 
@@ -46,6 +48,7 @@ class AppSettings extends ChangeNotifier {
       mode,
       code == null ? null : Locale(code),
       palette,
+      clampTextScale(prefs.getDouble(textScaleKey) ?? 1.0),
       prefs.getBool(removeEmptyFoldersKey) ?? false,
       (prefs.getStringList(collapsedRuleFoldersKey) ?? const []).toSet(),
     );
@@ -57,6 +60,24 @@ class AppSettings extends ChangeNotifier {
   Locale? get locale => _locale;
 
   AccentPalette get accentPalette => _accentPalette;
+
+  /// 글자 크기 배율 (settings-screen.md §3 항목 5). OS 배율에 곱해진다. 1.0 = 100%.
+  static const minTextScale = 0.5;
+  static const maxTextScale = 1.5;
+
+  static double clampTextScale(double value) =>
+      value.isFinite ? value.clamp(minTextScale, maxTextScale).toDouble() : 1.0;
+
+  double get textScale => _textScale;
+
+  Future<void> setTextScale(double value) async {
+    // 슬라이더 값의 부동소수 찌꺼기를 지워 5% 단위로 맞춘다.
+    final v = clampTextScale((value * 20).roundToDouble() / 20);
+    if (v == _textScale) return;
+    _textScale = v;
+    notifyListeners();
+    await _prefs.setDouble(textScaleKey, v);
+  }
 
   /// 하위 폴더의 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지울지. 기본은 지우지 않는다.
   bool get removeEmptyFolders => _removeEmptyFolders;

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
+import '../engine/batch_trash.dart';
 import '../engine/file_ops.dart';
 import '../engine/history.dart';
 import 'duplicate_scanner.dart';
@@ -13,13 +16,14 @@ typedef DuplicateScanStarter = Future<DuplicateScanHandle> Function(
 /// 찾기는 별도 isolate 에서 돌고, 묶음은 찾는 대로 [groups]에 붙는다. 멈추면 그때까지 찾은 것을 남긴다.
 /// 묶음마다 적어도 하나는 남도록 선택을 막는다 (원본까지 지우는 일이 없게).
 class DuplicateController extends ChangeNotifier {
-  DuplicateController({DuplicateScanStarter? starter, FileOps? ops, this.onChanged, this.onRecord})
+  /// [trasher]가 없고 [ops]가 있으면 그것으로 하나씩 보낸다 (테스트). 둘 다 없으면 OS 기본.
+  DuplicateController({DuplicateScanStarter? starter, FileOps? ops, BatchTrasher? trasher, this.onChanged, this.onRecord})
       : _starter = starter ??
             ((root, onProgress, onGroup) => startDuplicateScan(root, onProgress: onProgress, onGroup: onGroup)),
-        _ops = ops ?? SystemFileOps();
+        _trasher = trasher ?? (ops != null ? FileOpsBatchTrasher(ops) : SystemBatchTrasher());
 
   final DuplicateScanStarter _starter;
-  final FileOps _ops;
+  final BatchTrasher _trasher;
 
   /// 휴지통으로 보낸 뒤 (디스크 여유 용량을 다시 읽는 데 쓴다).
   final VoidCallback? onChanged;
@@ -39,6 +43,16 @@ class DuplicateController extends ChangeNotifier {
   final Set<String> selected = {};
 
   bool trashing = false;
+
+  /// 휴지통으로 보내는 중의 진행: 끝낸 수 / 전체 수, 방금 끝낸 파일.
+  int trashDone = 0;
+  int trashTotal = 0;
+  String? trashCurrent;
+
+  /// 휴지통 보내기를 사용자가 멈췄다 (남은 것은 선택된 채로 남는다).
+  bool trashStopped = false;
+  bool _stopTrash = false;
+
   int? lastMoved;
   int failedCount = 0;
   String? failedReason;
@@ -152,6 +166,12 @@ class DuplicateController extends ChangeNotifier {
     lastMoved = null;
     failedCount = 0;
     failedReason = null;
+    trashStopped = false;
+  }
+
+  /// 휴지통 보내기를 멈춘다. 지금 옮기는 파일까지만 끝나고, 남은 것은 선택된 채로 둔다.
+  void stopTrash() {
+    if (trashing) _stopTrash = true;
   }
 
   /// 파일 하나를 바로 휴지통으로 보낸다 (휴지통에서 되돌릴 수 있다).
@@ -162,28 +182,59 @@ class DuplicateController extends ChangeNotifier {
 
   Future<void> _trash(Set<String> paths) async {
     if (trashing || paths.isEmpty) return;
+    // 찾는 중에도 지울 수 있으므로 지금 보이는 묶음을 기준으로 한다.
+    final bytesOf = <String, int>{};
+    for (final g in groups) {
+      final picks = g.files.where((f) => paths.contains(f.path)).toList();
+      // 묶음이 통째로 골라졌으면 가장 오래된 것은 남긴다.
+      if (picks.length == g.files.length) picks.removeAt(0);
+      for (final f in picks) {
+        bytesOf[f.path] = f.bytes;
+      }
+    }
+    if (bytesOf.isEmpty) return;
+
     trashing = true;
+    _stopTrash = false;
+    trashDone = 0;
+    trashTotal = bytesOf.length;
+    trashCurrent = null;
     _clearNotices();
     notifyListeners();
 
     final failed = <String, String>{};
     final moved = <String>{};
     var movedBytes = 0;
-    // 찾는 중에도 지울 수 있으므로 지금 보이는 묶음을 기준으로 한다.
-    for (final g in [...groups]) {
-      final picks = g.files.where((f) => paths.contains(f.path)).toList();
-      // 묶음이 통째로 골라졌으면 가장 오래된 것은 남긴다.
-      if (picks.length == g.files.length) picks.removeAt(0);
-      for (final f in picks) {
-        try {
-          await _ops.trash(f.path);
-          moved.add(f.path);
-          movedBytes += f.bytes;
-        } on Object catch (e) {
-          failed[f.path] = '$e';
+    try {
+      await for (final r in _trasher.trashAll(bytesOf.keys.toList())) {
+        if (r.ok) {
+          moved.add(r.path);
+          movedBytes += bytesOf[r.path] ?? 0;
+        } else {
+          failed[r.path] = r.error!;
         }
+        trashDone++;
+        trashCurrent = r.path;
+        notifyListeners();
+        if (_stopTrash) break; // 구독을 끊으면 남은 파일은 보내지 않는다
+      }
+    } on Object catch (e) {
+      // 남은 것을 모두 실패로 센다.
+      for (final p in bytesOf.keys) {
+        if (!moved.contains(p)) failed.putIfAbsent(p, () => '$e');
       }
     }
+    // 멈춘 순간 옮기던 파일은 결과를 받기 전에 휴지통으로 갔을 수 있다: 없어졌으면 옮긴 것으로 센다.
+    for (final p in bytesOf.keys) {
+      if (moved.contains(p) || failed.containsKey(p)) continue;
+      if (FileSystemEntity.typeSync(p, followLinks: false) == FileSystemEntityType.notFound) {
+        moved.add(p);
+        movedBytes += bytesOf[p]!;
+      }
+    }
+    trashStopped = _stopTrash && moved.length + failed.length < trashTotal;
+    _stopTrash = false;
+    trashCurrent = null;
 
     groups = [
       for (final g in groups)

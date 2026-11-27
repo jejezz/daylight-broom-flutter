@@ -404,16 +404,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get presetOldInstallers => '30일 지난 설치 파일';
 
   @override
-  String get trayLoginItem => '로그인 시 자동 실행';
+  String get trayLoginItem => '시스템 상주 (로그인 시 자동 실행)';
 
   @override
   String get ruleIncludeSubfolders => '하위 폴더의 파일도 포함';
 
   @override
   String get ruleSubfoldersSuffix => ' (하위 폴더 포함)';
-
-  @override
-  String get cleanupOptionsTooltip => '정리 옵션';
 
   @override
   String get optionRemoveEmptyFolders => '파일을 옮긴 뒤 비게 된 폴더 지우기';
@@ -719,7 +716,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get junkClean => '선택 항목 정리';
+  String get junkClean => '선택 항목 영구 삭제';
 
   @override
   String junkCleaning(int done, int total) {
@@ -731,7 +728,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String junkConfirmBody(int count, String size) {
-    return '선택한 $count개 항목($size)을 휴지통을 거치지 않고 바로 삭제합니다. 되돌릴 수 없습니다.';
+    return '선택한 $count개 항목($size)을 휴지통을 거치지 않고 바로 지웁니다. 휴지통에서도 복구할 수 없습니다.';
   }
 
   @override
@@ -744,7 +741,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String junkFreed(String size) {
-    return '$size를 확보했습니다';
+    return '$size를 영구 삭제해 확보했습니다';
   }
 
   @override
@@ -811,7 +808,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get overviewCardJunkTitle => '정크 정리';
 
   @override
-  String get overviewCardJunkSubtitle => '캐시, 임시 파일, 개발 찌꺼기';
+  String get overviewCardJunkSubtitle => '캐시, 임시 파일, 개발 찌꺼기 · 영구 삭제';
 
   @override
   String get overviewCardTidyTitle => '자동 정리';
@@ -1181,9 +1178,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dupTrash => '휴지통으로 보내기';
 
   @override
-  String get dupTrashing => '옮기는 중…';
-
-  @override
   String get dupConfirmTitle => '중복 파일을 휴지통으로 보낼까요?';
 
   @override
@@ -1239,4 +1233,46 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dupTrashOne => '휴지통으로 보내기';
+
+  @override
+  String get settingsLanguage => '언어';
+
+  @override
+  String get settingsTextScale => '글자 크기';
+
+  @override
+  String get settingsTextScaleReset => '기본값';
+
+  @override
+  String get settingsSectionCleanup => '정리';
+
+  @override
+  String get settingsCleanupTidy => '자동 정리';
+
+  @override
+  String get optionRemoveEmptyFoldersHint =>
+      '하위 폴더까지 보는 규칙이 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지웁니다. 감시 폴더 자체와 이동 대상 폴더는 지우지 않습니다.';
+
+  @override
+  String get settingsLoginItem => '시스템 상주 (로그인 시 자동 실행)';
+
+  @override
+  String get settingsLoginItemHint =>
+      '켜면 트레이에 아이콘을 두고, 창을 닫아도 계속 실행하며, 로그인할 때 창 없이 시작해 자동 정리 규칙을 돌립니다. 끄면 트레이 아이콘이 없고 창을 닫으면 앱이 끝나며, 자동 정리는 앱을 열어 둔 동안에만 동작합니다.';
+
+  @override
+  String dupTrashingProgress(int done, int total) {
+    return '휴지통으로 옮기는 중… $done / $total';
+  }
+
+  @override
+  String dupTrashStopped(int count) {
+    return '휴지통 보내기를 멈췄습니다. 남은 $count개는 선택된 채로 두었습니다.';
+  }
+
+  @override
+  String get junkPermanentBadge => '영구 삭제';
+
+  @override
+  String get junkPermanentNote => '휴지통을 거치지 않아 복구할 수 없고, 용량이 바로 확보됩니다.';
 }

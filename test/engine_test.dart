@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:daylight_broom/engine/batch_trash.dart';
 import 'package:daylight_broom/engine/file_ops.dart';
 import 'package:daylight_broom/engine/ignored_files.dart';
 import 'package:daylight_broom/engine/paths.dart';
@@ -20,6 +21,25 @@ class _FakeOps implements FileOps {
     trashed.add(path);
     File(path).deleteSync();
     return '/fake-trash/$path';
+  }
+}
+
+/// 한 번에 받은 목록을 기록하고, [failOn]은 실패로 돌려준다.
+class _RecordingTrasher implements BatchTrasher {
+  final calls = <List<String>>[];
+  final failOn = <String>{};
+
+  @override
+  Stream<TrashResult> trashAll(List<String> paths) async* {
+    calls.add(paths);
+    for (final p in paths) {
+      if (failOn.any(p.endsWith)) {
+        yield TrashResult(p, 'locked');
+      } else {
+        File(p).deleteSync();
+        yield TrashResult(p, null, '/trash/$p');
+      }
+    }
   }
 }
 
@@ -178,6 +198,38 @@ void main() {
       expect(results.map((r) => r.planned.facts.name), ['old.zip']);
       expect(ops.trashed.single, endsWith('old.zip'));
       expect(File('${downloads.path}/new.zip').existsSync(), isTrue);
+    });
+
+    test('휴지통 규칙은 한 번에 몰아서 보내고, 실패한 파일은 다음에 다시 시도하지 않는다', () async {
+      for (final n in ['a.zip', 'b.zip', 'c.zip']) {
+        put(n, age: const Duration(days: 40));
+      }
+      put('keep.pdf');
+      final trasher = _RecordingTrasher()..failOn.add('b.zip');
+      final e = TidyEngine(ops: ops, trasher: trasher);
+      addTearDown(e.dispose);
+      await e.setRules([
+        Rule(
+          id: 't',
+          name: 't',
+          watchedFolder: downloads.path,
+          condition: const RuleCondition(extensions: ['zip'], olderThanDays: 30),
+          action: const TrashAction(),
+        ),
+      ]);
+      final progress = <(int, int)>[];
+      final results =
+          await e.apply((await e.plan(requireStable: false)).actions, onProgress: (d, t) => progress.add((d, t)));
+      expect(trasher.calls, hasLength(1)); // 한 번에
+      expect(trasher.calls.single.map((p) => p.split(RegExp(r'[/\\]')).last), unorderedEquals(['a.zip', 'b.zip', 'c.zip']));
+      expect(ops.trashed, isEmpty); // 하나씩 보내는 길은 쓰지 않았다
+      final byName = {for (final r in results) r.planned.facts.name: r};
+      expect(byName['a.zip']!.succeeded, isTrue);
+      expect(byName['a.zip']!.resultPath, startsWith('/trash/')); // 되돌리기용 위치를 넘긴다
+      expect(byName['b.zip']!.error, isA<FileSystemException>());
+      expect(progress.last, (3, 3));
+      // 실패한 b.zip 은 그대로인 동안 다시 계획하지 않는다.
+      expect((await e.plan(requireStable: false)).actions, isEmpty);
     });
 
     test('계획 뒤에 파일이 바뀌었으면 건너뛴다', () async {

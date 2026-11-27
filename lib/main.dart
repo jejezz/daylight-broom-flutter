@@ -8,6 +8,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -43,18 +44,21 @@ Future<void> main(List<String> args) async {
   final migration = LegacyMigration();
   await migration.migrateFiles(Directory(RuleStore.appSupportPath()));
   await migration.migratePreferences(await SharedPreferences.getInstance());
-  final hadLegacyLoginItem = await migration.removeLegacyLoginItem();
+  // 옛 로그인 항목은 지우기만 한다. 새 항목은 기본 꺼짐이라, 사용자가 설정에서 켤 때만 등록한다.
+  await migration.removeLegacyLoginItem();
   final settings = await AppSettings.load();
+
+  final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null, refreshOnInit: !kDebugMode);
+  await loginItem.init();
+  // 상주가 꺼져 있으면 트레이 아이콘이 없으므로, --background 로 불렸어도 창을 띄운다 (안 보이는 앱이 되지 않게).
+  final resident = !loginItem.supported || loginItem.enabled;
 
   Future<void> Function()? showWindow;
   if (_isDesktop) {
     await windowManager.ensureInitialized();
-    showWindow = await _prepareWindow(background: background);
+    showWindow = await _prepareWindow(background: background && resident);
   }
 
-  final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null);
-  await loginItem.init();
-  if (hadLegacyLoginItem && !loginItem.enabled) await loginItem.setEnabled(true);
   // 데스크톱이 아니거나 UPDATE_SERVER 가 비어 있으면 null — 업데이트 확인 없음.
   final updates = await UpdateService.create();
   final service = await _startService(settings);
@@ -213,11 +217,19 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           localeResolutionCallback: AppSettings.resolveLocale,
-          builder: (context, child) => AppMenuBar(
-            onAbout: _showAbout,
-            onCheckForUpdates: widget.updates == null ? null : _checkForUpdates,
-            child: child!,
-          ),
+          builder: (context, child) {
+            // 설정의 글자 크기 배율을 OS 배율 위에 곱한다.
+            final media = MediaQuery.of(context);
+            final scale = media.textScaler.scale(1) * widget.settings.textScale;
+            return MediaQuery(
+              data: media.copyWith(textScaler: TextScaler.linear(scale)),
+              child: AppMenuBar(
+                onAbout: _showAbout,
+                onCheckForUpdates: widget.updates == null ? null : _checkForUpdates,
+                child: child!,
+              ),
+            );
+          },
           home: BroomShell(homeKey: _homeKey, onAbout: _showAbout, service: widget.service, loginItem: widget.loginItem),
         ),
       ),

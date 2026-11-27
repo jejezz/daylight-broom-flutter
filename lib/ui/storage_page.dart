@@ -119,10 +119,10 @@ class _StoragePageState extends State<StoragePage> {
             if (widget.disk.volumes.length > 1) ...[
               Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
                 for (final d in widget.disk.volumes)
-                  ChoiceChip(
-                    label: Text('${d.name} · ${formatBytes(d.total)}'),
+                  SelectChip(
+                    label: '${d.name} · ${formatBytes(d.total)}',
                     selected: d.path == v?.path,
-                    onSelected: (_) => widget.disk.select(d),
+                    onSelected: () => widget.disk.select(d),
                   ),
               ]),
               const SizedBox(height: AppSpacing.lg),

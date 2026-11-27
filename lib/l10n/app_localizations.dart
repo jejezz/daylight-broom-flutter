@@ -797,7 +797,7 @@ abstract class AppLocalizations {
   /// No description provided for @trayLoginItem.
   ///
   /// In ko, this message translates to:
-  /// **'로그인 시 자동 실행'**
+  /// **'시스템 상주 (로그인 시 자동 실행)'**
   String get trayLoginItem;
 
   /// No description provided for @ruleIncludeSubfolders.
@@ -811,12 +811,6 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **' (하위 폴더 포함)'**
   String get ruleSubfoldersSuffix;
-
-  /// No description provided for @cleanupOptionsTooltip.
-  ///
-  /// In ko, this message translates to:
-  /// **'정리 옵션'**
-  String get cleanupOptionsTooltip;
 
   /// No description provided for @optionRemoveEmptyFolders.
   ///
@@ -1367,7 +1361,7 @@ abstract class AppLocalizations {
   /// No description provided for @junkClean.
   ///
   /// In ko, this message translates to:
-  /// **'선택 항목 정리'**
+  /// **'선택 항목 영구 삭제'**
   String get junkClean;
 
   /// No description provided for @junkCleaning.
@@ -1385,7 +1379,7 @@ abstract class AppLocalizations {
   /// No description provided for @junkConfirmBody.
   ///
   /// In ko, this message translates to:
-  /// **'선택한 {count}개 항목({size})을 휴지통을 거치지 않고 바로 삭제합니다. 되돌릴 수 없습니다.'**
+  /// **'선택한 {count}개 항목({size})을 휴지통을 거치지 않고 바로 지웁니다. 휴지통에서도 복구할 수 없습니다.'**
   String junkConfirmBody(int count, String size);
 
   /// No description provided for @junkConfirmReview.
@@ -1403,7 +1397,7 @@ abstract class AppLocalizations {
   /// No description provided for @junkFreed.
   ///
   /// In ko, this message translates to:
-  /// **'{size}를 확보했습니다'**
+  /// **'{size}를 영구 삭제해 확보했습니다'**
   String junkFreed(String size);
 
   /// No description provided for @junkFailed.
@@ -1517,7 +1511,7 @@ abstract class AppLocalizations {
   /// No description provided for @overviewCardJunkSubtitle.
   ///
   /// In ko, this message translates to:
-  /// **'캐시, 임시 파일, 개발 찌꺼기'**
+  /// **'캐시, 임시 파일, 개발 찌꺼기 · 영구 삭제'**
   String get overviewCardJunkSubtitle;
 
   /// No description provided for @overviewCardTidyTitle.
@@ -2114,12 +2108,6 @@ abstract class AppLocalizations {
   /// **'휴지통으로 보내기'**
   String get dupTrash;
 
-  /// No description provided for @dupTrashing.
-  ///
-  /// In ko, this message translates to:
-  /// **'옮기는 중…'**
-  String get dupTrashing;
-
   /// No description provided for @dupConfirmTitle.
   ///
   /// In ko, this message translates to:
@@ -2203,6 +2191,78 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'휴지통으로 보내기'**
   String get dupTrashOne;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In ko, this message translates to:
+  /// **'언어'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsTextScale.
+  ///
+  /// In ko, this message translates to:
+  /// **'글자 크기'**
+  String get settingsTextScale;
+
+  /// No description provided for @settingsTextScaleReset.
+  ///
+  /// In ko, this message translates to:
+  /// **'기본값'**
+  String get settingsTextScaleReset;
+
+  /// No description provided for @settingsSectionCleanup.
+  ///
+  /// In ko, this message translates to:
+  /// **'정리'**
+  String get settingsSectionCleanup;
+
+  /// No description provided for @settingsCleanupTidy.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 정리'**
+  String get settingsCleanupTidy;
+
+  /// No description provided for @optionRemoveEmptyFoldersHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'하위 폴더까지 보는 규칙이 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지웁니다. 감시 폴더 자체와 이동 대상 폴더는 지우지 않습니다.'**
+  String get optionRemoveEmptyFoldersHint;
+
+  /// No description provided for @settingsLoginItem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템 상주 (로그인 시 자동 실행)'**
+  String get settingsLoginItem;
+
+  /// No description provided for @settingsLoginItemHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'켜면 트레이에 아이콘을 두고, 창을 닫아도 계속 실행하며, 로그인할 때 창 없이 시작해 자동 정리 규칙을 돌립니다. 끄면 트레이 아이콘이 없고 창을 닫으면 앱이 끝나며, 자동 정리는 앱을 열어 둔 동안에만 동작합니다.'**
+  String get settingsLoginItemHint;
+
+  /// No description provided for @dupTrashingProgress.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통으로 옮기는 중… {done} / {total}'**
+  String dupTrashingProgress(int done, int total);
+
+  /// No description provided for @dupTrashStopped.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통 보내기를 멈췄습니다. 남은 {count}개는 선택된 채로 두었습니다.'**
+  String dupTrashStopped(int count);
+
+  /// No description provided for @junkPermanentBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'영구 삭제'**
+  String get junkPermanentBadge;
+
+  /// No description provided for @junkPermanentNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지통을 거치지 않아 복구할 수 없고, 용량이 바로 확보됩니다.'**
+  String get junkPermanentNote;
 }
 
 class _AppLocalizationsDelegate

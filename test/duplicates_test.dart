@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:daylight_broom/cleaner/disk_info.dart';
 import 'package:daylight_broom/duplicates/duplicate_controller.dart';
 import 'package:daylight_broom/duplicates/duplicate_scanner.dart';
+import 'package:daylight_broom/engine/batch_trash.dart';
 import 'package:daylight_broom/engine/file_ops.dart';
 import 'package:daylight_broom/engine/history.dart';
 import 'package:daylight_broom/l10n/app_localizations.dart';
@@ -50,6 +51,20 @@ class _FakeScan {
       cancelled++;
       if (!done.isCompleted) done.complete(null);
     });
+  }
+}
+
+/// 결과를 손으로 하나씩 내보내는 휴지통. 구독이 끊기면 [cancelled].
+class _StepTrasher implements BatchTrasher {
+  final out = StreamController<TrashResult>();
+  List<String> asked = [];
+  var cancelled = false;
+
+  @override
+  Stream<TrashResult> trashAll(List<String> paths) {
+    asked = paths;
+    out.onCancel = () => cancelled = true;
+    return out.stream;
   }
 }
 
@@ -120,6 +135,50 @@ void main() {
   });
 
   group('DuplicateController', () {
+    test('휴지통으로 보내는 동안 진행을 알리고, 정지하면 남은 것은 선택된 채로 둔다', () async {
+      final dir = Directory.systemTemp.createTempSync('daylight_broom_dup_stop_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final paths = [for (final n in ['a', 'b', 'c', 'd']) (File(p.join(dir.path, n))..writeAsStringSync('x')).path];
+      final fake = _FakeScan();
+      final trasher = _StepTrasher();
+      final c = DuplicateController(starter: fake.start, trasher: trasher);
+      final scanning = c.scan(dir.path);
+      await Future<void>.delayed(Duration.zero);
+      final g = _group('h', 1, paths);
+      fake.group(g);
+      fake.done.complete(DuplicateScanResult(root: dir.path, groups: [g], scannedFiles: 4, unreadable: 0));
+      await scanning;
+
+      c.selectAllButOldest(); // b, c, d
+      final trashing = c.trashSelected();
+      await Future<void>.delayed(Duration.zero);
+      expect((c.trashing, c.trashDone, c.trashTotal), (true, 0, 3));
+      expect(trasher.asked, paths.skip(1));
+
+      File(paths[1]).deleteSync(); // 실제로 옮겨진 것처럼
+      trasher.out.add(TrashResult(paths[1]));
+      await Future<void>.delayed(Duration.zero);
+      expect((c.trashDone, c.trashCurrent), (1, paths[1]));
+
+      c.stopTrash();
+      trasher.out.add(TrashResult(paths[2], 'busy'));
+      await trashing;
+      expect(trasher.cancelled, isTrue);
+      expect(c.trashing, isFalse);
+      expect(c.trashStopped, isTrue);
+      expect(c.lastMoved, 1);
+      expect(c.failedCount, 1);
+      expect(c.selected, {paths[2], paths[3]}); // 실패한 것과 보내지 않은 것
+      expect(c.groups.single.files.map((f) => f.path), [paths[0], paths[2], paths[3]]);
+    });
+
+    test('FileOpsBatchTrasher 는 하나씩 보내고 실패도 결과로 알린다', () async {
+      final ops = _Ops()..failOn.add('/b');
+      final results = await FileOpsBatchTrasher(ops).trashAll(['/a', '/b', '/c']).toList();
+      expect([for (final r in results) (r.path, r.ok)], [('/a', true), ('/b', false), ('/c', true)]);
+      expect(ops.trashed, ['/a', '/c']);
+    });
+
     test('찾는 대로 목록에 붙고, 정지하면 찾은 것을 남긴다', () async {
       final fake = _FakeScan();
       final c = DuplicateController(starter: fake.start, ops: _Ops());

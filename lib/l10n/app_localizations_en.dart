@@ -409,16 +409,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get presetOldInstallers => 'Installers older than 30 days';
 
   @override
-  String get trayLoginItem => 'Launch at login';
+  String get trayLoginItem => 'Stay in the tray (launch at login)';
 
   @override
   String get ruleIncludeSubfolders => 'Include files in subfolders';
 
   @override
   String get ruleSubfoldersSuffix => ' (incl. subfolders)';
-
-  @override
-  String get cleanupOptionsTooltip => 'Tidy options';
 
   @override
   String get optionRemoveEmptyFolders =>
@@ -740,7 +737,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get junkClean => 'Clean selected';
+  String get junkClean => 'Delete selected permanently';
 
   @override
   String junkCleaning(int done, int total) {
@@ -752,7 +749,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String junkConfirmBody(int count, String size) {
-    return 'Deletes the $count selected items ($size) right away, without using the Trash. This cannot be undone.';
+    return 'The $count selected items ($size) are deleted right away, without going to the Trash. They can\'t be restored from the Trash.';
   }
 
   @override
@@ -765,7 +762,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String junkFreed(String size) {
-    return 'Freed $size';
+    return 'Permanently deleted $size';
   }
 
   @override
@@ -834,7 +831,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overviewCardJunkSubtitle =>
-      'Caches, temp files and developer leftovers';
+      'Caches, temp files, developer leftovers · permanent delete';
 
   @override
   String get overviewCardTidyTitle => 'Auto tidy';
@@ -1206,9 +1203,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dupTrash => 'Move to Trash';
 
   @override
-  String get dupTrashing => 'Moving…';
-
-  @override
   String get dupConfirmTitle => 'Move duplicates to the Trash?';
 
   @override
@@ -1264,4 +1258,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dupTrashOne => 'Move to Trash';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsTextScale => 'Text size';
+
+  @override
+  String get settingsTextScaleReset => 'Default';
+
+  @override
+  String get settingsSectionCleanup => 'Cleanup';
+
+  @override
+  String get settingsCleanupTidy => 'Auto tidy';
+
+  @override
+  String get optionRemoveEmptyFoldersHint =>
+      'When a rule that includes subfolders moves files out and a folder is left empty, that folder is removed. The watched folder itself and move destinations are never removed.';
+
+  @override
+  String get settingsLoginItem => 'Stay in the tray (launch at login)';
+
+  @override
+  String get settingsLoginItemHint =>
+      'When on, the app keeps an icon in the tray, keeps running after you close the window, and starts without a window when you log in to run your auto-tidy rules. When off, there\'s no tray icon, closing the window quits the app, and auto-tidy only runs while the app is open.';
+
+  @override
+  String dupTrashingProgress(int done, int total) {
+    return 'Moving to the Trash… $done / $total';
+  }
+
+  @override
+  String dupTrashStopped(int count) {
+    return 'Stopped moving to the Trash. The remaining $count files are still selected.';
+  }
+
+  @override
+  String get junkPermanentBadge => 'Permanent delete';
+
+  @override
+  String get junkPermanentNote =>
+      'Skips the Trash, so it can\'t be restored, and the space is freed right away.';
 }

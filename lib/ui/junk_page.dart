@@ -155,7 +155,14 @@ class _Header extends StatelessWidget {
     return Row(children: [
       Expanded(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(l10n.junkTitle, style: theme.textTheme.titleMedium),
+          Row(children: [
+            Text(l10n.junkTitle, style: theme.textTheme.titleMedium),
+            const SizedBox(width: AppSpacing.sm),
+            // 이 화면만 휴지통을 거치지 않는다: 늘 보이게 둔다.
+            Pill(l10n.junkPermanentBadge,
+                icon: Icons.delete_forever_rounded,
+                color: theme.brightness == Brightness.light ? AppColors.dangerTextLight : AppColors.danger),
+          ]),
           if (c.items.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.xs),
             Text(l10n.junkTotalFound(formatBytes(c.totalBytes)), style: theme.textTheme.bodySmall),
@@ -195,16 +202,21 @@ class _Footer extends StatelessWidget {
         ],
         Row(children: [
           Expanded(
-            child: Text(
-              c.cleaning
-                  ? l10n.junkCleaning(c.cleanDone, c.cleanTotal)
-                  : l10n.junkSelectedSummary(c.selected.length, formatBytes(c.selectedBytes)),
-              style: theme.textTheme.titleSmall,
-            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+              Text(
+                c.cleaning
+                    ? l10n.junkCleaning(c.cleanDone, c.cleanTotal)
+                    : l10n.junkSelectedSummary(c.selected.length, formatBytes(c.selectedBytes)),
+                style: theme.textTheme.titleSmall,
+              ),
+              const SizedBox(height: 2),
+              Text(l10n.junkPermanentNote, style: theme.textTheme.bodySmall),
+            ]),
           ),
+          const SizedBox(width: AppSpacing.md),
           GradientButton(
             onPressed: c.cleaning || c.scanning || c.selected.isEmpty ? null : () => _clean(context),
-            icon: Icons.delete_sweep_rounded,
+            icon: Icons.delete_forever_rounded,
             label: l10n.junkClean,
             gradient: BroomAccent.danger,
             large: true,
@@ -276,6 +288,7 @@ Future<bool?> showJunkConfirm(BuildContext context, {required JunkController con
   return showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
+      icon: Icon(Icons.delete_forever_rounded, color: theme.colorScheme.error),
       title: Text(l10n.junkConfirmTitle),
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(l10n.junkConfirmBody(controller.selected.length, formatBytes(controller.selectedBytes))),
