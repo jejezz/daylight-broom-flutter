@@ -40,7 +40,8 @@ class UpdateService {
 
   /// 데스크톱이 아니거나 서버 주소가 비어 있으면(`--dart-define=UPDATE_SERVER=`) null —
   /// 그 앱은 업데이트 확인을 하지 않는다 (스토어 배포 모바일 앱 등).
-  static Future<UpdateService?> create() async {
+  /// [quitApp]: 설치하려고 앱을 끝낼 때 부른다. 없으면 [_exitApp] (엔진이 스스로 내려가는 정식 종료).
+  static Future<UpdateService?> create({Future<void> Function()? quitApp}) async {
     if (AppIdentity.updateServerUrl.isEmpty) return null;
     if (!(Platform.isMacOS || Platform.isWindows || Platform.isLinux)) return null;
     final info = await PackageInfo.fromPlatform();
@@ -53,6 +54,7 @@ class UpdateService {
         installer: platformInstaller(PlatformInfo.current()),
       ),
       policy: UpdatePolicy(PrefsUpdateStateStore(prefs)),
+      quitApp: quitApp,
     );
   }
 
