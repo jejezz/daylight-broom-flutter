@@ -1280,4 +1280,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get optionRemoveEmptyFoldersHint =>
       'When a rule that includes subfolders moves files out and a folder is left empty, that folder is removed. The watched folder itself and move destinations are never removed.';
+
+  @override
+  String get settingsLoginItem => 'Stay in the tray (launch at login)';
+
+  @override
+  String get settingsLoginItemHint =>
+      'Starts in the tray without a window when you log in and keeps running your auto-tidy rules. When off, tidying only happens while you have the app open.';
 }

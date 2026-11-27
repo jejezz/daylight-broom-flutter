@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../system/login_item.dart';
 import 'app_settings.dart';
 import 'settings_menus.dart';
 
@@ -27,17 +28,24 @@ enum SettingsSection {
       };
 }
 
-Future<void> showSettingsDialog(BuildContext context, {SettingsSection initial = SettingsSection.appearance}) {
-  return showDialog<void>(context: context, builder: (_) => SettingsDialog(initial: initial));
+Future<void> showSettingsDialog(
+  BuildContext context, {
+  SettingsSection initial = SettingsSection.appearance,
+  LoginItemController? loginItem,
+}) {
+  return showDialog<void>(context: context, builder: (_) => SettingsDialog(initial: initial, loginItem: loginItem));
 }
 
 /// 이 너비(대화상자 안쪽) 이상이면 왼쪽 구역 목록, 미만이면 위쪽 칩 한 줄 (settings.md "크기와 도킹한 창").
 const _wideBreakpoint = 560.0;
 
 class SettingsDialog extends StatefulWidget {
-  const SettingsDialog({super.key, this.initial = SettingsSection.appearance});
+  const SettingsDialog({super.key, this.initial = SettingsSection.appearance, this.loginItem});
 
   final SettingsSection initial;
+
+  /// 로그인 시 자동 실행(시스템 상주). null 이거나 지원하지 않는 OS 면 항목을 보이지 않는다.
+  final LoginItemController? loginItem;
 
   @override
   State<SettingsDialog> createState() => _SettingsDialogState();
@@ -58,7 +66,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
       padding: EdgeInsets.only(left: wide ? 16 : 0, bottom: 16),
       child: switch (_section) {
         SettingsSection.appearance => const _AppearanceSection(),
-        SettingsSection.cleanup => const _CleanupSection(),
+        SettingsSection.cleanup => _CleanupSection(loginItem: widget.loginItem),
       },
     );
 
@@ -225,18 +233,22 @@ class TextScaleSlider extends StatelessWidget {
   }
 }
 
-/// 앱 고유 구역: 자동 정리에 걸리는 전역 옵션 (예전 앱 바의 "정리 옵션" 메뉴).
+/// 앱 고유 구역: 자동 정리에 걸리는 전역 옵션 (예전 앱 바의 "정리 옵션"·"자동 실행" 메뉴).
 class _CleanupSection extends StatelessWidget {
-  const _CleanupSection();
+  const _CleanupSection({this.loginItem});
+
+  final LoginItemController? loginItem;
 
   @override
   Widget build(BuildContext context) {
     final settings = AppSettingsScope.of(context);
     final l10n = AppLocalizations.of(context);
+    final login = loginItem;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _Heading(l10n.settingsCleanupTidy, first: true),
+        if (login != null && login.supported) _LoginItemSwitch(controller: login),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           value: settings.removeEmptyFolders,
@@ -245,6 +257,37 @@ class _CleanupSection extends StatelessWidget {
           subtitle: Text(l10n.optionRemoveEmptyFoldersHint),
         ),
       ],
+    );
+  }
+}
+
+/// 시스템 상주: 로그인하면 창 없이 트레이에서 시작해 자동 정리 규칙을 계속 돌린다. 기본은 꺼짐.
+/// 켜짐 여부는 OS 에 등록된 항목이 기준이라 트레이 메뉴와 같은 컨트롤러를 본다.
+class _LoginItemSwitch extends StatelessWidget {
+  const _LoginItemSwitch({required this.controller});
+
+  final LoginItemController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) => SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        value: controller.enabled,
+        title: Text(l10n.settingsLoginItem),
+        subtitle: Text(l10n.settingsLoginItemHint),
+        onChanged: (value) async {
+          try {
+            await controller.setEnabled(value);
+          } on Object catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.loginItemFailed('$e'))));
+            }
+          }
+        },
+      ),
     );
   }
 }

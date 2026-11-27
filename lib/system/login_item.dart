@@ -121,12 +121,17 @@ class WindowsLoginItem implements LoginItemBackend {
   }
 }
 
-/// 화면과 트레이 메뉴가 같은 상태를 보도록 둘 사이에서 공유하는 켜짐 상태.
+/// 설정 창과 트레이 메뉴가 같은 상태를 보도록 둘 사이에서 공유하는 켜짐 상태.
+/// 기본은 꺼짐이다: 앱이 스스로 켜지 않고, 사용자가 설정이나 트레이에서 켤 때만 등록한다.
 class LoginItemController extends ChangeNotifier {
-  LoginItemController(this.backend);
+  LoginItemController(this.backend, {this.refreshOnInit = true});
 
   /// 지원하지 않는 플랫폼이면 null.
   final LoginItemBackend? backend;
+
+  /// 켜져 있을 때 등록된 경로를 지금 실행 중인 앱으로 맞출지. 디버그 빌드는 끈다 —
+  /// 개발 중에 실행한 빌드 폴더의 exe 로 사용자의 로그인 항목이 바뀌지 않게.
+  final bool refreshOnInit;
   bool _enabled = false;
 
   bool get supported => backend != null;
@@ -135,7 +140,7 @@ class LoginItemController extends ChangeNotifier {
   Future<void> init() async {
     final b = backend;
     if (b == null) return;
-    await b.refresh();
+    if (refreshOnInit) await b.refresh();
     _enabled = await b.isEnabled();
     notifyListeners();
   }

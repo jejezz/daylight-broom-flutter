@@ -23,7 +23,6 @@ import 'broom/nav_rail.dart';
 import 'duplicates_page.dart';
 import 'home_screen.dart';
 import 'junk_page.dart';
-import 'login_item_button.dart';
 import 'overview_page.dart';
 import 'storage_page.dart';
 
@@ -148,11 +147,10 @@ class _BroomShellState extends State<BroomShell> {
                 flexibleSpace: const FocusTint(),
                 title: const Text(AppIdentity.displayName),
                 actions: [
-                  LoginItemMenuButton(controller: widget.loginItem),
                   IconButton(
                     tooltip: AppLocalizations.of(context).settingsTooltip,
                     icon: const Icon(Icons.settings_outlined),
-                    onPressed: () => showSettingsDialog(context),
+                    onPressed: () => showSettingsDialog(context, loginItem: widget.loginItem),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                 ],

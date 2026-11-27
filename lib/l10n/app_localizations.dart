@@ -2233,6 +2233,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'하위 폴더까지 보는 규칙이 파일을 옮긴 뒤 폴더가 비면 그 폴더를 지웁니다. 감시 폴더 자체와 이동 대상 폴더는 지우지 않습니다.'**
   String get optionRemoveEmptyFoldersHint;
+
+  /// No description provided for @settingsLoginItem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템 상주 (로그인 시 자동 실행)'**
+  String get settingsLoginItem;
+
+  /// No description provided for @settingsLoginItemHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인하면 창 없이 트레이에서 시작해 자동 정리 규칙을 계속 실행합니다. 끄면 앱을 직접 열어 둔 동안에만 정리합니다.'**
+  String get settingsLoginItemHint;
 }
 
 class _AppLocalizationsDelegate

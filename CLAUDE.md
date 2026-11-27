@@ -17,5 +17,5 @@ Stevedore(규칙 정리)와 MacBroom(정크·앱 제거·디스크 링·UI)을 �
 - 중복 파일(`lib/duplicates/`)은 사용자가 고른 폴더를 별도 isolate 에서 크기 → 앞 64KB 해시 → 전체 SHA-256 순으로 비교하고, 묶음을 찾는 대로 화면에 붙인다(정지하면 찾은 것을 남긴다). 삭제는 **휴지통**이며 묶음마다 하나는 반드시 남긴다. 숨김 폴더와 `.app` 같은 패키지 안은 보지 않는다.
 - 다운로드 중인 임시 파일(`.crdownload`, `.download`, `.part`)은 건드리지 않고, 크기가 안정된 뒤 처리한다.
 - 아이콘 글리프는 Icons8 broom (`assets/icon/source_glyph.svg`), 고양이 판 색은 `assets/icon/cat.json`(hue 124). 고양이 원본은 유료 자산이라 저장소에 없어, `python3 tool/icon/generate_icons.py <icons8-grinning-cat-1024.png>`를 다시 돌리려면 원본 경로가 필요하다(templates 저장소 `common/tool/icon/`에 있다). 소품(큰 그림, 중앙) + 고양이 배지(오른쪽 아래) 방식이다(conventions/icons.md, 2026-11-04). 트레이 아이콘(`assets/tray/`)도 함께 갱신.
-- 옛 이름 Stevedore에서 넘어온 사용자를 위해 첫 실행 때 `LegacyMigration`(`lib/system/legacy_migration.dart`)이 옛 설정 폴더·저장 값·로그인 항목을 옮긴다. 옛 식별자 `art.zoomon.stevedore`는 이 코드 밖에서 쓰지 않는다.
-- 로그인 시 자동 실행: macOS는 `~/Library/LaunchAgents/art.zoomon.daylightbroom.plist`, Windows는 HKCU `Run` 키에 `--background` 인자로 등록한다. 이 인자로 시작하면 창 없이 트레이에서만 뜬다 (macOS는 `MainFlutterWindow.swift`가 실행 인자를 Dart로 전달하고 창을 숨긴 채 시작).
+- 옛 이름 Stevedore에서 넘어온 사용자를 위해 첫 실행 때 `LegacyMigration`(`lib/system/legacy_migration.dart`)이 옛 설정 폴더·저장 값을 옮기고, 옛 로그인 항목은 지우기만 한다(새 항목은 켜지 않는다). 옛 식별자 `art.zoomon.stevedore`는 이 코드 밖에서 쓰지 않는다.
+- 로그인 시 자동 실행(시스템 상주)은 **기본 꺼짐**이며 설정 → 정리 또는 트레이 메뉴에서 켠다. 디버그 빌드는 등록된 경로를 자기 exe 로 고치지 않는다(`refreshOnInit`). macOS는 `~/Library/LaunchAgents/art.zoomon.daylightbroom.plist`, Windows는 HKCU `Run` 키에 `--background` 인자로 등록한다. 이 인자로 시작하면 창 없이 트레이에서만 뜬다 (macOS는 `MainFlutterWindow.swift`가 실행 인자를 Dart로 전달하고 창을 숨긴 채 시작).

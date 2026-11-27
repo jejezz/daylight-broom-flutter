@@ -8,6 +8,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -43,7 +44,8 @@ Future<void> main(List<String> args) async {
   final migration = LegacyMigration();
   await migration.migrateFiles(Directory(RuleStore.appSupportPath()));
   await migration.migratePreferences(await SharedPreferences.getInstance());
-  final hadLegacyLoginItem = await migration.removeLegacyLoginItem();
+  // 옛 로그인 항목은 지우기만 한다. 새 항목은 기본 꺼짐이라, 사용자가 설정에서 켤 때만 등록한다.
+  await migration.removeLegacyLoginItem();
   final settings = await AppSettings.load();
 
   Future<void> Function()? showWindow;
@@ -52,9 +54,8 @@ Future<void> main(List<String> args) async {
     showWindow = await _prepareWindow(background: background);
   }
 
-  final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null);
+  final loginItem = LoginItemController(_isDesktop ? LoginItemBackend.forPlatform() : null, refreshOnInit: !kDebugMode);
   await loginItem.init();
-  if (hadLegacyLoginItem && !loginItem.enabled) await loginItem.setEnabled(true);
   // 데스크톱이 아니거나 UPDATE_SERVER 가 비어 있으면 null — 업데이트 확인 없음.
   final updates = await UpdateService.create();
   final service = await _startService(settings);

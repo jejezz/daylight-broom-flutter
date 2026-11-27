@@ -1,10 +1,25 @@
 import 'package:daylight_broom/l10n/app_localizations.dart';
 import 'package:daylight_broom/settings/app_settings.dart';
 import 'package:daylight_broom/settings/settings_dialog.dart';
+import 'package:daylight_broom/system/login_item.dart';
 import 'package:daylight_broom/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class _Backend implements LoginItemBackend {
+  bool on = false;
+  int refreshes = 0;
+
+  @override
+  Future<bool> isEnabled() async => on;
+
+  @override
+  Future<void> setEnabled(bool enabled) async => on = enabled;
+
+  @override
+  Future<void> refresh() async => refreshes++;
+}
 
 void main() {
   late AppSettings settings;
@@ -14,7 +29,7 @@ void main() {
     settings = await AppSettings.load();
   });
 
-  Future<void> open(WidgetTester tester) async {
+  Future<void> open(WidgetTester tester, {LoginItemController? loginItem}) async {
     tester.view.physicalSize = const Size(960, 640);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -25,7 +40,7 @@ void main() {
         locale: const Locale('ko'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const Scaffold(body: SettingsDialog()),
+        home: Scaffold(body: SettingsDialog(loginItem: loginItem)),
       ),
     ));
   }
@@ -84,5 +99,36 @@ void main() {
     ));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('정리 구역의 시스템 상주 스위치는 기본 꺼짐이고, 켜면 로그인 항목을 등록한다', (tester) async {
+    final backend = _Backend();
+    final login = LoginItemController(backend);
+    await login.init();
+    await open(tester, loginItem: login);
+    await tester.tap(find.text('정리'));
+    await tester.pumpAndSettle();
+
+    final tile = find.widgetWithText(SwitchListTile, '시스템 상주 (로그인 시 자동 실행)');
+    expect(tester.widget<SwitchListTile>(tile).value, isFalse);
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+    expect(backend.on, isTrue);
+    expect(tester.widget<SwitchListTile>(tile).value, isTrue);
+  });
+
+  testWidgets('로그인 항목을 지원하지 않으면 스위치를 보이지 않는다', (tester) async {
+    await open(tester, loginItem: LoginItemController(null));
+    await tester.tap(find.text('정리'));
+    await tester.pumpAndSettle();
+    expect(find.text('시스템 상주 (로그인 시 자동 실행)'), findsNothing);
+  });
+
+  test('refreshOnInit 이 꺼져 있으면 (디버그 빌드) 등록된 경로를 고치지 않는다', () async {
+    final backend = _Backend()..on = true;
+    await LoginItemController(backend, refreshOnInit: false).init();
+    expect(backend.refreshes, 0);
+    await LoginItemController(backend).init();
+    expect(backend.refreshes, 1);
   });
 }

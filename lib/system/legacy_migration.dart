@@ -82,7 +82,7 @@ class LegacyMigration {
     return {};
   }
 
-  /// 옛 로그인 항목이 있었으면 지우고 true. 호출한 쪽이 새 항목을 켠다.
+  /// 옛 로그인 항목이 있었으면 지우고 true. 새 항목은 켜지 않는다 (자동 실행은 기본 꺼짐, 사용자가 켠다).
   Future<bool> removeLegacyLoginItem() async {
     try {
       if (_isMac) {
